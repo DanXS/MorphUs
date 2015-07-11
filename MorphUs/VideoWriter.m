@@ -70,7 +70,7 @@
 -(Boolean)writePixels:(CVPixelBufferRef)buffer withPresentationTime:(CMTime)presentTime
 {
     while(!_adaptor.assetWriterInput.isReadyForMoreMediaData)
-         [NSThread sleepForTimeInterval:0.02];
+        [NSThread sleepForTimeInterval:0.02];
     BOOL append_ok = [_adaptor appendPixelBuffer:buffer withPresentationTime:presentTime];
     if(!append_ok){
         NSError *error = _videoWriter.error;
@@ -78,6 +78,8 @@
             NSLog(@"Unresolved error %@,%@.", error, [error userInfo]);
         }
     }
+    if(_adaptor.pixelBufferPool == nil)
+        return NO;
     return append_ok;
 }
 
@@ -112,7 +114,5 @@
     CVPixelBufferPoolRelease(_adaptor.pixelBufferPool);
     
 }
-
-
 
 @end

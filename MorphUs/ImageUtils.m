@@ -11,7 +11,7 @@
 @implementation ImageUtils
 
 
-+ (UIImage *)resizeImage:(UIImage*)image scale:(double)scale newSize:(CGSize)newSize {
++ (UIImage *)resizeImage:(UIImage*)image scale:(CGFloat)scale newSize:(CGSize)newSize {
     CGRect newRect = CGRectIntegral(CGRectMake(0, 0, newSize.width, newSize.height));
     CGImageRef imageRef = image.CGImage;
     
@@ -24,7 +24,7 @@
     
     // Set the quality level to use when rescaling
     CGContextSetInterpolationQuality(context, kCGInterpolationHigh);
-    CGAffineTransform flipVertical = CGAffineTransformMake(1.0, 0.0, 0.0, -1.0, 1.0, newSize.height);
+    CGAffineTransform flipVertical = CGAffineTransformMake(1.0, 0.0, 0.0, -1.0, 0.0, newSize.height);
     CGContextConcatCTM(context, flipVertical);
     
     // Draw into the context; this scales the image

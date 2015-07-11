@@ -13,10 +13,12 @@
 
 @interface VideoWriter : NSObject
 
+typedef void(^VideoWriteCompletionBlock)(BOOL);
+
 @property (strong, nonatomic) NSURL* movieURL;
 
 -(id)initWithFileURL:(NSURL*)url withWidth:(int)width andHeight:(int)height;
 -(Boolean) writePixels:(CVPixelBufferRef)buffer withPresentationTime:(CMTime)presentTime;
--(void)markAsComplete;
+-(void)waitForComplete:(VideoWriteCompletionBlock)completionBlock;
 
 @end

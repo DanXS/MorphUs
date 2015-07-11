@@ -67,11 +67,11 @@
     [_videoWriter startSessionAtSourceTime:kCMTimeZero];
 }
 
--(Boolean) writePixels:(CVPixelBufferRef)buffer withPresentationTime:(CMTime)presentTime
+-(Boolean)writePixels:(CVPixelBufferRef)buffer withPresentationTime:(CMTime)presentTime
 {
     while(!_adaptor.assetWriterInput.isReadyForMoreMediaData)
          [NSThread sleepForTimeInterval:0.02];
-    Boolean append_ok = [_adaptor appendPixelBuffer:buffer withPresentationTime:presentTime];
+    BOOL append_ok = [_adaptor appendPixelBuffer:buffer withPresentationTime:presentTime];
     if(!append_ok){
         NSError *error = _videoWriter.error;
         if(error!=nil) {
@@ -81,13 +81,36 @@
     return append_ok;
 }
 
--(void)markAsComplete
+-(void)waitForComplete:(VideoWriteCompletionBlock) completionBlock;
 {
     [_writerInput markAsFinished];
     [_videoWriter finishWritingWithCompletionHandler:^{
-        NSLog(@"Movie Export completed");
+        switch (_videoWriter.status)
+        {
+            case AVAssetWriterStatusUnknown:
+                NSLog(@"Movie status unknown");
+                completionBlock(NO);
+                break;
+            case AVAssetWriterStatusCancelled:
+                NSLog(@"Movie status cancelled");
+                completionBlock(NO);
+                break;
+            case AVAssetWriterStatusFailed:
+                NSLog(@"Movie status failed");
+                completionBlock(NO);
+                break;
+            case AVAssetWriterStatusWriting:
+                NSLog(@"Movie status writting");
+                completionBlock(YES);
+                break;
+            case AVAssetWriterStatusCompleted:
+                NSLog(@"Movie Export completed");
+                completionBlock(YES);
+                break;
+        }
     }];
     CVPixelBufferPoolRelease(_adaptor.pixelBufferPool);
+    
 }
 
 

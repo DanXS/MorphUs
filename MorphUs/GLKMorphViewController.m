@@ -428,16 +428,20 @@ enum
         self.exportProgressBarView.progress = (float)_frameNo/(float)_totalFrames;
         // grab the pixels
         _isExportFrameComplete = NO;
-        CVPixelBufferLockBaseAddress(_renderTarget, 0);
-        // write pixels data to movie stream
-        CMTime frameTime = CMTimeMake(1, _videoFPS);
-        CMTime lastTime=CMTimeMake(_frameNo, _videoFPS);
-        CMTime presentTime=CMTimeAdd(lastTime, frameTime);
-        [_videoWriter writePixels:_renderTarget withPresentationTime:presentTime];
-        CVPixelBufferUnlockBaseAddress(_renderTarget,0);
-        CVPixelBufferRelease(_renderTarget);
-        _isExportFrameComplete = YES;
-        if(_isExportComplete)
+        if(!_isExportComplete)
+        {
+            CVPixelBufferLockBaseAddress(_renderTarget, 0);
+            // write pixels data to movie stream
+            CMTime frameTime = CMTimeMake(1, _videoFPS);
+            CMTime lastTime=CMTimeMake(_frameNo, _videoFPS);
+            NSLog(@"frame number %d", _frameNo);
+            CMTime presentTime=CMTimeAdd(lastTime, frameTime);
+            [_videoWriter writePixels:_renderTarget withPresentationTime:presentTime];
+            CVPixelBufferUnlockBaseAddress(_renderTarget,0);
+            CVPixelBufferRelease(_renderTarget);
+            _isExportFrameComplete = YES;
+        }
+        else
         {
             _isExportMode = NO;
             __weak GLKMorphViewController* weakSelf = self;

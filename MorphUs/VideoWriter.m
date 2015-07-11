@@ -71,6 +71,7 @@
 {
     while(!_adaptor.assetWriterInput.isReadyForMoreMediaData)
         [NSThread sleepForTimeInterval:0.02];
+    NSLog(@"present time = %f", CMTimeGetSeconds(presentTime));
     BOOL append_ok = [_adaptor appendPixelBuffer:buffer withPresentationTime:presentTime];
     if(!append_ok){
         NSError *error = _videoWriter.error;
@@ -78,10 +79,9 @@
             NSLog(@"Unresolved error %@,%@.", error, [error userInfo]);
         }
     }
-    if(_adaptor.pixelBufferPool == nil)
-        return NO;
     return append_ok;
 }
+
 
 -(void)waitForComplete:(VideoWriteCompletionBlock) completionBlock;
 {
@@ -98,7 +98,7 @@
                 completionBlock(NO);
                 break;
             case AVAssetWriterStatusFailed:
-                NSLog(@"Movie status failed");
+                NSLog(@"Movie status failed %@", _videoWriter.error);
                 completionBlock(NO);
                 break;
             case AVAssetWriterStatusWriting:

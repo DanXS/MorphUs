@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "FaceppAPI.h"
+#import "Utils.h"
 
 #define FACEPP_API_KEY @"3cbf49ee7910298c31e5e6845cc4bfa2"
 #define FACEPP_API_SECRET @"QppNRweNnZ_zJuyg3a3GZHPTrLxUsVKd"

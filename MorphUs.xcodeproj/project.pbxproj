@@ -17,6 +17,8 @@
 		971E07831B51F9BD00DFE322 /* MorphViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 971E077F1B51F9BD00DFE322 /* MorphViewController.m */; };
 		971E07841B51F9BD00DFE322 /* ProjectsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 971E07811B51F9BD00DFE322 /* ProjectsViewController.m */; };
 		971E078A1B52616F00DFE322 /* MorphModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 971E07881B52616F00DFE322 /* MorphModel.xcdatamodeld */; };
+		971E078D1B527A7200DFE322 /* Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 971E078C1B527A7200DFE322 /* Utils.m */; };
+		971E07901B52810D00DFE322 /* ProjectsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 971E078F1B52810D00DFE322 /* ProjectsTableViewCell.m */; };
 		9723308C197043EF0025E9FE /* ImageUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 9723308B197043EF0025E9FE /* ImageUtils.m */; };
 		97273E8D197010B00022987F /* HelpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 97273E8C197010B00022987F /* HelpViewController.m */; };
 		978821671963643B004B4A78 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 978821661963643B004B4A78 /* Foundation.framework */; };
@@ -82,6 +84,10 @@
 		971E07801B51F9BD00DFE322 /* ProjectsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectsViewController.h; sourceTree = "<group>"; };
 		971E07811B51F9BD00DFE322 /* ProjectsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectsViewController.m; sourceTree = "<group>"; };
 		971E07891B52616F00DFE322 /* MorphModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MorphModel.xcdatamodel; sourceTree = "<group>"; };
+		971E078B1B527A7200DFE322 /* Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utils.h; sourceTree = "<group>"; };
+		971E078C1B527A7200DFE322 /* Utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Utils.m; sourceTree = "<group>"; };
+		971E078E1B52810D00DFE322 /* ProjectsTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectsTableViewCell.h; sourceTree = "<group>"; };
+		971E078F1B52810D00DFE322 /* ProjectsTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectsTableViewCell.m; sourceTree = "<group>"; };
 		9723308A197043EF0025E9FE /* ImageUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageUtils.h; sourceTree = "<group>"; };
 		9723308B197043EF0025E9FE /* ImageUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageUtils.m; sourceTree = "<group>"; };
 		97273E8B197010B00022987F /* HelpViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HelpViewController.h; sourceTree = "<group>"; };
@@ -195,6 +201,8 @@
 				979B2D8419690DAB00A9A773 /* cpp */,
 				970B537719670E6B00693767 /* Shaders */,
 				979DBEA3196405D500E4F64A /* FaceppSDK_ARC */,
+				971E078B1B527A7200DFE322 /* Utils.h */,
+				971E078C1B527A7200DFE322 /* Utils.m */,
 				978821751963643B004B4A78 /* AppDelegate.h */,
 				978821761963643B004B4A78 /* AppDelegate.m */,
 				979DBECC196475B900E4F64A /* MorphTarget.h */,
@@ -215,6 +223,8 @@
 				97AAEC1D196593AE00D449F1 /* ImageCollectionViewCell.m */,
 				971E077E1B51F9BD00DFE322 /* MorphViewController.h */,
 				971E077F1B51F9BD00DFE322 /* MorphViewController.m */,
+				971E078E1B52810D00DFE322 /* ProjectsTableViewCell.h */,
+				971E078F1B52810D00DFE322 /* ProjectsTableViewCell.m */,
 				971E07801B51F9BD00DFE322 /* ProjectsViewController.h */,
 				971E07811B51F9BD00DFE322 /* ProjectsViewController.m */,
 				978821811963643B004B4A78 /* Images.xcassets */,
@@ -454,6 +464,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				971E07901B52810D00DFE322 /* ProjectsTableViewCell.m in Sources */,
 				979F616A196CA3ED003FC04B /* VideoWriter.m in Sources */,
 				979B2D8719690DFC00A9A773 /* Morph.cpp in Sources */,
 				979DBEC0196405D500E4F64A /* FaceppDetection.m in Sources */,
@@ -473,6 +484,7 @@
 				978821771963643B004B4A78 /* AppDelegate.m in Sources */,
 				979DBEC2196405D500E4F64A /* FaceppGroup.m in Sources */,
 				979DBEBF196405D500E4F64A /* FaceppClient.m in Sources */,
+				971E078D1B527A7200DFE322 /* Utils.m in Sources */,
 				971E078A1B52616F00DFE322 /* MorphModel.xcdatamodeld in Sources */,
 				979DBEC3196405D500E4F64A /* FaceppGrouping.m in Sources */,
 				97AAEC1E196593AE00D449F1 /* ImageCollectionViewCell.m in Sources */,

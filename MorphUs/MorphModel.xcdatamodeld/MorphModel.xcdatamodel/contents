@@ -10,7 +10,6 @@
     <entity name="MorphSettings" syncable="YES">
         <attribute name="framesPerSecond" attributeType="Integer 32" defaultValueString="30" syncable="YES"/>
         <attribute name="framesPerTransition" attributeType="Integer 32" defaultValueString="30" syncable="YES"/>
-        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="videoURI" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="project" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Project" inverseName="morphSettings" inverseEntity="Project" syncable="YES"/>
     </entity>
@@ -22,13 +21,14 @@
     </entity>
     <entity name="Project" syncable="YES">
         <attribute name="createdAt" attributeType="Date" syncable="YES"/>
+        <attribute name="name" attributeType="String" syncable="YES"/>
         <relationship name="morphSettings" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MorphSettings" inverseName="project" inverseEntity="MorphSettings" syncable="YES"/>
         <relationship name="morphTargets" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MorphTarget" inverseName="project" inverseEntity="MorphTarget" syncable="YES"/>
     </entity>
     <elements>
         <element name="Marker" positionX="270" positionY="-279" width="128" height="118"/>
         <element name="MorphTarget" positionX="45" positionY="-283" width="128" height="103"/>
-        <element name="Project" positionX="-180" positionY="-286" width="128" height="88"/>
-        <element name="MorphSettings" positionX="-126" positionY="-144" width="128" height="118"/>
+        <element name="Project" positionX="-180" positionY="-286" width="128" height="103"/>
+        <element name="MorphSettings" positionX="-126" positionY="-144" width="128" height="103"/>
     </elements>
 </model>

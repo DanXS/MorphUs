@@ -8,6 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ProjectsViewController : UIViewController
+@interface ProjectsViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
+
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
+
+@property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
 @end

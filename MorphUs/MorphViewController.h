@@ -20,7 +20,7 @@
 {
     UIImagePickerController* imagePicker;
 }
-
+@property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (strong, nonatomic) ALAssetsLibrary* library;
 @property (strong, nonatomic) ALAssetsGroup* assetGroup;
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;

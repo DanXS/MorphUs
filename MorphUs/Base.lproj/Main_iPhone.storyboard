@@ -266,7 +266,7 @@
         <!--Navigation Controller-->
         <scene sceneID="aLV-fw-fTP">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" navigationBarHidden="YES" id="HkG-Rs-V3G" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="rootNavigationController" automaticallyAdjustsScrollViewInsets="NO" navigationBarHidden="YES" id="HkG-Rs-V3G" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" alpha="0.49999999999999961" contentMode="scaleToFill" translucent="NO" id="h1P-Yk-VXg">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -294,9 +294,54 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="sSQ-Uk-HBZ">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="150" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="sSQ-Uk-HBZ">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="524"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <prototypes>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ProjectCell" id="ZXS-3Q-2rb" customClass="ProjectsTableViewCell">
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ZXS-3Q-2rb" id="rCC-6W-zb3">
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KgW-7S-KGf">
+                                                    <rect key="frame" x="18" y="18" width="284" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="749" image="ProjectPlaceholder" translatesAutoresizingMaskIntoConstraints="NO" id="dlT-xR-VKf">
+                                                    <rect key="frame" x="18" y="49" width="264" height="76"/>
+                                                </imageView>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Created" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XkK-Jf-yeJ">
+                                                    <rect key="frame" x="18" y="135" width="304" height="17"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <color key="backgroundColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <constraints>
+                                                <constraint firstAttribute="trailingMargin" secondItem="dlT-xR-VKf" secondAttribute="trailing" constant="30" id="0ZT-r2-yi6"/>
+                                                <constraint firstItem="KgW-7S-KGf" firstAttribute="top" secondItem="rCC-6W-zb3" secondAttribute="topMargin" constant="10" id="AWO-8w-rQW"/>
+                                                <constraint firstItem="XkK-Jf-yeJ" firstAttribute="leading" secondItem="rCC-6W-zb3" secondAttribute="leadingMargin" constant="10" id="CUG-4t-UfF"/>
+                                                <constraint firstItem="XkK-Jf-yeJ" firstAttribute="top" secondItem="dlT-xR-VKf" secondAttribute="bottom" constant="10" id="ISP-Uh-BIu"/>
+                                                <constraint firstItem="XkK-Jf-yeJ" firstAttribute="trailing" secondItem="rCC-6W-zb3" secondAttribute="trailingMargin" constant="10" id="Mtl-Pm-DIR"/>
+                                                <constraint firstItem="dlT-xR-VKf" firstAttribute="top" secondItem="KgW-7S-KGf" secondAttribute="bottom" constant="10" id="Qgj-RO-aYG"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="KgW-7S-KGf" secondAttribute="trailing" constant="10" id="WhF-RU-hFh"/>
+                                                <constraint firstItem="dlT-xR-VKf" firstAttribute="leading" secondItem="rCC-6W-zb3" secondAttribute="leadingMargin" constant="10" id="dnr-NW-XUf"/>
+                                                <constraint firstItem="XkK-Jf-yeJ" firstAttribute="bottom" secondItem="rCC-6W-zb3" secondAttribute="bottomMargin" constant="10" id="nl3-ox-F6S"/>
+                                                <constraint firstItem="KgW-7S-KGf" firstAttribute="leading" secondItem="rCC-6W-zb3" secondAttribute="leadingMargin" constant="10" id="zZL-eu-Its"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="name" destination="KgW-7S-KGf" id="ifr-qO-S5t"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="oH3-Yp-fsP" id="2f8-b4-e0N"/>
+                                    <outlet property="delegate" destination="oH3-Yp-fsP" id="wFS-Fl-mN3"/>
+                                </connections>
                             </tableView>
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" alpha="0.69999999999999996" contentMode="scaleToFill" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gAL-qa-CuE">
                                 <rect key="frame" x="0.0" y="524" width="320" height="44"/>
@@ -305,7 +350,7 @@
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="lOL-3q-dHg"/>
                                     <barButtonItem title="New Morph" id="JY5-mD-DN3">
                                         <connections>
-                                            <segue destination="vXZ-lx-hvc" kind="push" identifier="morph" id="xdH-PK-9Ml"/>
+                                            <segue destination="vXZ-lx-hvc" kind="push" identifier="newMorph" id="xdH-PK-9Ml"/>
                                         </connections>
                                     </barButtonItem>
                                 </items>
@@ -323,18 +368,26 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="3ZS-ul-hjk"/>
+                    <connections>
+                        <outlet property="tableView" destination="sSQ-Uk-HBZ" id="z6T-sw-Pf7"/>
+                        <segue destination="vXZ-lx-hvc" kind="push" identifier="existingMorph" id="KyO-Np-6jY"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="c8K-mh-bsu" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-223" y="-156"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="ProjectPlaceholder" width="128" height="80"/>
+    </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
+        <segue reference="KyO-Np-6jY"/>
         <segue reference="rCu-h4-QJ2"/>
     </inferredMetricsTieBreakers>
 </document>

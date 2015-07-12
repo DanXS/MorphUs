@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "ProjectsViewController.h"
 
 @implementation AppDelegate
 
@@ -16,7 +17,29 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    // Set up FaceppAPI for face detection
     [FaceppAPI initWithApiKey:FACEPP_API_KEY andApiSecret:FACEPP_API_SECRET andRegion:APIServerRegionUS];
+    
+    UIStoryboard *mainStoryboard = nil;
+    // Fetch Main Storyboard
+    if([Utils isIPad])
+        mainStoryboard = [UIStoryboard storyboardWithName:@"Main_iPad" bundle: nil];
+    else
+        mainStoryboard = [UIStoryboard storyboardWithName:@"Main_iPhone" bundle:nil];
+    
+    // Instantiate Root Navigation Controller
+    UINavigationController *rootNavigationController = (UINavigationController *)[mainStoryboard instantiateViewControllerWithIdentifier:@"rootNavigationController"];
+    
+    // Configure View Controller
+    ProjectsViewController *viewController = (ProjectsViewController *)[rootNavigationController topViewController];
+    
+    if ([viewController isKindOfClass:[ProjectsViewController class]]) {
+        [viewController setManagedObjectContext:self.managedObjectContext];
+    }
+    
+    // Configure Window
+    [self.window setRootViewController:rootNavigationController];
+
     return YES;
 }
 							
@@ -99,7 +122,7 @@
         return _persistentStoreCoordinator;
     }
     
-    NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"ProjectName.sqlite"];
+    NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"MorphModel.sqlite"];
     
     NSError *error = nil;
     _persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];

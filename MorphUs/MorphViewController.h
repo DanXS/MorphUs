@@ -1,5 +1,5 @@
 //
-//  MainViewController.h
+//  MorphViewController.h
 //  MorphUs
 //
 //  Created by Dan Shepherd on 01/07/2014.
@@ -16,7 +16,7 @@
 #import "FaceppAPI.h"
 #import "MorphTarget.h"
 
-@interface MainViewController : UIViewController<UICollectionViewDataSource, UICollectionViewDelegate,UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+@interface MorphViewController : UIViewController<UICollectionViewDataSource, UICollectionViewDelegate,UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIActionSheetDelegate>
 {
     UIImagePickerController* imagePicker;
 }
@@ -35,9 +35,10 @@
 @property (weak, nonatomic) IBOutlet UILabel *activeMarkerLabel;
 @property (strong, nonatomic) NSURL* movieURL;
 @property (strong, nonatomic) NSString* actionIdentifier;
+@property (strong, nonatomic) UIActionSheet* choosePhotoActionSheet;
 
-- (IBAction)pickPhotoFromCamera:(id)sender;
-- (IBAction)pickPhotoFromLibrary:(id)sender;
+- (IBAction)selectProject:(id)sender;
+- (IBAction)choosePhoto:(id)sender;
 - (IBAction)handlePinch:(id)sender;
 - (IBAction)handlePan:(id)sender;
 - (IBAction)handleLongTouch:(id)sender;

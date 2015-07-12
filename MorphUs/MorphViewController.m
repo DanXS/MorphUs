@@ -1,5 +1,5 @@
 //
-//  MainViewController.m
+//  MorphViewController.m
 //  MorphUs
 //
 //  Created by Dan Shepherd on 01/07/2014.
@@ -7,15 +7,15 @@
 //
 
 #define IS_IPAD [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad
-#import "MainViewController.h"
+#import "MorphViewController.h"
 #import "ImageCollectionViewCell.h"
 #import "GLKMorphViewController.h"
 #import "ImageUtils.h"
 
-@interface MainViewController ()
+@interface MorphViewController ()
 @end
 
-@implementation MainViewController
+@implementation MorphViewController
 
 @synthesize imageView;
 @synthesize library;
@@ -29,10 +29,12 @@
 @synthesize landmarkKeyNames;
 @synthesize movieURL;
 @synthesize actionIdentifier;
+@synthesize choosePhotoActionSheet;
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
     [self initLandmarkKeyNames];
     imagePicker = [[UIImagePickerController alloc] init];
     self.library = [[ALAssetsLibrary alloc] init];
@@ -44,9 +46,25 @@
     self.currentMorphSequenceIndex = -1;
     self.activeMarkerIndex = -1;
     self.movieURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@", NSTemporaryDirectory(), @"MorphUsMovie.mov"]];
-    [self createMarkersLayer];
     [self findAlbum:@"MorphUs"];
 }
+
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [self createMarkersLayer];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    if(IS_IPAD) {
+        if(self.imageView) {
+            self.markersLayer.delegate = nil;
+        }
+    }
+}
+
 - (void)initLandmarkKeyNames
 {
 self.landmarkKeyNames = [NSArray arrayWithObjects:
@@ -623,7 +641,37 @@ self.landmarkKeyNames = [NSArray arrayWithObjects:
     }
 }
 
-- (IBAction)pickPhotoFromCamera:(id)sender {
+- (IBAction)selectProject:(id)sender
+{
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (IBAction)choosePhoto:(id)sender
+{
+    choosePhotoActionSheet = [[UIActionSheet alloc] initWithTitle:@"Choose Face Photo" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"From Camera", @"From Photo Library", nil];
+    [choosePhotoActionSheet showInView:self.view];
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex
+{
+    if(actionSheet == choosePhotoActionSheet)
+    {
+        switch (buttonIndex)
+        {
+            case 0:
+                [self pickPhotoFromCamera];
+                break;
+            case 1:
+                [self pickPhotoFromLibrary];
+                break;
+            default:
+                break;
+        }
+    }
+}
+
+- (void)pickPhotoFromCamera
+{
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
         self.imageView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 1, 1);
         imagePicker.delegate = self;
@@ -641,7 +689,8 @@ self.landmarkKeyNames = [NSArray arrayWithObjects:
     }
 }
 
-- (IBAction)pickPhotoFromLibrary:(id)sender {
+- (void)pickPhotoFromLibrary
+{
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary])
     {
         self.imageView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 1, 1);

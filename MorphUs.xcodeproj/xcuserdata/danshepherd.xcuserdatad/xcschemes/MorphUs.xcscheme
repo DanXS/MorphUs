@@ -58,7 +58,8 @@
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable>
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "978821621963643B004B4A78"
@@ -68,11 +69,6 @@
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
-         <AdditionalOption
-            key = "NSDOLoggingEnabled"
-            value = "YES"
-            isEnabled = "YES">
-         </AdditionalOption>
          <AdditionalOption
             key = "MallocScribble"
             value = ""
@@ -86,7 +82,8 @@
       useCustomWorkingDirectory = "NO"
       buildConfiguration = "Release"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable>
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "978821621963643B004B4A78"

@@ -10,6 +10,6 @@
 
 @interface ImageUtils : NSObject
 
-+ (UIImage *)resizeImage:(UIImage*)image newSize:(CGSize)newSize;
++ (UIImage *)resizeImage:(UIImage*)image scale:(CGFloat)scale newSize:(CGSize)newSize;
 + (CVPixelBufferRef) pixelBufferFromCGImage:(CGImageRef)image withWidth:(int)width andHeight:(int)height;
 @end

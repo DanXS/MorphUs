@@ -41,6 +41,7 @@ enum
     Boolean _isReady;
     Boolean _isExportMode;
     Boolean _isExportComplete;
+    Boolean _isExportFrameComplete;
     Boolean _hasAborted;
     int _frameNo;
     int _framesPerMorph;
@@ -126,6 +127,7 @@ enum
         self.exportProgressView.hidden = NO;
         _isExportMode = YES;
         _isExportComplete = NO;
+        _isExportFrameComplete = YES;
         _videoWriter = [[VideoWriter alloc] initWithFileURL:self.movieURL withWidth:_videoWidth andHeight:_videoHeight];
         int nPixels = 4*((int)_screenWidth)*((int)_screenHeight)*sizeof(GLubyte);
         _renderPixels = malloc(nPixels);
@@ -147,6 +149,7 @@ enum
         [self.pauseBarButtonItem setEnabled:YES];
         _isExportMode = NO;
         _isExportComplete = NO;
+        _isExportFrameComplete = YES;
         self.preferredFramesPerSecond = 60;
     }
     GLKView *view = (GLKView *)self.view;
@@ -277,7 +280,7 @@ enum
 
 -(GLubyte*)getPixelData:(CGImageRef)imageRef Width:(int)width Height:(int)height
 {
-    GLubyte* textureData = (GLubyte *)malloc(width * height * 4); // if 4 components per pixel (RGBA)
+    GLubyte* textureData = (GLubyte *)malloc(width * height * 4 * sizeof(GLubyte)); // if 4 components per pixel (RGBA)
 
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
     NSUInteger bytesPerPixel = 4;
@@ -384,12 +387,14 @@ enum
             UIImage* scaledImage;
             if ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)] && ([UIScreen mainScreen].scale == 2.0)) {
                 // Retina display
-                scaledImage = [ImageUtils resizeImage:image newSize:CGSizeMake(_videoWidth/2, _videoHeight/2)];
+                scaledImage = [ImageUtils resizeImage:image scale:2 newSize:CGSizeMake(_videoWidth, _videoHeight)];
 
             } else {
                 // non-Retina display
-                scaledImage = [ImageUtils resizeImage:image newSize:CGSizeMake(_videoWidth, _videoHeight)];
+                scaledImage = [ImageUtils resizeImage:image scale:1.0 newSize:CGSizeMake(_videoWidth, _videoHeight)];
             }
+            while(!_isExportFrameComplete)
+                [NSThread sleepForTimeInterval:0.02];
             _renderTarget = [ImageUtils pixelBufferFromCGImage:scaledImage.CGImage withWidth:_videoWidth andHeight:_videoHeight];
             [self sampleAndExportPixelBuffer];
         }
@@ -422,28 +427,53 @@ enum
         self.exportInfoLabel.text = [NSString stringWithFormat:@"Exporting Frame: %d", _frameNo];
         self.exportProgressBarView.progress = (float)_frameNo/(float)_totalFrames;
         // grab the pixels
-        CVPixelBufferLockBaseAddress(_renderTarget, 0);
-        // write pixels data to movie stream
-        CMTime frameTime = CMTimeMake(1, _videoFPS);
-        CMTime lastTime=CMTimeMake(_frameNo, _videoFPS);
-        CMTime presentTime=CMTimeAdd(lastTime, frameTime);
-        [_videoWriter writePixels:_renderTarget withPresentationTime:presentTime];
-        CVPixelBufferUnlockBaseAddress(_renderTarget,0);
-        CVPixelBufferRelease(_renderTarget);
-        if(_isExportComplete)
+        _isExportFrameComplete = NO;
+        if(!_isExportComplete)
         {
-            [_videoWriter markAsComplete];
-            self.exportProgressView.hidden = YES;
+            CVPixelBufferLockBaseAddress(_renderTarget, 0);
+            // write pixels data to movie stream
+            CMTime frameTime = CMTimeMake(1, _videoFPS);
+            CMTime lastTime=CMTimeMake(_frameNo, _videoFPS);
+            NSLog(@"frame number %d", _frameNo);
+            CMTime presentTime=CMTimeAdd(lastTime, frameTime);
+            [_videoWriter writePixels:_renderTarget withPresentationTime:presentTime];
+            CVPixelBufferUnlockBaseAddress(_renderTarget,0);
+            CVPixelBufferRelease(_renderTarget);
+            _isExportFrameComplete = YES;
+        }
+        else
+        {
             _isExportMode = NO;
-            exportAlertView = [[UIAlertView alloc]
-                               initWithTitle:@"Finished"
-                               message:@"Export completed successfully"
-                               delegate:self
-                               cancelButtonTitle:@"OK!"
-                               otherButtonTitles:nil];
-            [exportAlertView show];
+            __weak GLKMorphViewController* weakSelf = self;
+            [_videoWriter waitForComplete:^(BOOL complete) {
+                if(complete)
+                {
+                    [weakSelf saveMovieToCameraRoll];
+                    [weakSelf presentExportCompletedAlert:@"Export completed successfully"];
+                }
+                else
+                {
+                    [weakSelf removeFile:weakSelf.movieURL];
+                    [weakSelf presentExportCompletedAlert:@"Export failed"];
+                }
+            }];
+
         }
     }
+}
+
+- (void)presentExportCompletedAlert:(NSString*)message
+{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        self.exportProgressView.hidden = YES;
+        self.exportAlertView = [[UIAlertView alloc]
+                            initWithTitle:@"Finished"
+                            message:message
+                            delegate:self
+                            cancelButtonTitle:@"OK!"
+                            otherButtonTitles:nil];
+        [self.exportAlertView show];
+    });
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
@@ -451,7 +481,6 @@ enum
     @synchronized(self) {
     if(alertView==exportAlertView)
         {
-            [self saveMovieToCameraRoll];
             _isReady = NO;
             _hasAborted = YES;
             [self tearDownGL];

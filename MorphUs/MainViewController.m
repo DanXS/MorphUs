@@ -455,7 +455,15 @@ self.landmarkKeyNames = [NSArray arrayWithObjects:
                 }
                 else
                 {
-                    self.currentMorphTarget.image = [ImageUtils resizeImage:image newSize:CGSizeMake(1024, 1024)];
+                    if ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)] && ([UIScreen mainScreen].scale == 2.0)) {
+                        // retina display
+                        self.currentMorphTarget.image = [ImageUtils resizeImage:image scale:2.0 newSize:CGSizeMake(1024, 1024)];
+                    }
+                    else
+                    {
+                        // non-retina display
+                        self.currentMorphTarget.image = [ImageUtils resizeImage:image scale:1.0 newSize:CGSizeMake(1024, 1024)];
+                    }
                     if(picker.sourceType == UIImagePickerControllerSourceTypeCamera) {
                         [self addFaceImageToAlbum:image toAlbum:@"MorphUs"];
                     }

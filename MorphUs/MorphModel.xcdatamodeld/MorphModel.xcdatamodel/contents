@@ -1,34 +1,33 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="7701" systemVersion="14D136" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="Marker" syncable="YES">
-        <attribute name="index" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
-        <attribute name="location_x" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
-        <attribute name="location_y" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
         <attribute name="name" attributeType="String" syncable="YES"/>
+        <attribute name="x" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="y" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <relationship name="morphTarget" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MorphTarget" inverseName="markers" inverseEntity="MorphTarget" syncable="YES"/>
     </entity>
     <entity name="MorphSettings" syncable="YES">
         <attribute name="framesPerSecond" attributeType="Integer 32" defaultValueString="30" syncable="YES"/>
         <attribute name="framesPerTransition" attributeType="Integer 32" defaultValueString="30" syncable="YES"/>
-        <attribute name="videoURI" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="videoURL" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="project" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Project" inverseName="morphSettings" inverseEntity="Project" syncable="YES"/>
     </entity>
     <entity name="MorphTarget" syncable="YES">
-        <attribute name="imageURI" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="index" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
-        <relationship name="markers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Marker" inverseName="morphTarget" inverseEntity="Marker" syncable="YES"/>
+        <attribute name="imageURL" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="markers" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Marker" inverseName="morphTarget" inverseEntity="Marker" syncable="YES"/>
         <relationship name="project" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Project" inverseName="morphTargets" inverseEntity="Project" syncable="YES"/>
     </entity>
     <entity name="Project" syncable="YES">
         <attribute name="createdAt" attributeType="Date" syncable="YES"/>
         <attribute name="name" attributeType="String" syncable="YES"/>
+        <attribute name="thumbImage" optional="YES" attributeType="Binary" syncable="YES"/>
         <relationship name="morphSettings" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MorphSettings" inverseName="project" inverseEntity="MorphSettings" syncable="YES"/>
-        <relationship name="morphTargets" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MorphTarget" inverseName="project" inverseEntity="MorphTarget" syncable="YES"/>
+        <relationship name="morphTargets" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="MorphTarget" inverseName="project" inverseEntity="MorphTarget" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Marker" positionX="270" positionY="-279" width="128" height="118"/>
-        <element name="MorphTarget" positionX="45" positionY="-283" width="128" height="103"/>
-        <element name="Project" positionX="-180" positionY="-286" width="128" height="103"/>
+        <element name="Marker" positionX="270" positionY="-279" width="128" height="103"/>
         <element name="MorphSettings" positionX="-126" positionY="-144" width="128" height="103"/>
+        <element name="MorphTarget" positionX="45" positionY="-283" width="128" height="88"/>
+        <element name="Project" positionX="-180" positionY="-286" width="128" height="118"/>
     </elements>
 </model>

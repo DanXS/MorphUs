@@ -20,7 +20,11 @@
 {
     UIImagePickerController* imagePicker;
 }
+typedef void(^LoadImageCompletionBlock)(UIImage*, NSError*);
+
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
+@property (strong, nonatomic) NSManagedObject* managedObject;
+
 @property (strong, nonatomic) ALAssetsLibrary* library;
 @property (strong, nonatomic) ALAssetsGroup* assetGroup;
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;
@@ -29,7 +33,7 @@
 @property (weak, nonatomic) MorphTarget* currentMorphTarget;
 @property (strong, nonatomic) NSMutableArray* morphTargets;
 @property (strong, nonatomic) NSMutableArray* morphSequence;
-@property (weak, nonatomic) IBOutlet UICollectionView *imageCollectionView;
+@property (weak, nonatomic) IBOutlet UICollectionView* imageCollectionView;
 @property NSInteger currentMorphSequenceIndex;
 @property NSInteger activeMarkerIndex;
 @property (weak, nonatomic) IBOutlet UILabel *activeMarkerLabel;
@@ -43,7 +47,5 @@
 - (IBAction)handlePan:(id)sender;
 - (IBAction)handleLongTouch:(id)sender;
 - (IBAction)remove:(id)sender;
-
-
 
 @end

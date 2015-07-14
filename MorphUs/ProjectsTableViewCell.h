@@ -9,6 +9,9 @@
 #import <UIKit/UIKit.h>
 
 @interface ProjectsTableViewCell : UITableViewCell
+
 @property (weak, nonatomic) IBOutlet UILabel *name;
+@property (weak, nonatomic) IBOutlet UILabel *created;
+@property (weak, nonatomic) IBOutlet UIImageView *thumbImageView;
 
 @end

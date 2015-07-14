@@ -34,7 +34,10 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+    assert(self.managedObjectContext != nil);
+    assert(self.managedObject != nil);
+    [self createMarkersLayer];
+    [self logSelectedProjectInfo];
     [self initLandmarkKeyNames];
     imagePicker = [[UIImagePickerController alloc] init];
     self.library = [[ALAssetsLibrary alloc] init];
@@ -47,20 +50,25 @@
     self.activeMarkerIndex = -1;
     self.movieURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@", NSTemporaryDirectory(), @"MorphUsMovie.mov"]];
     [self findAlbum:@"MorphUs"];
+    [self loadMorphTargetsForProject];
 }
 
-
-- (void)viewWillAppear:(BOOL)animated
+- (void)logSelectedProjectInfo
 {
-    [self createMarkersLayer];
+    NSString* name = [self.managedObject valueForKey:@"name"];
+    NSDate* createdAt = [self.managedObject valueForKey:@"createdAt"];
+    NSString* createdAtString = [NSDateFormatter localizedStringFromDate:createdAt
+                                                               dateStyle:NSDateFormatterShortStyle
+                                                               timeStyle:NSDateFormatterShortStyle];
+    NSLog(@"Name = %@", name);
+    NSLog(@"Created At = %@", createdAtString);
 }
 
-- (void)viewWillDisappear:(BOOL)animated
+- (void)dealloc
 {
-    [super viewWillDisappear:animated];
     if(IS_IPAD) {
         if(self.imageView) {
-            self.markersLayer.delegate = nil;
+            [self removeMarkersLayer];
         }
     }
 }
@@ -282,20 +290,19 @@ self.landmarkKeyNames = [NSArray arrayWithObjects:
                               }];
 }
 
--(void)loadImageFromAssetUrl:(NSURL*)assetURL
+-(void)loadImageFromAssetUrl:(NSURL*)assetURL completionBlock:(LoadImageCompletionBlock)completionBlock
 {
     [self.library assetForURL:assetURL
                   resultBlock:^(ALAsset *asset) {
                        ALAssetRepresentation *rep = [asset defaultRepresentation];
                        CGImageRef iref = [rep fullResolutionImage];
                        if (iref) {
-                           //UIImage *image = [UIImage imageWithCGImage:iref];
-                           // todo: put it somewhere
-                           
+                           UIImage* image = [UIImage imageWithCGImage:iref];
+                           completionBlock(image, nil);
                        }
                   }
                   failureBlock:^(NSError *error) {
-                      NSLog(@"Can't get image - %@",[error localizedDescription]);
+                      completionBlock(nil, error);
                   }];
 }
 
@@ -368,7 +375,7 @@ self.landmarkKeyNames = [NSArray arrayWithObjects:
 -(void)createMarkersLayer
 {
     if(IS_IPAD) {
-        if(self.imageView) {
+        if(self.imageView && !self.markersLayer) {
             self.markersLayer = [CALayer layer];
             self.markersLayer.frame = self.imageView.bounds;
             [self.imageView.layer addSublayer:self.markersLayer];
@@ -445,6 +452,7 @@ self.landmarkKeyNames = [NSArray arrayWithObjects:
                 self.currentMorphTarget = tempTarget;
                 self.imageView.image = self.currentMorphTarget.image;
                 [self.morphSequence addObject:self.currentMorphTarget];
+                [self addNewMorphTarget:self.currentMorphTarget];
                 [self removeMarkersLayer];
                 [self createMarkersLayer];
                 [self.markersLayer setNeedsDisplay];
@@ -490,6 +498,7 @@ self.landmarkKeyNames = [NSArray arrayWithObjects:
                     }
                     self.imageView.image = self.currentMorphTarget.image;
                     [self.morphSequence addObject:self.currentMorphTarget];
+                    [self addNewMorphTarget:self.currentMorphTarget];
                     [self removeMarkersLayer];
                     [self createMarkersLayer];
                     [self.markersLayer setNeedsDisplay];
@@ -508,6 +517,134 @@ self.landmarkKeyNames = [NSArray arrayWithObjects:
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+#pragma mark - core data methods for morph targets
+
+- (void)addNewMorphTarget:(MorphTarget*)morphTarget
+{
+    // Create entity
+    NSEntityDescription* entity = [NSEntityDescription entityForName:@"MorphTarget" inManagedObjectContext:self.managedObjectContext];
+    
+    // Initialize record
+    NSManagedObject* record = [[NSManagedObject alloc] initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
+    
+    // Populate record
+    NSString* imageURL = [morphTarget.assetURL absoluteString];
+    [record setValue:imageURL forKey:@"imageURL"];
+    [record setValue:self.managedObject forKey:@"project"];
+    
+    // Connect to project
+    NSMutableOrderedSet* targetSet = [self.managedObject valueForKey:@"morphTargets"];
+    [targetSet addObject:record];
+    [self.managedObject setValue:targetSet forKey:@"morphTargets"];
+    
+    // Add Markers
+    NSManagedObject* target = [targetSet lastObject];
+    // Create entity
+    entity = [NSEntityDescription entityForName:@"Marker" inManagedObjectContext:self.managedObjectContext];
+    NSMutableOrderedSet* markerSet = [[NSMutableOrderedSet alloc] init];
+    for(ptrdiff_t i = 0; i < landmarkKeyNames.count; i++)
+    {
+        // Initialize record
+        record = [[NSManagedObject alloc] initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
+        NSString* name = [self.landmarkKeyNames objectAtIndex:i];
+        NSDictionary* marker = [self.currentMorphTarget.markers objectAtIndex:i];
+        [record setValue:name forKey:@"name"];
+        NSNumber* xVal = [marker valueForKey:@"x"];
+        NSNumber* yVal = [marker valueForKey:@"y"];
+        [record setValue:xVal forKey:@"x"];
+        [record setValue:yVal forKey:@"y"];
+        [markerSet addObject:record];
+        // Connect marker to target
+        [record setValue:target forKey:@"morphTarget"];
+    }
+    // Connect target to markers
+    [target setValue:markerSet forKey:@"markers"];
+    
+    // Save record
+    NSError *error = nil;
+    
+    if (![self.managedObjectContext save:&error]) {
+        if (error) {
+            NSLog(@"Unable to save record.");
+            NSLog(@"%@, %@", error, error.localizedDescription);
+        }
+        
+        // Show Alert View
+        [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"Morph target could not be saved." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+    }
+}
+
+- (void)loadMorphTargetsForProject
+{
+    NSSet* targetSet = [self.managedObject valueForKey:@"morphTargets"];
+    if(targetSet.count == 0)
+        return;
+    __weak MorphViewController* weakSelf = self;
+
+    __block UIActivityIndicatorView* activityView=[[UIActivityIndicatorView alloc]     initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    activityView.center=CGPointMake(self.imageView.center.x-self.imageView.frame.origin.x,self.imageView.center.y-self.imageView.frame.origin.y);
+    [activityView startAnimating];
+    [self.imageView addSubview:activityView];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        __block int index = 0;
+        [targetSet enumerateObjectsUsingBlock:^(id obj, BOOL *stop) {
+            NSManagedObject* record = obj;
+            NSString* imageURL = [record valueForKey:@"imageURL"];
+            NSURL* assetURL = [NSURL URLWithString:imageURL];
+            [weakSelf loadImageFromAssetUrl:assetURL completionBlock:^(UIImage* image, NSError* error) {
+                if(error)
+                {
+                    NSLog(@"Can't find image - %@",[error localizedDescription]);
+                }
+                else
+                {
+                    MorphTarget* target = [weakSelf findMorphTargetWithAssetURL:assetURL];
+                    if(!target)
+                    {
+                        target = [[MorphTarget alloc] init];
+                        [weakSelf.morphTargets addObject:target];
+                    }
+                    if ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)] && ([UIScreen mainScreen].scale == 2.0)) {
+                        // retina display
+                        target.image = [ImageUtils resizeImage:image scale:2.0 newSize:CGSizeMake(1024, 1024)];
+                    }
+                    else
+                    {
+                        // non-retina display
+                        target.image = [ImageUtils resizeImage:image scale:1.0 newSize:CGSizeMake(1024, 1024)];
+                    }
+                    [weakSelf.morphSequence addObject:target];
+                    weakSelf.currentMorphSequenceIndex = weakSelf.morphSequence.count-1;
+                    NSSet* markerSet = [record valueForKey:@"markers"];
+                    target.markers = [[NSMutableArray alloc] init];
+                    [markerSet enumerateObjectsUsingBlock:^(id obj, BOOL *stop) {
+                        NSManagedObject* record = obj;
+                        NSNumber* xVal = [record valueForKey:@"x"];
+                        NSNumber* yVal = [record valueForKey:@"y"];
+                        [target.markers addObject:[[NSDictionary alloc]
+                                                   initWithObjects:[NSArray arrayWithObjects:xVal, yVal, nil]
+                                                   forKeys:[NSArray arrayWithObjects:@"x", @"y", nil]]];
+                        
+                    }];
+                    if(index == targetSet.count-1)
+                    {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            weakSelf.imageView.image = ((MorphTarget*)[weakSelf.morphSequence firstObject]).image;
+                            [weakSelf.imageCollectionView reloadData];
+                            NSIndexPath* indexPath = [NSIndexPath indexPathForItem:0 inSection:0];
+                            [weakSelf.imageCollectionView selectItemAtIndexPath:indexPath animated:YES scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
+                            [activityView stopAnimating];
+                            [activityView removeFromSuperview];
+                            [weakSelf redrawImageViewForTarget:weakSelf.morphSequence[0]];
+                        });
+                    }
+                    index++;
+                }
+            }];
+        }];
+    });
 }
 
 #pragma mark - collection view methods

@@ -13,6 +13,7 @@
 @interface ProjectsViewController () <NSFetchedResultsControllerDelegate>
 
 @property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
+@property (assign, atomic) NSInteger selectedRow;
 
 @end
 
@@ -51,11 +52,23 @@
     // Fetch Record
     NSManagedObject *record = [self.fetchedResultsController objectAtIndexPath:indexPath];
     
-    // ToDo Update Cell
+    // Update Cell
     [cell.name setText:[record valueForKey:@"name"]];
+    NSDate* createdAt = [record valueForKey:@"createdAt"];
+    NSString* createdAtString = [NSDateFormatter localizedStringFromDate:createdAt
+                                                          dateStyle:NSDateFormatterShortStyle
+                                                          timeStyle:NSDateFormatterShortStyle];
+    [cell.created setText:[NSString stringWithFormat:@"Created %@", createdAtString]];
+    NSData* image = [record valueForKey:@"thumbImage"];
+    if(image == NULL)
+        [cell.thumbImageView setImage:[UIImage imageNamed:@"ProjectPlaceholder"]];
+    else
+    {
+        // todo create image from binary image data
+    }
 }
 
-- (void)addNewProject
+- (NSManagedObject*)addNewProject
 {
     NSUInteger count = [self.tableView numberOfRowsInSection:0];
     NSString* name = [NSString stringWithFormat:@"Morph - %lu", (unsigned long)(count+1)];
@@ -63,7 +76,7 @@
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"Project" inManagedObjectContext:self.managedObjectContext];
     
     // Initialize Record
-    NSManagedObject *record = [[NSManagedObject alloc] initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
+    NSManagedObject* record = [[NSManagedObject alloc] initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
     
     // Populate Record
     [record setValue:name forKey:@"name"];
@@ -73,9 +86,7 @@
     NSError *error = nil;
     
     if ([self.managedObjectContext save:&error]) {
-        // Dismiss View Controller
-        [self dismissViewControllerAnimated:YES completion:nil];
-        
+        return record;
     } else {
         if (error) {
             NSLog(@"Unable to save record.");
@@ -83,8 +94,21 @@
         }
         
         // Show Alert View
-        [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"Morph porject could not be saved." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+        [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"Morph project could not be saved." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+        return nil;
     }
+}
+
+- (NSManagedObject*)selectProjectAt:(NSInteger)row
+{
+    NSFetchRequest* request = [[NSFetchRequest alloc] initWithEntityName:@"Project"];
+    [request setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"createdAt" ascending:YES]]];
+    NSError* error;
+    NSArray* results = [self.managedObjectContext executeFetchRequest:request error:&error];
+    if(row >= results.count)
+        return nil;
+    else
+        return [results objectAtIndex:row];
 }
 
 #pragma mark - Fetch results delegates
@@ -141,6 +165,13 @@
     return cell;
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    self.selectedRow = indexPath.row;
+    [self performSegueWithIdentifier:@"existingMorph" sender:self];
+}
+
 #pragma mark - Navigation
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
@@ -149,12 +180,13 @@
     {
         MorphViewController* vc = (MorphViewController*)[segue destinationViewController];
         [vc setManagedObjectContext:self.managedObjectContext];
-        [self addNewProject];
+        [vc setManagedObject:[self addNewProject]];
     }
     else if([[segue identifier] isEqualToString:@"existingMorph"])
     {
         MorphViewController* vc = (MorphViewController*)[segue destinationViewController];
         [vc setManagedObjectContext:self.managedObjectContext];
+        [vc setManagedObject:[self selectProjectAt:self.selectedRow]];
     }
 }
  

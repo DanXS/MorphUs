@@ -9,6 +9,7 @@
 #import "ProjectsViewController.h"
 #import "MorphViewController.h"
 #import "ProjectsTableViewCell.h"
+#import "MorphSettingsTableViewController.h"
 
 @interface ProjectsViewController () <NSFetchedResultsControllerDelegate>
 
@@ -22,6 +23,9 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    // single selection only during editing
+    self.tableView.allowsMultipleSelectionDuringEditing = NO;
     
     // Initialize Fetch Request
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"Project"];
@@ -43,6 +47,7 @@
         NSLog(@"Unable to perform fetch.");
         NSLog(@"%@, %@", error, error.localizedDescription);
     }
+
 }
 
 #pragma mark - General project cell management
@@ -64,14 +69,16 @@
         [cell.thumbImageView setImage:[UIImage imageNamed:@"ProjectPlaceholder"]];
     else
     {
-        // todo create image from binary image data
+        NSData* data = [record valueForKey:@"thumbImage"];
+        UIImage* thumb = [UIImage imageWithData:data];
+        [cell.thumbImageView setImage:thumb];
     }
+    cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
 }
 
 - (NSManagedObject*)addNewProject
 {
-    NSUInteger count = [self.tableView numberOfRowsInSection:0];
-    NSString* name = [NSString stringWithFormat:@"Morph - %lu", (unsigned long)(count+1)];
+    NSString* name = [NSString stringWithFormat:@"Morph"];
     // Create Entity
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"Project" inManagedObjectContext:self.managedObjectContext];
     
@@ -145,6 +152,19 @@
 
 #pragma mark - Table View delegates
 
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    return YES;
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        NSManagedObject *record = [self.fetchedResultsController objectAtIndexPath:indexPath];
+        if (record) {
+            [self.fetchedResultsController.managedObjectContext deleteObject:record];
+        }
+    }
+}
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return [[self.fetchedResultsController sections] count];
 }
@@ -159,9 +179,7 @@
 - (UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     ProjectsTableViewCell* cell = (ProjectsTableViewCell*)[tableView dequeueReusableCellWithIdentifier:@"ProjectCell" forIndexPath:indexPath];
-    
     [self configureCell:cell atIndexPath:indexPath];
-    
     return cell;
 }
 
@@ -172,10 +190,21 @@
     [self performSegueWithIdentifier:@"existingMorph" sender:self];
 }
 
+- (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath
+{
+    self.selectedRow = indexPath.row;
+    [self performSegueWithIdentifier:@"morphSettings" sender:self];
+}
+
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    cell.backgroundColor = [UIColor blackColor];
+}
+
 #pragma mark - Navigation
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
+    [self.tableView setEditing:NO];
     if([[segue identifier] isEqualToString:@"newMorph"])
     {
         MorphViewController* vc = (MorphViewController*)[segue destinationViewController];
@@ -185,6 +214,12 @@
     else if([[segue identifier] isEqualToString:@"existingMorph"])
     {
         MorphViewController* vc = (MorphViewController*)[segue destinationViewController];
+        [vc setManagedObjectContext:self.managedObjectContext];
+        [vc setManagedObject:[self selectProjectAt:self.selectedRow]];
+    }
+    else if([[segue identifier] isEqualToString:@"morphSettings"])
+    {
+        MorphSettingsTableViewController* vc = (MorphSettingsTableViewController*)[segue destinationViewController];
         [vc setManagedObjectContext:self.managedObjectContext];
         [vc setManagedObject:[self selectProjectAt:self.selectedRow]];
     }

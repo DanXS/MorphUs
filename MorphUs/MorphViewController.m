@@ -11,6 +11,7 @@
 #import "ImageCollectionViewCell.h"
 #import "GLKMorphViewController.h"
 #import "ImageUtils.h"
+#import "Utils.h"
 
 @interface MorphViewController ()
 @end
@@ -36,18 +37,19 @@
     [super viewDidLoad];
     assert(self.managedObjectContext != nil);
     assert(self.managedObject != nil);
+    self.currentMorphTarget = nil;
+    self.activeMarkerIndex = -1;
+    self.currentMorphSequenceIndex = -1;
     [self createMarkersLayer];
     [self logSelectedProjectInfo];
     [self initLandmarkKeyNames];
     imagePicker = [[UIImagePickerController alloc] init];
     self.library = [[ALAssetsLibrary alloc] init];
-    self.currentMorphTarget = nil;
+
     self.morphTargets = [[NSMutableArray alloc] init];
     self.morphSequence = [[NSMutableArray alloc] init];
     self.imageCollectionView.delegate = self;
     self.imageCollectionView.dataSource = self;
-    self.currentMorphSequenceIndex = -1;
-    self.activeMarkerIndex = -1;
     self.movieURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@", NSTemporaryDirectory(), @"MorphUsMovie.mov"]];
     [self findAlbum:@"MorphUs"];
     [self loadMorphTargetsForProject];
@@ -261,49 +263,61 @@ self.landmarkKeyNames = [NSArray arrayWithObjects:
     __block ALAssetsLibrary* lib = self.library;
     __block MorphTarget* target = self.currentMorphTarget;
     [lib enumerateGroupsWithTypes:ALAssetsGroupAlbum
-                                usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
-                                    if ([[group valueForProperty:ALAssetsGroupPropertyName] isEqualToString:albumName]) {
-                                        NSLog(@"found album %@", albumName);
-                                        [lib writeImageToSavedPhotosAlbum:[image CGImage]
-                                                                          metadata:nil
-                                                                   completionBlock:^(NSURL* assetURL, NSError* error) {
-                                                                       if (error.code == 0) {
-                                                                           target.assetURL = assetURL;
-                                                                           NSLog(@"saved image completed:\nurl: %@", assetURL);
-                                                                           [lib assetForURL:assetURL
-                                                                                         resultBlock:^(ALAsset *asset) {
-                                                                                             [group addAsset:asset];
-                                                                                             NSLog(@"Added asset to album");
-                                                                                         }
-                                                                                        failureBlock:^(NSError* error) {
-                                                                                            NSLog(@"failed to retrieve image asset:\nError: %@ ", [error localizedDescription]);
-                                                                                        }];
-                                                                       }
-                                                                       else {
-                                                                           NSLog(@"saved image failed.\nerror code %ld\n%@", (long)error.code, [error localizedDescription]);
-                                                                       }
-                                                                   }];
-                                    }
-                                }
-                              failureBlock:^(NSError* error) {
-                                  NSLog(@"Failed to find asset groups %@", [error localizedDescription] );
-                              }];
+                       usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
+                           if ([[group valueForProperty:ALAssetsGroupPropertyName] isEqualToString:albumName]) {
+                               NSLog(@"found album %@", albumName);
+                               [lib writeImageToSavedPhotosAlbum:[image CGImage]
+                                                        metadata:nil
+                                                 completionBlock:^(NSURL* assetURL, NSError* error) {
+                                                     if (error.code == 0) {
+                                                         target.assetURL = assetURL;
+                                                         NSLog(@"saved image completed:\nurl: %@", assetURL);
+                                                         [lib assetForURL:assetURL
+                                                              resultBlock:^(ALAsset *asset) {
+                                                                  [group addAsset:asset];
+                                                                  if(asset != NULL)
+                                                                      [self addNewMorphTarget:target];
+                                                                  NSLog(@"Added asset to album");
+                                                              }
+                                                             failureBlock:^(NSError* error) {
+                                                                 NSLog(@"failed to retrieve image asset:\nError: %@ ", [error localizedDescription]);
+                                                             }];
+                                                     }
+                                                     else {
+                                                         NSLog(@"saved image failed.\nerror code %ld\n%@", (long)error.code, [error localizedDescription]);
+                                                     }
+                                                 }];
+                           }
+                       }
+                     failureBlock:^(NSError* error) {
+                         NSLog(@"Failed to find asset groups %@", [error localizedDescription] );
+                     }];
 }
 
--(void)loadImageFromAssetUrl:(NSURL*)assetURL completionBlock:(LoadImageCompletionBlock)completionBlock
+-(UIImage*)loadImageFromAssetUrl:(NSURL*)assetURL
 {
+    dispatch_semaphore_t sema = dispatch_semaphore_create(0);
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT,0);
+    __block UIImage* image = nil;
+    dispatch_async(queue, ^{
+    NSLog(@"loading image %@", assetURL.absoluteString);
     [self.library assetForURL:assetURL
                   resultBlock:^(ALAsset *asset) {
-                       ALAssetRepresentation *rep = [asset defaultRepresentation];
-                       CGImageRef iref = [rep fullResolutionImage];
-                       if (iref) {
-                           UIImage* image = [UIImage imageWithCGImage:iref];
-                           completionBlock(image, nil);
-                       }
+                      ALAssetRepresentation *rep = [asset defaultRepresentation];
+                      CGImageRef iref = [rep fullScreenImage];
+                      if (iref) {
+                          image = [UIImage imageWithCGImage:iref];
+                          NSLog(@"loading image success");
+                      }
+                      dispatch_semaphore_signal(sema);
                   }
-                  failureBlock:^(NSError *error) {
-                      completionBlock(nil, error);
-                  }];
+                 failureBlock:^(NSError *error) {
+                     NSLog(@"error loading image - %@", [error localizedDescription]);
+                     dispatch_semaphore_signal(sema);
+                 }];
+    });
+    dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
+    return image;
 }
 
 -(NSString*)tryDetectFace:(UIImage*)image
@@ -440,6 +454,7 @@ self.landmarkKeyNames = [NSArray arrayWithObjects:
     [self dismissViewControllerAnimated:YES completion:nil];
     UIActivityIndicatorView *activityView=[[UIActivityIndicatorView alloc]     initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
     activityView.center=CGPointMake(self.imageView.center.x-self.imageView.frame.origin.x,self.imageView.center.y-self.imageView.frame.origin.y);
+    [self.view setUserInteractionEnabled:NO];
     [activityView startAnimating];
     [self.imageView addSubview:activityView];
     image = [self fixOrientation:image];
@@ -460,8 +475,10 @@ self.landmarkKeyNames = [NSArray arrayWithObjects:
                 [activityView removeFromSuperview];
                 self.currentMorphSequenceIndex = self.morphSequence.count-1;
                 [self.imageCollectionView reloadData];
+                [self buildThumbnail];
                 NSIndexPath* indexPath = [NSIndexPath indexPathForItem:self.currentMorphSequenceIndex inSection:0];
                 [self.imageCollectionView selectItemAtIndexPath:indexPath animated:YES scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
+                [self.view setUserInteractionEnabled:YES];
             });
         }
         else
@@ -490,26 +507,28 @@ self.landmarkKeyNames = [NSArray arrayWithObjects:
                         // non-retina display
                         self.currentMorphTarget.image = [ImageUtils resizeImage:image scale:1.0 newSize:CGSizeMake(1024, 1024)];
                     }
+                    self.imageView.image = self.currentMorphTarget.image;
+                    [self.morphSequence addObject:self.currentMorphTarget];
                     if(picker.sourceType == UIImagePickerControllerSourceTypeCamera) {
                         [self addFaceImageToAlbum:image toAlbum:@"MorphUs"];
                     }
                     else {
                         self.currentMorphTarget.assetURL = [info valueForKey:UIImagePickerControllerReferenceURL];
                     }
-                    self.imageView.image = self.currentMorphTarget.image;
-                    [self.morphSequence addObject:self.currentMorphTarget];
-                    [self addNewMorphTarget:self.currentMorphTarget];
+                    if(!picker.sourceType == UIImagePickerControllerSourceTypeCamera)
+                        [self addNewMorphTarget:self.currentMorphTarget];
                     [self removeMarkersLayer];
                     [self createMarkersLayer];
                     [self.markersLayer setNeedsDisplay];
                     [self.imageCollectionView reloadData];
+                    [self buildThumbnail];
                     self.currentMorphSequenceIndex = self.morphSequence.count-1;
                     NSIndexPath* indexPath = [NSIndexPath indexPathForItem:self.currentMorphSequenceIndex inSection:0];
                     [self.imageCollectionView selectItemAtIndexPath:indexPath animated:YES scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
                 }
                 [activityView stopAnimating];
                 [activityView removeFromSuperview];
-
+                [self.view setUserInteractionEnabled:YES];
             });
         }
     });
@@ -519,7 +538,65 @@ self.landmarkKeyNames = [NSArray arrayWithObjects:
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+#pragma mark - thumbnail generation
+
+- (void)buildThumbnail
+{
+    NSMutableArray* scaledImages = [[NSMutableArray alloc] init];
+    for(int i = 0; i < self.morphSequence.count; i++)
+    {
+        MorphTarget* target = [self.morphSequence objectAtIndex:i];
+        if(target)
+        {
+            UIImage* image = target.image;
+            if(image)
+            {
+                if ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)] && ([UIScreen mainScreen].scale == 2.0)) {
+                    // retina display
+                    image = [ImageUtils resizeImage:image scale:2.0 newSize:CGSizeMake(100.0, 100.0)];
+                }
+                else
+                {
+                    // non-retina display
+                    image = [ImageUtils resizeImage:image scale:1.0 newSize:CGSizeMake(100.0, 100.0)];
+                }
+                [scaledImages addObject:image];
+            }
+        }
+    }
+    if(scaledImages.count == 0)
+    {
+        [self saveThumbImageData:nil];
+    }
+    else
+    {
+        float maxWidth = ([Utils isIPad]) ? 500.0 : 250.0;
+        float spacing = (maxWidth-scaledImages.count*100.0)/scaledImages.count+100.0;
+        if(spacing > 120.0)
+            spacing = 120.0;
+        UIImage* thumb = [ImageUtils makeHorizontalThumbWithImages:scaledImages size:CGSizeMake(maxWidth, 100.0) withSpacing:spacing];
+        NSData* data = UIImagePNGRepresentation(thumb);
+        [self saveThumbImageData:data];
+    }
+}
+
 #pragma mark - core data methods for morph targets
+
+- (void)saveThumbImageData:(NSData*)data
+{
+    [self.managedObject setValue:data forKey:@"thumbImage"];
+    
+    NSError *error = nil;
+    if (![self.managedObjectContext save:&error]) {
+        if (error) {
+            NSLog(@"Unable to save record.");
+            NSLog(@"%@, %@", error, error.localizedDescription);
+        }
+        
+        // Show Alert View
+        [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"Morph target could not be saved." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+    }
+}
 
 - (void)addNewMorphTarget:(MorphTarget*)morphTarget
 {
@@ -561,9 +638,13 @@ self.landmarkKeyNames = [NSArray arrayWithObjects:
     }
     // Connect target to markers
     [target setValue:markerSet forKey:@"markers"];
+    [self saveContext];
+}
     
+- (void)saveContext
+{
     // Save record
-    NSError *error = nil;
+    NSError* error = nil;
     
     if (![self.managedObjectContext save:&error]) {
         if (error) {
@@ -576,75 +657,110 @@ self.landmarkKeyNames = [NSArray arrayWithObjects:
     }
 }
 
+- (void)removeMorphTargetAt:(NSUInteger)index
+{
+    // Get the morph target set
+    NSOrderedSet* targetSet = [self.managedObject valueForKey:@"morphTargets"];
+    // if in range remove it
+    if(index < targetSet.count)
+    {
+        [self.managedObjectContext deleteObject:[targetSet objectAtIndex:index]];
+        [self saveContext];
+    }
+}
+
+- (void)updateMorphTargetImageURL:(NSURL*)assetURL at:(NSUInteger)index
+{
+    // Get the morph target set
+    NSOrderedSet* targetSet = [self.managedObject valueForKey:@"morphTargets"];
+    // if in range remove it
+    if(index < targetSet.count)
+    {
+        NSManagedObject* target = [targetSet objectAtIndex:index];
+        [target setValue:assetURL.absoluteString forKey:@"imageURL"];
+        [self saveContext];
+    }
+}
+
 - (void)loadMorphTargetsForProject
 {
-    NSSet* targetSet = [self.managedObject valueForKey:@"morphTargets"];
-    if(targetSet.count == 0)
+    NSOrderedSet* targetSet = [self.managedObject valueForKey:@"morphTargets"];
+    if(!targetSet || targetSet.count == 0)
         return;
-    __weak MorphViewController* weakSelf = self;
-
-    __block UIActivityIndicatorView* activityView=[[UIActivityIndicatorView alloc]     initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    UIActivityIndicatorView* activityView=[[UIActivityIndicatorView alloc]
+                                           initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
     activityView.center=CGPointMake(self.imageView.center.x-self.imageView.frame.origin.x,self.imageView.center.y-self.imageView.frame.origin.y);
     [activityView startAnimating];
+    
+    [self.view setUserInteractionEnabled:NO];
     [self.imageView addSubview:activityView];
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        __block int index = 0;
-        [targetSet enumerateObjectsUsingBlock:^(id obj, BOOL *stop) {
-            NSManagedObject* record = obj;
+    dispatch_queue_t backgroundQueue = dispatch_queue_create("com.CuffedToTheKeyboard.MorphUs", 0);
+    dispatch_async(backgroundQueue, ^{
+        for(int i = 0; i < targetSet.count; i++)
+        {
+            NSManagedObject* record = [targetSet objectAtIndex:i];
             NSString* imageURL = [record valueForKey:@"imageURL"];
+            NSLog(@"imageURL %@", imageURL);
             NSURL* assetURL = [NSURL URLWithString:imageURL];
-            [weakSelf loadImageFromAssetUrl:assetURL completionBlock:^(UIImage* image, NSError* error) {
-                if(error)
+            MorphTarget* target = [self findMorphTargetWithAssetURL:assetURL];
+            if(!target)
+            {
+                target = [[MorphTarget alloc] init];
+                [self.morphTargets addObject:target];
+            }
+            [self.morphSequence addObject:target];
+            self.currentMorphSequenceIndex = self.morphSequence.count-1;
+            target.assetURL = assetURL;
+            [self loadMarkersFromRecord:record forTarget:target];
+            UIImage* image = [self loadImageFromAssetUrl:assetURL];
+            if(image)
+            {
+                if ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)] && ([UIScreen mainScreen].scale == 2.0))
                 {
-                    NSLog(@"Can't find image - %@",[error localizedDescription]);
+                    // retina display
+                    target.image = [ImageUtils resizeImage:image scale:2.0 newSize:CGSizeMake(1024, 1024)];
                 }
                 else
                 {
-                    MorphTarget* target = [weakSelf findMorphTargetWithAssetURL:assetURL];
-                    if(!target)
-                    {
-                        target = [[MorphTarget alloc] init];
-                        [weakSelf.morphTargets addObject:target];
-                    }
-                    if ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)] && ([UIScreen mainScreen].scale == 2.0)) {
-                        // retina display
-                        target.image = [ImageUtils resizeImage:image scale:2.0 newSize:CGSizeMake(1024, 1024)];
-                    }
-                    else
-                    {
-                        // non-retina display
-                        target.image = [ImageUtils resizeImage:image scale:1.0 newSize:CGSizeMake(1024, 1024)];
-                    }
-                    [weakSelf.morphSequence addObject:target];
-                    weakSelf.currentMorphSequenceIndex = weakSelf.morphSequence.count-1;
-                    NSSet* markerSet = [record valueForKey:@"markers"];
-                    target.markers = [[NSMutableArray alloc] init];
-                    [markerSet enumerateObjectsUsingBlock:^(id obj, BOOL *stop) {
-                        NSManagedObject* record = obj;
-                        NSNumber* xVal = [record valueForKey:@"x"];
-                        NSNumber* yVal = [record valueForKey:@"y"];
-                        [target.markers addObject:[[NSDictionary alloc]
-                                                   initWithObjects:[NSArray arrayWithObjects:xVal, yVal, nil]
-                                                   forKeys:[NSArray arrayWithObjects:@"x", @"y", nil]]];
-                        
-                    }];
-                    if(index == targetSet.count-1)
-                    {
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            weakSelf.imageView.image = ((MorphTarget*)[weakSelf.morphSequence firstObject]).image;
-                            [weakSelf.imageCollectionView reloadData];
-                            NSIndexPath* indexPath = [NSIndexPath indexPathForItem:0 inSection:0];
-                            [weakSelf.imageCollectionView selectItemAtIndexPath:indexPath animated:YES scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
-                            [activityView stopAnimating];
-                            [activityView removeFromSuperview];
-                            [weakSelf redrawImageViewForTarget:weakSelf.morphSequence[0]];
-                        });
-                    }
-                    index++;
+                    // non-retina display
+                    target.image = [ImageUtils resizeImage:image scale:1.0 newSize:CGSizeMake(1024, 1024)];
                 }
-            }];
-        }];
+            }
+            if(i == targetSet.count-1)
+            {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [activityView stopAnimating];
+                    [activityView removeFromSuperview];
+                    [self loadMorphTargetsForProjectComplete];
+                    [self.view setUserInteractionEnabled:YES];
+                });
+            }
+        }
     });
+}
+
+- (void)loadMarkersFromRecord:(NSManagedObject*)record forTarget:(MorphTarget*)target
+{
+    NSOrderedSet* markerSet = [record valueForKey:@"markers"];
+    target.markers = [[NSMutableArray alloc] init];
+    for(int i = 0; i < markerSet.count; i++)
+    {
+        NSManagedObject* record = [markerSet objectAtIndex:i];
+        NSNumber* xVal = [record valueForKey:@"x"];
+        NSNumber* yVal = [record valueForKey:@"y"];
+        [target.markers addObject:[[NSDictionary alloc]
+                                   initWithObjects:[NSArray arrayWithObjects:xVal, yVal, nil]
+                                   forKeys:[NSArray arrayWithObjects:@"x", @"y", nil]]];
+    }
+}
+
+- (void)loadMorphTargetsForProjectComplete
+{
+    self.imageView.image = ((MorphTarget*)[self.morphSequence firstObject]).image;
+    NSIndexPath* indexPath = [NSIndexPath indexPathForItem:0 inSection:0];
+    [self redrawImageViewForTarget:self.morphSequence[0]];
+    [self.imageCollectionView reloadData];
+    [self.imageCollectionView selectItemAtIndexPath:indexPath animated:YES scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
 }
 
 #pragma mark - collection view methods
@@ -848,10 +964,12 @@ self.landmarkKeyNames = [NSArray arrayWithObjects:
 }
 
 - (IBAction)remove:(id)sender {
+    [self.view setUserInteractionEnabled:NO];
     int index = (int)self.currentMorphSequenceIndex-1;
     if(index >= 0)
     {
         [self.morphSequence removeObjectAtIndex:self.currentMorphSequenceIndex];
+        [self removeMorphTargetAt:self.currentMorphSequenceIndex];
         NSIndexPath* indexPath = [NSIndexPath indexPathForItem:self.currentMorphSequenceIndex inSection:0];
         UICollectionViewCell* cell = [self.imageCollectionView cellForItemAtIndexPath:indexPath];
         [cell removeFromSuperview];
@@ -861,10 +979,12 @@ self.landmarkKeyNames = [NSArray arrayWithObjects:
         self.imageView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 1, 1);
         [self redrawImageViewForTarget:self.morphSequence[index]];
         self.currentMorphSequenceIndex = index;
+        [self buildThumbnail];
     }
     else if(index == -1)
     {
         [self.morphSequence removeObjectAtIndex:self.currentMorphSequenceIndex];
+        [self removeMorphTargetAt:self.currentMorphSequenceIndex];
         NSIndexPath* indexPath = [NSIndexPath indexPathForItem:self.currentMorphSequenceIndex inSection:0];
         UICollectionViewCell* cell = [self.imageCollectionView cellForItemAtIndexPath:indexPath];
         [cell removeFromSuperview];
@@ -881,7 +1001,9 @@ self.landmarkKeyNames = [NSArray arrayWithObjects:
             [self redrawImageViewForTarget:self.morphSequence[0]];
             self.currentMorphSequenceIndex = 0;
         }
+        [self buildThumbnail];
     }
+    [self.view setUserInteractionEnabled:YES];
 }
 
 
@@ -929,6 +1051,8 @@ self.landmarkKeyNames = [NSArray arrayWithObjects:
          vc.morphTargets = self.morphTargets;
          vc.actionIdentifier = self.actionIdentifier;
          vc.movieURL = self.movieURL;
+         [vc setManagedObjectContext:self.managedObjectContext];
+         [vc setManagedObject:self.managedObject];
      }
  }
 

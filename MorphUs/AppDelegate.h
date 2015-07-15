@@ -10,8 +10,8 @@
 #import "FaceppAPI.h"
 #import "Utils.h"
 
-#define FACEPP_API_KEY @"d33fe75136463ff7eda4795435d4ba09"
-#define FACEPP_API_SECRET @"B6fzKm1NTLjlfDpwiKzzBjKkqmWGJ8yN"
+#define FACEPP_API_KEY @"3cbf49ee7910298c31e5e6845cc4bfa2"
+#define FACEPP_API_SECRET @"QppNRweNnZ_zJuyg3a3GZHPTrLxUsVKd"
 
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>

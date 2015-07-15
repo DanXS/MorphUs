@@ -12,4 +12,6 @@
 
 + (UIImage *)resizeImage:(UIImage*)image scale:(CGFloat)scale newSize:(CGSize)newSize;
 + (CVPixelBufferRef) pixelBufferFromCGImage:(CGImageRef)image withWidth:(int)width andHeight:(int)height;
++ (UIImage*)makeHorizontalThumbWithImages:(NSArray*)scaledImages size:(CGSize)rect withSpacing:(float)spacing;
+
 @end

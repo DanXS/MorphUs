@@ -454,7 +454,7 @@
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" placeholderIntrinsicWidth="768" placeholderIntrinsicHeight="44" tableViewCell="ts4-fZ-D58" id="Tkh-iD-gw7">
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Flx-f5-uFZ">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Flx-f5-uFZ">
                                                     <rect key="frame" x="184" y="18" width="400" height="264"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="400" id="daM-7R-iYB"/>

@@ -15,6 +15,9 @@
 
 @interface GLKMorphViewController : GLKViewController <UIAlertViewDelegate>
 
+@property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
+@property (strong, nonatomic) NSManagedObject* managedObject;
+
 @property (strong, nonatomic) NSArray* morphSequence;
 @property (strong, nonatomic) NSArray* morphTargets;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *playBarButtonItem;

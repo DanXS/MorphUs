@@ -88,10 +88,14 @@ enum
 @synthesize toolbar;
 @synthesize exportAlertView;
 @synthesize exportInfoLabel;
+@synthesize managedObjectContext;
+@synthesize managedObject;
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    assert(self.managedObjectContext != nil);
+    assert(self.managedObject != nil);
     _renderPixels=NULL;
      _texturesCreated=NO;
     _isPaused=NO;
@@ -107,6 +111,12 @@ enum
         _videoWidth = 480;
         _videoHeight = 640;
         _videoFPS = 30;
+        NSManagedObject* morphSettings = [self.managedObject valueForKey:@"morphSettings"];
+        if(morphSettings != nil)
+        {
+            _framesPerMorph = [[morphSettings valueForKey:@"framesPerTransition"] intValue];
+            _videoFPS = [[morphSettings valueForKey:@"framesPerSecond"] intValue];
+        }
         NSLog(@"Export mode");
         [self removeFile:self.movieURL];
         _totalFrames = (unsigned int)(_framesPerMorph*(self.morphSequence.count-1));
@@ -511,9 +521,30 @@ enum
 									if (error)
 										NSLog(@"Save movie to camera roll failed");
 									else
+                                    {
 										NSLog(@"Saved movie to camera roll");
+                                        [self saveMovieURL:assetURL];
+                                    }
                                     [self removeFile:self.movieURL];
 								}];
+}
+
+- (void)saveMovieURL:(NSURL*)url
+{
+    NSManagedObject* morphSettings = [self.managedObject valueForKey:@"morphSettings"];
+    [morphSettings setValue:url.absoluteString forKey:@"videoURL"];
+    
+    NSError *error = nil;
+    
+    if (![self.managedObjectContext save:&error]) {
+        if (error) {
+            NSLog(@"Unable to save record.");
+            NSLog(@"%@, %@", error, error.localizedDescription);
+        }
+        
+        // Show Alert View
+        [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"Video URL could not be saved." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+    }
 }
 
 #pragma mark - OpenGL ES 2 shader compilation

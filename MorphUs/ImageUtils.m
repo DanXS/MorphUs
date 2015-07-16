@@ -83,6 +83,28 @@
     return pxbuffer;
 }
 
++ (UIImage*)makeHorizontalThumbWithImages:(NSArray*)scaledImages size:(CGSize)size withSpacing:(float)spacing
+{
+    UIImage* image = nil;
+    UIGraphicsBeginImageContextWithOptions(size, NO, 0);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    for(int i = 0; i < scaledImages.count; i++)
+    {
+        UIImage* srcImage = [scaledImages objectAtIndex:i];
+        CGRect scaledRect = CGRectIntegral(CGRectMake(0, 0, srcImage.size.width, srcImage.size.height));
+        //CGImageRef imageRef = srcImage.CGImage;
+        //CGContextDrawImage(context, scaledRect, imageRef);
+        [srcImage drawInRect:scaledRect];
+        CGContextSetInterpolationQuality(context, kCGInterpolationHigh);
+        CGContextTranslateCTM(context, spacing, 0.0);
+        //CGImageRelease(imageRef);
+    }
+    CGImageRef newImageRef = CGBitmapContextCreateImage(context);
+    image = [UIImage imageWithCGImage:newImageRef];
+    CGImageRelease(newImageRef);
+    UIGraphicsEndImageContext();
+    return image;
+}
 
 
 @end

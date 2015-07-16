@@ -13,6 +13,13 @@
 		970B53761966D61D00693767 /* GLKMorphViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 970B53751966D61D00693767 /* GLKMorphViewController.m */; };
 		970B53D3196717A300693767 /* Shader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 970B537819670EAA00693767 /* Shader.fsh */; };
 		970B53D4196717AC00693767 /* Shader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 970B537A19670EBC00693767 /* Shader.vsh */; };
+		971E07781B51F2F300DFE322 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 971E07771B51F2F300DFE322 /* CoreData.framework */; };
+		971E07831B51F9BD00DFE322 /* MorphViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 971E077F1B51F9BD00DFE322 /* MorphViewController.m */; };
+		971E07841B51F9BD00DFE322 /* ProjectsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 971E07811B51F9BD00DFE322 /* ProjectsViewController.m */; };
+		971E078A1B52616F00DFE322 /* MorphModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 971E07881B52616F00DFE322 /* MorphModel.xcdatamodeld */; };
+		971E078D1B527A7200DFE322 /* Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 971E078C1B527A7200DFE322 /* Utils.m */; };
+		971E07901B52810D00DFE322 /* ProjectsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 971E078F1B52810D00DFE322 /* ProjectsTableViewCell.m */; };
+		971E07931B55A47B00DFE322 /* MorphSettingsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 971E07921B55A47B00DFE322 /* MorphSettingsTableViewController.m */; };
 		9723308C197043EF0025E9FE /* ImageUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 9723308B197043EF0025E9FE /* ImageUtils.m */; };
 		97273E8D197010B00022987F /* HelpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 97273E8C197010B00022987F /* HelpViewController.m */; };
 		978821671963643B004B4A78 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 978821661963643B004B4A78 /* Foundation.framework */; };
@@ -23,7 +30,6 @@
 		978821771963643B004B4A78 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 978821761963643B004B4A78 /* AppDelegate.m */; };
 		9788217A1963643B004B4A78 /* Main_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 978821781963643B004B4A78 /* Main_iPhone.storyboard */; };
 		9788217D1963643B004B4A78 /* Main_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9788217B1963643B004B4A78 /* Main_iPad.storyboard */; };
-		978821801963643B004B4A78 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9788217F1963643B004B4A78 /* MainViewController.m */; };
 		978821821963643B004B4A78 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 978821811963643B004B4A78 /* Images.xcassets */; };
 		978821891963643B004B4A78 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 978821881963643B004B4A78 /* XCTest.framework */; };
 		9788218A1963643B004B4A78 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 978821661963643B004B4A78 /* Foundation.framework */; };
@@ -73,6 +79,18 @@
 		970B53751966D61D00693767 /* GLKMorphViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLKMorphViewController.m; sourceTree = "<group>"; };
 		970B537819670EAA00693767 /* Shader.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = Shader.fsh; sourceTree = "<group>"; };
 		970B537A19670EBC00693767 /* Shader.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = Shader.vsh; sourceTree = "<group>"; };
+		971E07771B51F2F300DFE322 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		971E077E1B51F9BD00DFE322 /* MorphViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MorphViewController.h; sourceTree = "<group>"; };
+		971E077F1B51F9BD00DFE322 /* MorphViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MorphViewController.m; sourceTree = "<group>"; };
+		971E07801B51F9BD00DFE322 /* ProjectsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectsViewController.h; sourceTree = "<group>"; };
+		971E07811B51F9BD00DFE322 /* ProjectsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectsViewController.m; sourceTree = "<group>"; };
+		971E07891B52616F00DFE322 /* MorphModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MorphModel.xcdatamodel; sourceTree = "<group>"; };
+		971E078B1B527A7200DFE322 /* Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utils.h; sourceTree = "<group>"; };
+		971E078C1B527A7200DFE322 /* Utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Utils.m; sourceTree = "<group>"; };
+		971E078E1B52810D00DFE322 /* ProjectsTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectsTableViewCell.h; sourceTree = "<group>"; };
+		971E078F1B52810D00DFE322 /* ProjectsTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectsTableViewCell.m; sourceTree = "<group>"; };
+		971E07911B55A47B00DFE322 /* MorphSettingsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MorphSettingsTableViewController.h; sourceTree = "<group>"; };
+		971E07921B55A47B00DFE322 /* MorphSettingsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MorphSettingsTableViewController.m; sourceTree = "<group>"; };
 		9723308A197043EF0025E9FE /* ImageUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageUtils.h; sourceTree = "<group>"; };
 		9723308B197043EF0025E9FE /* ImageUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageUtils.m; sourceTree = "<group>"; };
 		97273E8B197010B00022987F /* HelpViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HelpViewController.h; sourceTree = "<group>"; };
@@ -89,8 +107,6 @@
 		978821761963643B004B4A78 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		978821791963643B004B4A78 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main_iPhone.storyboard; sourceTree = "<group>"; };
 		9788217C1963643B004B4A78 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main_iPad.storyboard; sourceTree = "<group>"; };
-		9788217E1963643B004B4A78 /* MainViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
-		9788217F1963643B004B4A78 /* MainViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
 		978821811963643B004B4A78 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		978821871963643B004B4A78 /* MorphUsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MorphUsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		978821881963643B004B4A78 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
@@ -146,6 +162,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				971E07781B51F2F300DFE322 /* CoreData.framework in Frameworks */,
 				9799D0A0196DEFA0001D90A6 /* CoreFoundation.framework in Frameworks */,
 				9799D09E196DA334001D90A6 /* CoreImage.framework in Frameworks */,
 				979DBECB196423DE00E4F64A /* AssetsLibrary.framework in Frameworks */,
@@ -187,10 +204,10 @@
 				979B2D8419690DAB00A9A773 /* cpp */,
 				970B537719670E6B00693767 /* Shaders */,
 				979DBEA3196405D500E4F64A /* FaceppSDK_ARC */,
+				971E078B1B527A7200DFE322 /* Utils.h */,
+				971E078C1B527A7200DFE322 /* Utils.m */,
 				978821751963643B004B4A78 /* AppDelegate.h */,
 				978821761963643B004B4A78 /* AppDelegate.m */,
-				978821781963643B004B4A78 /* Main_iPhone.storyboard */,
-				9788217B1963643B004B4A78 /* Main_iPad.storyboard */,
 				979DBECC196475B900E4F64A /* MorphTarget.h */,
 				979DBECD196475B900E4F64A /* MorphTarget.m */,
 				979B2D88196911A300A9A773 /* MorphManager.h */,
@@ -207,9 +224,18 @@
 				970B53751966D61D00693767 /* GLKMorphViewController.m */,
 				97AAEC1C196593AE00D449F1 /* ImageCollectionViewCell.h */,
 				97AAEC1D196593AE00D449F1 /* ImageCollectionViewCell.m */,
-				9788217E1963643B004B4A78 /* MainViewController.h */,
-				9788217F1963643B004B4A78 /* MainViewController.m */,
+				971E077E1B51F9BD00DFE322 /* MorphViewController.h */,
+				971E077F1B51F9BD00DFE322 /* MorphViewController.m */,
+				971E078E1B52810D00DFE322 /* ProjectsTableViewCell.h */,
+				971E078F1B52810D00DFE322 /* ProjectsTableViewCell.m */,
+				971E07801B51F9BD00DFE322 /* ProjectsViewController.h */,
+				971E07811B51F9BD00DFE322 /* ProjectsViewController.m */,
+				971E07911B55A47B00DFE322 /* MorphSettingsTableViewController.h */,
+				971E07921B55A47B00DFE322 /* MorphSettingsTableViewController.m */,
 				978821811963643B004B4A78 /* Images.xcassets */,
+				971E07881B52616F00DFE322 /* MorphModel.xcdatamodeld */,
+				978821781963643B004B4A78 /* Main_iPhone.storyboard */,
+				9788217B1963643B004B4A78 /* Main_iPad.storyboard */,
 				9788216D1963643B004B4A78 /* Supporting Files */,
 			);
 			path = MorphUs;
@@ -237,6 +263,7 @@
 		978821651963643B004B4A78 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				971E07771B51F2F300DFE322 /* CoreData.framework */,
 				9799D09F196DEFA0001D90A6 /* CoreFoundation.framework */,
 				9799D09D196DA334001D90A6 /* CoreImage.framework */,
 				9798FB4119687DF100A75F70 /* AVFoundation.framework */,
@@ -442,15 +469,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				971E07901B52810D00DFE322 /* ProjectsTableViewCell.m in Sources */,
 				979F616A196CA3ED003FC04B /* VideoWriter.m in Sources */,
 				979B2D8719690DFC00A9A773 /* Morph.cpp in Sources */,
 				979DBEC0196405D500E4F64A /* FaceppDetection.m in Sources */,
 				9723308C197043EF0025E9FE /* ImageUtils.m in Sources */,
+				971E07931B55A47B00DFE322 /* MorphSettingsTableViewController.m in Sources */,
 				9791C7DC1B5122180030982F /* Matrix.cpp in Sources */,
 				979DBEC7196405D500E4F64A /* FaceppTrainer.m in Sources */,
 				979DBEC9196405D500E4F64A /* FaceppResult.m in Sources */,
 				979DBEC5196405D500E4F64A /* FaceppPerson.m in Sources */,
-				978821801963643B004B4A78 /* MainViewController.m in Sources */,
+				971E07831B51F9BD00DFE322 /* MorphViewController.m in Sources */,
+				971E07841B51F9BD00DFE322 /* ProjectsViewController.m in Sources */,
 				979DBECE196475B900E4F64A /* MorphTarget.m in Sources */,
 				970B53761966D61D00693767 /* GLKMorphViewController.m in Sources */,
 				979DBEC4196405D500E4F64A /* FaceppInfo.m in Sources */,
@@ -460,6 +490,8 @@
 				978821771963643B004B4A78 /* AppDelegate.m in Sources */,
 				979DBEC2196405D500E4F64A /* FaceppGroup.m in Sources */,
 				979DBEBF196405D500E4F64A /* FaceppClient.m in Sources */,
+				971E078D1B527A7200DFE322 /* Utils.m in Sources */,
+				971E078A1B52616F00DFE322 /* MorphModel.xcdatamodeld in Sources */,
 				979DBEC3196405D500E4F64A /* FaceppGrouping.m in Sources */,
 				97AAEC1E196593AE00D449F1 /* ImageCollectionViewCell.m in Sources */,
 				978821731963643B004B4A78 /* main.m in Sources */,
@@ -715,6 +747,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		971E07881B52616F00DFE322 /* MorphModel.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				971E07891B52616F00DFE322 /* MorphModel.xcdatamodel */,
+			);
+			currentVersion = 971E07891B52616F00DFE322 /* MorphModel.xcdatamodel */;
+			path = MorphModel.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 9788215B1963643B004B4A78 /* Project object */;
 }

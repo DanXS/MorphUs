@@ -18,8 +18,15 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Set up FaceppAPI for face detection
-    [FaceppAPI initWithApiKey:FACEPP_API_KEY andApiSecret:FACEPP_API_SECRET andRegion:APIServerRegionUS];
-    
+    if(ACTIVE_SERVER == APIServerRegionCN)
+    {
+        [FaceppAPI initWithApiKey:FACEPP_API_KEY_1 andApiSecret:FACEPP_API_SECRET_1 andRegion:APIServerRegionCN];
+    }
+    else
+    {
+        [FaceppAPI initWithApiKey:FACEPP_API_KEY_2 andApiSecret:FACEPP_API_SECRET_2 andRegion:APIServerRegionUS];
+    }
+
     UIStoryboard *mainStoryboard = nil;
     // Fetch Main Storyboard
     if([Utils isIPad])

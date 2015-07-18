@@ -447,6 +447,33 @@
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
+                            <tableViewSection headerTitle="Active Face++ Server" id="nMB-5t-45N">
+                                <cells>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="v8X-rG-2xE">
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="v8X-rG-2xE" id="Pup-64-BYG">
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="2o9-3W-xfr">
+                                                    <rect key="frame" x="8" y="8" width="752" height="29"/>
+                                                    <segments>
+                                                        <segment title="Use server in China"/>
+                                                        <segment title="Use server in USA"/>
+                                                    </segments>
+                                                    <connections>
+                                                        <action selector="onServerChanged:" destination="zPw-4F-JsF" eventType="valueChanged" id="KpH-St-Dwf"/>
+                                                    </connections>
+                                                </segmentedControl>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="centerY" secondItem="2o9-3W-xfr" secondAttribute="centerY" id="Amr-Gj-feX"/>
+                                                <constraint firstItem="2o9-3W-xfr" firstAttribute="leading" secondItem="Pup-64-BYG" secondAttribute="leadingMargin" id="BQs-RK-TxE"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="2o9-3W-xfr" secondAttribute="trailing" id="zZ9-6M-lNw"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
                             <tableViewSection headerTitle="Video" id="ijX-1V-ECi">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="300" id="ts4-fZ-D58">
@@ -589,6 +616,8 @@
                     <connections>
                         <outlet property="nameTextField" destination="oO6-Sy-Nq2" id="1Rh-OI-xDW"/>
                         <outlet property="playButtonImageView" destination="vZG-cI-Wei" id="Bkv-5v-6tR"/>
+                        <outlet property="serverSegmentControl" destination="2o9-3W-xfr" id="L45-T4-kig"/>
+                        <outlet property="shareButton" destination="bw3-d0-ohz" id="C94-gc-TR0"/>
                         <outlet property="videoImageView" destination="Flx-f5-uFZ" id="T9R-QP-rTY"/>
                         <outlet property="videoLabel" destination="1og-Xj-yL6" id="7th-0w-xQk"/>
                     </connections>

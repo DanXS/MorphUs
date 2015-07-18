@@ -29,5 +29,8 @@
 
 - (void)saveContext;
 - (NSURL *)applicationDocumentsDirectory;
+- (NSNumber*)loadActiveFacePPServer;
+- (void)saveActiveFacePPServer:(NSNumber*)serverNo;
+- (void)startFacePPServer:(NSNumber*)serverNo;
 
 @end

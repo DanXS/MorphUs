@@ -7,12 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <AVFoundation/AVFoundation.h>
 #import <CoreFoundation/CoreFoundation.h>
 #import <CoreVideo/CoreVideo.h>
 #import <CoreFoundation/CFDictionary.h>
 #import <MediaPlayer/MediaPlayer.h>
+#import "AppDelegate.h"
 #import "MorphSettingsTableViewController.h"
 
 #define YOUR_APP_STORE_ID 898392944
@@ -35,6 +37,7 @@ static NSString *const iOSAppStoreURLFormat = @"itms-apps://itunes.apple.com/Web
 @synthesize videoAssetURL;
 @synthesize videoImage;
 @synthesize playButtonImageView;
+@synthesize serverSegmentControl;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -90,6 +93,13 @@ static NSString *const iOSAppStoreURLFormat = @"itms-apps://itunes.apple.com/Web
     }
 }
 
+- (IBAction)onServerChanged:(id)sender {
+    NSInteger index = self.serverSegmentControl.selectedSegmentIndex;
+    AppDelegate* appDelegate = [[UIApplication sharedApplication] delegate];
+    [appDelegate saveActiveFacePPServer:[NSNumber numberWithInteger:index]];
+    [appDelegate startFacePPServer:[NSNumber numberWithInteger:index]];
+}
+
 #pragma mark - Table view data source/delegates
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -106,19 +116,23 @@ static NSString *const iOSAppStoreURLFormat = @"itms-apps://itunes.apple.com/Web
         [record setValue:self.managedObject forKey:@"project"];
         [self saveSettings];
     }
+    AppDelegate* appDelegate = [[UIApplication sharedApplication] delegate];
+    NSNumber* activeServer = [appDelegate loadActiveFacePPServer];
 
     switch (indexPath.section)
     {
         case VideoSection:
-        {
             videoLabel.hidden = hasVideo;
             self.playButtonImageView.hidden = !hasVideo;
+            [self.shareButton setEnabled:hasVideo];
             if(hasVideo)
             {
                 self.videoImageView.image = videoImage;
             }
             break;
-        }
+        case ActiveServerSection:
+            [serverSegmentControl setSelectedSegmentIndex:[activeServer integerValue]];
+            break;
         case ExportSettingsSection:
             switch (indexPath.row)
         {
@@ -143,26 +157,15 @@ static NSString *const iOSAppStoreURLFormat = @"itms-apps://itunes.apple.com/Web
     switch (indexPath.section)
     {
         case NameSection:
-            switch (indexPath.row)
-        {
-            case NameRow:
-                [tableView deselectRowAtIndexPath:indexPath animated:YES];
-                break;
-            default:
-                break;
-        }
+            [tableView deselectRowAtIndexPath:indexPath animated:YES];
+            break;
+        case ActiveServerSection:
+            [tableView deselectRowAtIndexPath:indexPath animated:YES];
             break;
         case VideoSection:
-            switch (indexPath.row)
-        {
-            case VideoRow:
-                if(hasVideo)
-                    [self playVideo];
-                [tableView deselectRowAtIndexPath:indexPath animated:YES];
-                break;
-            default:
-                break;
-        }
+            if(hasVideo)
+                [self playVideo];
+            [tableView deselectRowAtIndexPath:indexPath animated:YES];
             break;
         case ExportSettingsSection:
             switch (indexPath.row)

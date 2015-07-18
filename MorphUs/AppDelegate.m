@@ -19,7 +19,7 @@
 {
     
     // Set up FaceppAPI for face detection
-    [self loadActiveFacePPServer];
+    [self startFacePPServer:[self loadActiveFacePPServer]];
 
     UIStoryboard *mainStoryboard = nil;
     // Fetch Main Storyboard
@@ -171,23 +171,16 @@
 
 #pragma mark - FacePPServer settings
 
-- (void)loadActiveFacePPServer
+- (NSNumber*)loadActiveFacePPServer
 {
     NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
-    NSNumber* activeFacePPServer = [userDefaults valueForKey:@"activeFacePPServer"];
-    if(!activeFacePPServer)
+    NSNumber* serverNo = [userDefaults valueForKey:@"activeFacePPServer"];
+    if(!serverNo)
     {
-        activeFacePPServer = [NSNumber numberWithInt:ACTIVE_FACEPP_SERVER];
-        [self saveActiveFacePPServer:activeFacePPServer];
+        serverNo = [NSNumber numberWithInt:ACTIVE_FACEPP_SERVER];
+        [self saveActiveFacePPServer:serverNo];
     }
-    if([activeFacePPServer intValue] == APIServerRegionCN)
-    {
-        [FaceppAPI initWithApiKey:FACEPP_API_KEY_1 andApiSecret:FACEPP_API_SECRET_1 andRegion:APIServerRegionCN];
-    }
-    else
-    {
-        [FaceppAPI initWithApiKey:FACEPP_API_KEY_2 andApiSecret:FACEPP_API_SECRET_2 andRegion:APIServerRegionUS];
-    }
+    return serverNo;
 }
 
 - (void)saveActiveFacePPServer:(NSNumber*)serverNo
@@ -195,6 +188,20 @@
     NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
     [userDefaults setObject:serverNo forKey:@"activeFacePPServer"];
     [userDefaults synchronize];
+}
+
+- (void)startFacePPServer:(NSNumber*)serverNo
+{
+    if([serverNo intValue] == APIServerRegionCN)
+    {
+        NSLog(@"Connecting to server in China");
+        [FaceppAPI initWithApiKey:FACEPP_API_KEY_1 andApiSecret:FACEPP_API_SECRET_1 andRegion:APIServerRegionCN];
+    }
+    else
+    {
+        NSLog(@"Connecting to server in USA");
+        [FaceppAPI initWithApiKey:FACEPP_API_KEY_2 andApiSecret:FACEPP_API_SECRET_2 andRegion:APIServerRegionUS];
+    }
 }
 
 

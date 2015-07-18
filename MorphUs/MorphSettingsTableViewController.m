@@ -30,6 +30,7 @@
 @synthesize videoLabel;
 @synthesize videoAssetURL;
 @synthesize videoImage;
+@synthesize playButtonImageView;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -43,7 +44,8 @@
     NSString* videoURL = [record valueForKey:@"videoURL"];
     if(videoURL)
     {
-        hasVideo = YES;
+        self.hasVideo = YES;
+        self.playButtonImageView.hidden = NO;
         videoAssetURL = [NSURL URLWithString:videoURL];
         AVURLAsset *asset = [[AVURLAsset alloc] initWithURL:videoAssetURL options:nil];
         AVAssetImageGenerator* imageGenerator = [[AVAssetImageGenerator alloc] initWithAsset:asset];
@@ -89,6 +91,7 @@
         case VideoSection:
         {
             videoLabel.hidden = hasVideo;
+            self.playButtonImageView.hidden = !hasVideo;
             if(hasVideo)
             {
                 self.videoImageView.image = videoImage;

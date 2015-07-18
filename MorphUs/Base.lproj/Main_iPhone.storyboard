@@ -169,6 +169,13 @@
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Qak-rM-7av">
                                                     <rect key="frame" x="18" y="18" width="284" height="164"/>
                                                 </imageView>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="PlayButton" translatesAutoresizingMaskIntoConstraints="NO" id="b9U-bO-cQj">
+                                                    <rect key="frame" x="135" y="75" width="50" height="50"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="50" id="S4F-fS-IWk"/>
+                                                        <constraint firstAttribute="height" constant="50" id="fOl-eL-sp2"/>
+                                                    </constraints>
+                                                </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No video has been exported for this project!" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xjF-tm-8bI">
                                                     <rect key="frame" x="0.0" y="66" width="320" height="68"/>
                                                     <constraints>
@@ -183,6 +190,8 @@
                                                 <constraint firstAttribute="centerX" secondItem="xjF-tm-8bI" secondAttribute="centerX" id="3y3-gv-ORV"/>
                                                 <constraint firstItem="xjF-tm-8bI" firstAttribute="leading" secondItem="WSe-Pp-hma" secondAttribute="leadingMargin" constant="-8" id="8vQ-1E-p5S"/>
                                                 <constraint firstAttribute="bottomMargin" secondItem="Qak-rM-7av" secondAttribute="bottom" constant="10" id="B50-I6-3uj"/>
+                                                <constraint firstAttribute="centerY" secondItem="b9U-bO-cQj" secondAttribute="centerY" id="IYr-A4-P7H"/>
+                                                <constraint firstAttribute="centerX" secondItem="b9U-bO-cQj" secondAttribute="centerX" id="P5Q-cU-REM"/>
                                                 <constraint firstItem="Qak-rM-7av" firstAttribute="top" secondItem="WSe-Pp-hma" secondAttribute="topMargin" constant="10" id="U6z-8O-HIF"/>
                                                 <constraint firstAttribute="trailingMargin" secondItem="Qak-rM-7av" secondAttribute="trailing" constant="10" id="V5m-Fs-I5h"/>
                                                 <constraint firstItem="Qak-rM-7av" firstAttribute="leading" secondItem="WSe-Pp-hma" secondAttribute="leadingMargin" constant="10" id="bam-8u-AEU"/>
@@ -257,6 +266,7 @@
                     <navigationItem key="navigationItem" id="irS-mJ-Fr0"/>
                     <connections>
                         <outlet property="nameTextField" destination="A3J-Xn-BSD" id="Y0z-1B-bhH"/>
+                        <outlet property="playButtonImageView" destination="b9U-bO-cQj" id="mDT-gf-2UG"/>
                         <outlet property="videoImageView" destination="Qak-rM-7av" id="3BE-aS-b7K"/>
                         <outlet property="videoLabel" destination="xjF-tm-8bI" id="d7B-BE-AUQ"/>
                     </connections>
@@ -522,6 +532,9 @@
             <point key="canvasLocation" x="-223" y="-156"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="PlayButton" width="60" height="60"/>
+    </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>

@@ -40,6 +40,7 @@ enum
 @property (strong, nonatomic) UIActionSheet* framesPerTransitionActionSheet;
 @property (strong, nonatomic) UIActionSheet* framesPerSecondActionSheet;
 @property (weak, nonatomic) IBOutlet UIImageView *videoImageView;
+@property (weak, nonatomic) IBOutlet UIImageView *playButtonImageView;
 @property (weak, nonatomic) IBOutlet UILabel *videoLabel;
 
 @property (assign, atomic) BOOL hasVideo;

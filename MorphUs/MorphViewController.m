@@ -612,9 +612,10 @@ self.landmarkKeyNames = [NSArray arrayWithObjects:
     [record setValue:self.managedObject forKey:@"project"];
     
     // Connect to project
-    NSMutableOrderedSet* targetSet = [self.managedObject valueForKey:@"morphTargets"];
+    NSMutableOrderedSet* targetSet = [self.managedObject mutableOrderedSetValueForKey:@"morphTargets"];
     [targetSet addObject:record];
     [self.managedObject setValue:targetSet forKey:@"morphTargets"];
+    [self saveContext];
     
     // Add Markers
     NSManagedObject* target = [targetSet lastObject];
@@ -657,6 +658,22 @@ self.landmarkKeyNames = [NSArray arrayWithObjects:
     }
 }
 
+- (void)removeMorphTargets:(NSArray*)targetAssetURLArray
+{
+    NSOrderedSet* targetSet = [self.managedObject valueForKey:@"morphTargets"];
+    for(NSUInteger i = 0; i < targetAssetURLArray.count; i++)
+    {
+        __block NSString* blockSafeImageURL = [targetAssetURLArray objectAtIndex:i];
+        __block MorphViewController* blockSafeSelf = self;
+        [targetSet enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            NSString* objImageURL = [obj valueForKey:@"imageURL"];
+            if([blockSafeImageURL isEqualToString:objImageURL])
+                [blockSafeSelf.managedObjectContext deleteObject:obj];
+        }];
+    }
+    [self saveContext];
+}
+
 - (void)removeMorphTargetAt:(NSUInteger)index
 {
     // Get the morph target set
@@ -684,6 +701,7 @@ self.landmarkKeyNames = [NSArray arrayWithObjects:
 
 - (void)loadMorphTargetsForProject
 {
+    NSMutableArray* failedLoadTargetArray = [[NSMutableArray alloc] init];
     NSOrderedSet* targetSet = [self.managedObject valueForKey:@"morphTargets"];
     if(!targetSet || targetSet.count == 0)
         return;
@@ -696,25 +714,25 @@ self.landmarkKeyNames = [NSArray arrayWithObjects:
     [self.imageView addSubview:activityView];
     dispatch_queue_t backgroundQueue = dispatch_queue_create("com.CuffedToTheKeyboard.MorphUs", 0);
     dispatch_async(backgroundQueue, ^{
-        for(int i = 0; i < targetSet.count; i++)
+        for(unsigned int i = 0; i < targetSet.count; i++)
         {
             NSManagedObject* record = [targetSet objectAtIndex:i];
             NSString* imageURL = [record valueForKey:@"imageURL"];
             NSLog(@"imageURL %@", imageURL);
             NSURL* assetURL = [NSURL URLWithString:imageURL];
-            MorphTarget* target = [self findMorphTargetWithAssetURL:assetURL];
-            if(!target)
-            {
-                target = [[MorphTarget alloc] init];
-                [self.morphTargets addObject:target];
-            }
-            [self.morphSequence addObject:target];
-            self.currentMorphSequenceIndex = self.morphSequence.count-1;
-            target.assetURL = assetURL;
-            [self loadMarkersFromRecord:record forTarget:target];
             UIImage* image = [self loadImageFromAssetUrl:assetURL];
             if(image)
             {
+                MorphTarget* target = [self findMorphTargetWithAssetURL:assetURL];
+                if(!target)
+                {
+                    target = [[MorphTarget alloc] init];
+                    [self.morphTargets addObject:target];
+                }
+                [self.morphSequence addObject:target];
+                self.currentMorphSequenceIndex = self.morphSequence.count-1;
+                target.assetURL = assetURL;
+                [self loadMarkersFromRecord:record forTarget:target];
                 if ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)] && ([UIScreen mainScreen].scale == 2.0))
                 {
                     // retina display
@@ -726,13 +744,40 @@ self.landmarkKeyNames = [NSArray arrayWithObjects:
                     target.image = [ImageUtils resizeImage:image scale:1.0 newSize:CGSizeMake(1024, 1024)];
                 }
             }
+            else
+            {
+                NSLog(@"No Image %d", i);
+                [failedLoadTargetArray addObject:imageURL];
+            }
             if(i == targetSet.count-1)
             {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [activityView stopAnimating];
                     [activityView removeFromSuperview];
-                    [self loadMorphTargetsForProjectComplete];
-                    [self.view setUserInteractionEnabled:YES];
+                    if(failedLoadTargetArray.count > 0)
+                    {
+                        [self removeMorphTargets:failedLoadTargetArray];
+                        [self buildThumbnail];
+                        [self loadMorphTargetsForProjectComplete];
+                        [self.view setUserInteractionEnabled:YES];
+                        NSString* message = [NSString stringWithFormat:
+                                             @"%lu morph target image%@ failed to load, did you delete %@ from your album?",
+                                             (unsigned long)failedLoadTargetArray.count,
+                                             (failedLoadTargetArray.count == 1) ? @"" : @"s",
+                                             (failedLoadTargetArray.count == 1) ? @"it" : @"them"];
+                        UIAlertView *alert = [[UIAlertView alloc]
+                                              initWithTitle:@"Oops"
+                                              message:message
+                                              delegate:nil
+                                              cancelButtonTitle:@"OK!"
+                                              otherButtonTitles:nil];
+                        [alert show];
+                    }
+                    else
+                    {
+                        [self loadMorphTargetsForProjectComplete];
+                        [self.view setUserInteractionEnabled:YES];
+                    }
                 });
             }
         }
@@ -756,11 +801,19 @@ self.landmarkKeyNames = [NSArray arrayWithObjects:
 
 - (void)loadMorphTargetsForProjectComplete
 {
-    self.imageView.image = ((MorphTarget*)[self.morphSequence firstObject]).image;
-    NSIndexPath* indexPath = [NSIndexPath indexPathForItem:0 inSection:0];
-    [self redrawImageViewForTarget:self.morphSequence[0]];
-    [self.imageCollectionView reloadData];
-    [self.imageCollectionView selectItemAtIndexPath:indexPath animated:YES scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
+    UIImage* image = ((MorphTarget*)[self.morphSequence firstObject]).image;
+    if(image)
+    {
+        self.imageView.image = image;
+        NSIndexPath* indexPath = [NSIndexPath indexPathForItem:0 inSection:0];
+        [self redrawImageViewForTarget:self.morphSequence[0]];
+        [self.imageCollectionView reloadData];
+        [self.imageCollectionView selectItemAtIndexPath:indexPath animated:YES scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
+    }
+    else
+    {
+        [self.imageCollectionView reloadData];
+    }
 }
 
 #pragma mark - collection view methods

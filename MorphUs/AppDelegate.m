@@ -17,15 +17,9 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    
     // Set up FaceppAPI for face detection
-    if(ACTIVE_SERVER == APIServerRegionCN)
-    {
-        [FaceppAPI initWithApiKey:FACEPP_API_KEY_1 andApiSecret:FACEPP_API_SECRET_1 andRegion:APIServerRegionCN];
-    }
-    else
-    {
-        [FaceppAPI initWithApiKey:FACEPP_API_KEY_2 andApiSecret:FACEPP_API_SECRET_2 andRegion:APIServerRegionUS];
-    }
+    [self loadActiveFacePPServer];
 
     UIStoryboard *mainStoryboard = nil;
     // Fetch Main Storyboard
@@ -159,7 +153,9 @@
          
          */
         NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+#ifdef DEBUG
         abort();
+#endif
     }
     
     return _persistentStoreCoordinator;
@@ -171,6 +167,34 @@
 - (NSURL *)applicationDocumentsDirectory
 {
     return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
+}
+
+#pragma mark - FacePPServer settings
+
+- (void)loadActiveFacePPServer
+{
+    NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
+    NSNumber* activeFacePPServer = [userDefaults valueForKey:@"activeFacePPServer"];
+    if(!activeFacePPServer)
+    {
+        activeFacePPServer = [NSNumber numberWithInt:ACTIVE_FACEPP_SERVER];
+        [self saveActiveFacePPServer:activeFacePPServer];
+    }
+    if([activeFacePPServer intValue] == APIServerRegionCN)
+    {
+        [FaceppAPI initWithApiKey:FACEPP_API_KEY_1 andApiSecret:FACEPP_API_SECRET_1 andRegion:APIServerRegionCN];
+    }
+    else
+    {
+        [FaceppAPI initWithApiKey:FACEPP_API_KEY_2 andApiSecret:FACEPP_API_SECRET_2 andRegion:APIServerRegionUS];
+    }
+}
+
+- (void)saveActiveFacePPServer:(NSNumber*)serverNo
+{
+    NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
+    [userDefaults setObject:serverNo forKey:@"activeFacePPServer"];
+    [userDefaults synchronize];
 }
 
 

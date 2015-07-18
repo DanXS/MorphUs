@@ -10,7 +10,7 @@
 #import "FaceppAPI.h"
 #import "Utils.h"
 
-#define ACTIVE_SERVER 0
+#define ACTIVE_FACEPP_SERVER 0
 
 #define FACEPP_API_KEY_1 @"d33fe75136463ff7eda4795435d4ba09"
 #define FACEPP_API_SECRET_1 @"B6fzKm1NTLjlfDpwiKzzBjKkqmWGJ8yN"

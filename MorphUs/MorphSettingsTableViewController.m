@@ -15,6 +15,10 @@
 #import <MediaPlayer/MediaPlayer.h>
 #import "MorphSettingsTableViewController.h"
 
+#define YOUR_APP_STORE_ID 898392944
+
+static NSString *const iOS7AppStoreURLFormat = @"itms-apps://itunes.apple.com/app/id%d";
+static NSString *const iOSAppStoreURLFormat = @"itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?type=Purple+Software&id=%d";
 
 @interface MorphSettingsTableViewController ()
 
@@ -64,18 +68,29 @@
     // Dispose of any resources that can be recreated.
 }
 
-#pragma mark - Table view data source
 
+#pragma mark button actions
 
 - (IBAction)onDone:(id)sender {
     [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
 - (IBAction)onRate:(id)sender {
+    NSURL* rateURL = [NSURL URLWithString:[NSString stringWithFormat:([[UIDevice currentDevice].systemVersion floatValue] >= 7.0f) ? iOS7AppStoreURLFormat : iOSAppStoreURLFormat, YOUR_APP_STORE_ID]];
+    [[UIApplication sharedApplication] openURL:rateURL];
 }
 
 - (IBAction)onShare:(id)sender {
+    if(videoAssetURL)
+    {
+        NSArray* shareItems = @[videoAssetURL];
+        UIActivityViewController* activityViewController = [[UIActivityViewController alloc] initWithActivityItems:shareItems applicationActivities:nil];
+        [activityViewController.popoverPresentationController setSourceView:sender];
+        [self presentViewController:activityViewController animated:YES completion:nil];
+    }
 }
+
+#pragma mark - Table view data source/delegates
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {

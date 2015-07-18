@@ -380,25 +380,13 @@ enum
                 _isReady = YES;
             }
             if(_isExportMode && _hasRenderedFrame) {
-                UIImage* image = [((GLKView*)self.view) snapshot];
-                UIImage* scaledImage;
-                if ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)] && ([UIScreen mainScreen].scale == 2.0)) {
-                    // Retina display
-                    scaledImage = [ImageUtils resizeImage:image scale:2 newSize:CGSizeMake(_videoWidth, _videoHeight)];
-                    
-                } else {
-                    // non-Retina display
-                    scaledImage = [ImageUtils resizeImage:image scale:1.0 newSize:CGSizeMake(_videoWidth, _videoHeight)];
-                }
-                while(!_isExportFrameComplete)
-                    [NSThread sleepForTimeInterval:0.02];
-                _renderTarget = [ImageUtils pixelBufferFromCGImage:scaledImage.CGImage withWidth:_videoWidth andHeight:_videoHeight];
                 [self sampleAndExportPixelBufferForFrame:_frameNo];
             }
         }
         else {
             if(_isExportMode && !_isPaused)
             {
+                [self sampleAndExportPixelBufferForFrame:_frameNo];
                 _isExportComplete = YES;
                 _isExportMode = NO;
                 __weak GLKMorphViewController* weakSelf = self;
@@ -448,6 +436,19 @@ enum
 {
     @synchronized(self)
     {
+        UIImage* image = [((GLKView*)self.view) snapshot];
+        UIImage* scaledImage;
+        if ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)] && ([UIScreen mainScreen].scale == 2.0)) {
+            // Retina display
+            scaledImage = [ImageUtils resizeImage:image scale:2 newSize:CGSizeMake(_videoWidth, _videoHeight)];
+            
+        } else {
+            // non-Retina display
+            scaledImage = [ImageUtils resizeImage:image scale:1.0 newSize:CGSizeMake(_videoWidth, _videoHeight)];
+        }
+        while(!_isExportFrameComplete)
+            [NSThread sleepForTimeInterval:0.02];
+        _renderTarget = [ImageUtils pixelBufferFromCGImage:scaledImage.CGImage withWidth:_videoWidth andHeight:_videoHeight];
         self.exportInfoLabel.text = [NSString stringWithFormat:@"Exporting Frame: %d", frame];
         self.exportProgressBarView.progress = (float)frame/(float)_totalFrames;
         // grab the pixels

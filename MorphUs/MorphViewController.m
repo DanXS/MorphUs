@@ -641,7 +641,26 @@ self.landmarkKeyNames = [NSArray arrayWithObjects:
     [target setValue:markerSet forKey:@"markers"];
     [self saveContext];
 }
+
+- (void)updateMarkerAtIndex:(NSUInteger)index to:(NSDictionary*)marker
+{
+    // Get morph targets
+    NSOrderedSet* targetSet = [self.managedObject valueForKey:@"morphTargets"];
     
+    // Find current target
+    NSManagedObject* target = [targetSet objectAtIndex:self.currentMorphSequenceIndex];
+    
+    // Get the markers from the morph target
+    NSOrderedSet* markersSet = [target valueForKey:@"markers"];
+    
+    // update the x and y location
+    NSNumber* xVal = [marker valueForKey:@"x"];
+    NSNumber* yVal = [marker valueForKey:@"y"];
+    [[markersSet objectAtIndex:index] setValue:xVal forKey:@"x"];
+    [[markersSet objectAtIndex:index] setValue:yVal forKey:@"y"];
+
+}
+
 - (void)saveContext
 {
     // Save record
@@ -928,6 +947,16 @@ self.landmarkKeyNames = [NSArray arrayWithObjects:
     else if(recognizer.state == UIGestureRecognizerStateEnded)
     {
         NSLog(@"Touch ended");
+        CGPoint point = [recognizer locationOfTouch:0 inView:self.view];
+        point.x = (point.x-recognizer.view.frame.origin.x)/recognizer.view.frame.size.width;
+        point.y = (point.y-recognizer.view.frame.origin.y)/recognizer.view.frame.size.height;
+        if(self.activeMarkerIndex != -1) {
+            NSLog(@"Move marker %d to %g, %g", (int)self.activeMarkerIndex, point.x, point.y);
+            NSNumber* x = [NSNumber numberWithDouble:(point.x*100)];
+            NSNumber* y = [NSNumber numberWithDouble:(point.y*100)];
+            NSDictionary* markerPoint = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:x, y, nil] forKeys:[NSArray arrayWithObjects:@"x", @"y", nil]];
+            [self updateMarkerAtIndex:self.activeMarkerIndex to:markerPoint];
+        }
         self.activeMarkerIndex = -1;
         self.activeMarkerLabel.text = @"";
     }

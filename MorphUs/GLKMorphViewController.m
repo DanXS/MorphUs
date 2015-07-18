@@ -377,37 +377,51 @@ enum
                 glUniform2fv(uniforms[UNIFORM_WEIGHTS1], 84, _weights1);
                 glUniform2fv(uniforms[UNIFORM_WEIGHTS2], 84, _weights2);
                 glUniform1f(uniforms[UNIFORM_ALPHA], _alpha);
-                if(!_isPaused)
-                    _frameNo++;
                 _isReady = YES;
+            }
+            if(_isExportMode && _hasRenderedFrame) {
+                UIImage* image = [((GLKView*)self.view) snapshot];
+                UIImage* scaledImage;
+                if ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)] && ([UIScreen mainScreen].scale == 2.0)) {
+                    // Retina display
+                    scaledImage = [ImageUtils resizeImage:image scale:2 newSize:CGSizeMake(_videoWidth, _videoHeight)];
+                    
+                } else {
+                    // non-Retina display
+                    scaledImage = [ImageUtils resizeImage:image scale:1.0 newSize:CGSizeMake(_videoWidth, _videoHeight)];
+                }
+                while(!_isExportFrameComplete)
+                    [NSThread sleepForTimeInterval:0.02];
+                _renderTarget = [ImageUtils pixelBufferFromCGImage:scaledImage.CGImage withWidth:_videoWidth andHeight:_videoHeight];
+                [self sampleAndExportPixelBufferForFrame:_frameNo];
             }
         }
         else {
             if(_isExportMode && !_isPaused)
             {
                 _isExportComplete = YES;
+                _isExportMode = NO;
+                __weak GLKMorphViewController* weakSelf = self;
+                [_videoWriter waitForComplete:^(BOOL complete) {
+                    if(complete)
+                    {
+                        [weakSelf saveMovieToCameraRoll];
+                        [weakSelf presentExportCompletedAlert:@"Export completed successfully"];
+                    }
+                    else
+                    {
+                        [weakSelf removeFile:weakSelf.movieURL];
+                        [weakSelf presentExportCompletedAlert:@"Export failed"];
+                    }
+                }];
             }
             _isPaused = YES;
             glUniform1f(uniforms[UNIFORM_ALPHA], 1.0);
             [self.playBarButtonItem setEnabled:YES];
             [self.pauseBarButtonItem setEnabled:NO];
         }
-        if(_isExportMode && _hasRenderedFrame) {
-            UIImage* image = [((GLKView*)self.view) snapshot];
-            UIImage* scaledImage;
-            if ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)] && ([UIScreen mainScreen].scale == 2.0)) {
-                // Retina display
-                scaledImage = [ImageUtils resizeImage:image scale:2 newSize:CGSizeMake(_videoWidth, _videoHeight)];
-
-            } else {
-                // non-Retina display
-                scaledImage = [ImageUtils resizeImage:image scale:1.0 newSize:CGSizeMake(_videoWidth, _videoHeight)];
-            }
-            while(!_isExportFrameComplete)
-                [NSThread sleepForTimeInterval:0.02];
-            _renderTarget = [ImageUtils pixelBufferFromCGImage:scaledImage.CGImage withWidth:_videoWidth andHeight:_videoHeight];
-            [self sampleAndExportPixelBuffer];
-        }
+        if(!_isPaused)
+            _frameNo++;
     }
 }
 
@@ -430,45 +444,24 @@ enum
 #pragma mark - Export methods
 
 
-- (void)sampleAndExportPixelBuffer
+- (void)sampleAndExportPixelBufferForFrame:(int)frame
 {
     @synchronized(self)
     {
-        self.exportInfoLabel.text = [NSString stringWithFormat:@"Exporting Frame: %d", _frameNo];
-        self.exportProgressBarView.progress = (float)_frameNo/(float)_totalFrames;
+        self.exportInfoLabel.text = [NSString stringWithFormat:@"Exporting Frame: %d", frame];
+        self.exportProgressBarView.progress = (float)frame/(float)_totalFrames;
         // grab the pixels
         _isExportFrameComplete = NO;
-        if(!_isExportComplete)
-        {
-            CVPixelBufferLockBaseAddress(_renderTarget, 0);
-            // write pixels data to movie stream
-            CMTime frameTime = CMTimeMake(1, _videoFPS);
-            CMTime lastTime=CMTimeMake(_frameNo, _videoFPS);
-            NSLog(@"frame number %d", _frameNo);
-            CMTime presentTime=CMTimeAdd(lastTime, frameTime);
-            [_videoWriter writePixels:_renderTarget withPresentationTime:presentTime];
-            CVPixelBufferUnlockBaseAddress(_renderTarget,0);
-            CVPixelBufferRelease(_renderTarget);
-            _isExportFrameComplete = YES;
-        }
-        else
-        {
-            _isExportMode = NO;
-            __weak GLKMorphViewController* weakSelf = self;
-            [_videoWriter waitForComplete:^(BOOL complete) {
-                if(complete)
-                {
-                    [weakSelf saveMovieToCameraRoll];
-                    [weakSelf presentExportCompletedAlert:@"Export completed successfully"];
-                }
-                else
-                {
-                    [weakSelf removeFile:weakSelf.movieURL];
-                    [weakSelf presentExportCompletedAlert:@"Export failed"];
-                }
-            }];
-
-        }
+        CVPixelBufferLockBaseAddress(_renderTarget, 0);
+        // write pixels data to movie stream
+        CMTime frameTime = CMTimeMake(1, _videoFPS);
+        CMTime lastTime=CMTimeMake(frame, _videoFPS);
+        NSLog(@"frame number %d", frame);
+        CMTime presentTime=CMTimeAdd(lastTime, frameTime);
+        [_videoWriter writePixels:_renderTarget withPresentationTime:presentTime];
+        CVPixelBufferUnlockBaseAddress(_renderTarget,0);
+        CVPixelBufferRelease(_renderTarget);
+        _isExportFrameComplete = YES;
     }
 }
 

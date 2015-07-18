@@ -48,5 +48,7 @@ enum
 @property (strong, nonatomic) UIImage* videoImage;
 
 - (IBAction)onDone:(id)sender;
+- (IBAction)onRate:(id)sender;
+- (IBAction)onShare:(id)sender;
 
 @end

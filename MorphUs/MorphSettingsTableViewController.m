@@ -71,6 +71,12 @@
     [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
+- (IBAction)onRate:(id)sender {
+}
+
+- (IBAction)onShare:(id)sender {
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = [super tableView:tableView cellForRowAtIndexPath:indexPath];

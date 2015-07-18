@@ -485,6 +485,44 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="50" id="AW7-dm-l8O">
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" placeholderIntrinsicWidth="768" placeholderIntrinsicHeight="44" tableViewCell="AW7-dm-l8O" id="AJK-Ve-yT7">
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bw3-d0-ohz">
+                                                    <rect key="frame" x="374" y="8" width="366" height="34"/>
+                                                    <state key="normal" title="Share">
+                                                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                                    </state>
+                                                    <connections>
+                                                        <action selector="onShare:" destination="zPw-4F-JsF" eventType="touchUpInside" id="0A8-iK-yZp"/>
+                                                    </connections>
+                                                </button>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kWb-0N-3TD">
+                                                    <rect key="frame" x="8" y="8" width="366" height="34"/>
+                                                    <state key="normal" title="Rate">
+                                                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                                    </state>
+                                                    <connections>
+                                                        <action selector="onRate:" destination="zPw-4F-JsF" eventType="touchUpInside" id="8z0-de-dFb"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="centerY" secondItem="bw3-d0-ohz" secondAttribute="centerY" id="1zO-jt-13V"/>
+                                                <constraint firstItem="bw3-d0-ohz" firstAttribute="top" secondItem="AJK-Ve-yT7" secondAttribute="topMargin" id="7D6-s0-cQ6"/>
+                                                <constraint firstItem="kWb-0N-3TD" firstAttribute="leading" secondItem="AJK-Ve-yT7" secondAttribute="leadingMargin" id="BJU-vt-e8J"/>
+                                                <constraint firstItem="kWb-0N-3TD" firstAttribute="width" secondItem="bw3-d0-ohz" secondAttribute="width" id="CNF-4L-0hE"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="kWb-0N-3TD" secondAttribute="bottom" id="EfW-q6-nvE"/>
+                                                <constraint firstAttribute="centerY" secondItem="kWb-0N-3TD" secondAttribute="centerY" id="RKb-C9-EyU"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="bw3-d0-ohz" secondAttribute="trailing" constant="20" id="fpV-Kw-UEE"/>
+                                                <constraint firstItem="bw3-d0-ohz" firstAttribute="leading" secondItem="kWb-0N-3TD" secondAttribute="trailing" id="h3R-Ad-093"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="bw3-d0-ohz" secondAttribute="bottom" id="iI3-mw-eXK"/>
+                                                <constraint firstItem="kWb-0N-3TD" firstAttribute="top" secondItem="AJK-Ve-yT7" secondAttribute="topMargin" id="tfj-DD-MEJ"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
                                 </cells>
                             </tableViewSection>
                             <tableViewSection headerTitle="Export Settings" id="aGW-xd-LEa">

@@ -200,6 +200,44 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="50" id="sVF-UN-ODK">
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="sVF-UN-ODK" id="xN5-Gy-txl">
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZP7-V8-rvK">
+                                                    <rect key="frame" x="160" y="8" width="152" height="34"/>
+                                                    <state key="normal" title="Share">
+                                                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                                    </state>
+                                                    <connections>
+                                                        <action selector="onShare:" destination="sTU-uu-rTi" eventType="touchUpInside" id="qZT-VI-Mf8"/>
+                                                    </connections>
+                                                </button>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eg2-yp-lNS">
+                                                    <rect key="frame" x="8" y="8" width="152" height="34"/>
+                                                    <state key="normal" title="Rate">
+                                                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                                    </state>
+                                                    <connections>
+                                                        <action selector="onRate:" destination="sTU-uu-rTi" eventType="touchUpInside" id="Mu0-Xy-Bh8"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="trailingMargin" secondItem="ZP7-V8-rvK" secondAttribute="trailing" id="AkX-km-AzC"/>
+                                                <constraint firstItem="eg2-yp-lNS" firstAttribute="leading" secondItem="xN5-Gy-txl" secondAttribute="leadingMargin" id="GSB-tQ-UDR"/>
+                                                <constraint firstItem="ZP7-V8-rvK" firstAttribute="top" secondItem="xN5-Gy-txl" secondAttribute="topMargin" id="HFU-tc-raj"/>
+                                                <constraint firstAttribute="centerY" secondItem="eg2-yp-lNS" secondAttribute="centerY" id="JNE-xz-TO1"/>
+                                                <constraint firstItem="eg2-yp-lNS" firstAttribute="top" secondItem="xN5-Gy-txl" secondAttribute="topMargin" id="ML2-00-B0w"/>
+                                                <constraint firstItem="ZP7-V8-rvK" firstAttribute="leading" secondItem="eg2-yp-lNS" secondAttribute="trailing" id="Xtj-Te-qcF"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="eg2-yp-lNS" secondAttribute="bottom" id="bCI-5I-FUj"/>
+                                                <constraint firstItem="ZP7-V8-rvK" firstAttribute="width" secondItem="eg2-yp-lNS" secondAttribute="width" id="dXV-AW-sEJ"/>
+                                                <constraint firstAttribute="centerY" secondItem="ZP7-V8-rvK" secondAttribute="centerY" id="iSI-2V-M2U"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="ZP7-V8-rvK" secondAttribute="bottom" id="knQ-4L-MKN"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
                                 </cells>
                             </tableViewSection>
                             <tableViewSection headerTitle="Export Settings" id="HWO-xu-sCH">
@@ -263,7 +301,9 @@
                             <outlet property="delegate" destination="sTU-uu-rTi" id="P28-QW-eGo"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="irS-mJ-Fr0"/>
+                    <toolbarItems/>
+                    <navigationItem key="navigationItem" id="qZY-iO-pcq"/>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="nameTextField" destination="A3J-Xn-BSD" id="Y0z-1B-bhH"/>
                         <outlet property="playButtonImageView" destination="b9U-bO-cQj" id="mDT-gf-2UG"/>

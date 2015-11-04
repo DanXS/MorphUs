@@ -410,7 +410,7 @@
 		9788215B1963643B004B4A78 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0600;
+				LastUpgradeCheck = 0710;
 				ORGANIZATIONNAME = cuffedtothekeyboard;
 				TargetAttributes = {
 					978821621963643B004B4A78 = {
@@ -574,6 +574,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -642,6 +643,7 @@
 				INFOPLIST_FILE = "MorphUs/MorphUs-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.cuffedtothekeyboard.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = MorphUs;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
@@ -664,6 +666,7 @@
 				INFOPLIST_FILE = "MorphUs/MorphUs-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.cuffedtothekeyboard.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = MorphUs;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
@@ -689,6 +692,7 @@
 				);
 				INFOPLIST_FILE = "MorphUsTests/MorphUsTests-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.cuffedtothekeyboard.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = MorphUsTests;
 				SDKROOT = iphoneos;
 				TEST_HOST = "$(BUNDLE_LOADER)";
@@ -709,6 +713,7 @@
 				GCC_PREFIX_HEADER = "MorphUs/MorphUs-Prefix.pch";
 				INFOPLIST_FILE = "MorphUsTests/MorphUsTests-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.cuffedtothekeyboard.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = MorphUsTests;
 				SDKROOT = iphoneos;
 				TEST_HOST = "$(BUNDLE_LOADER)";

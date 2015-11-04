@@ -64,6 +64,7 @@ static NSString *const iOSAppStoreURLFormat = @"itms-apps://itunes.apple.com/Web
         videoImage = [UIImage imageWithCGImage:halfWayImage];
         CGImageRelease(halfWayImage);
     }
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -131,7 +132,7 @@ static NSString *const iOSAppStoreURLFormat = @"itms-apps://itunes.apple.com/Web
             }
             break;
         case ActiveServerSection:
-            [serverSegmentControl setSelectedSegmentIndex:[activeServer integerValue]];
+            [self.serverSegmentControl setSelectedSegmentIndex:[activeServer integerValue]];
             break;
         case ExportSettingsSection:
             switch (indexPath.row)

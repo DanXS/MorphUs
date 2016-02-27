@@ -523,10 +523,8 @@ enum
         _isExportFrameComplete = NO;
         CVPixelBufferLockBaseAddress(_renderTarget, 0);
         // write pixels data to movie stream
-        CMTime frameTime = CMTimeMake(1, _videoFPS);
-        CMTime lastTime=CMTimeMake(frame, _videoFPS);
-        NSLog(@"frame number %d", frame);
-        CMTime presentTime=CMTimeAdd(lastTime, frameTime);
+        CMTime presentTime=CMTimeMake(frame-1, _videoFPS);
+        NSLog(@"frame number %d", frame-1);
         [_videoWriter writePixels:_renderTarget withPresentationTime:presentTime];
         CVPixelBufferUnlockBaseAddress(_renderTarget,0);
         CVPixelBufferRelease(_renderTarget);
@@ -593,20 +591,22 @@ enum
 
 - (void)saveMovieURL:(NSURL*)url
 {
-    NSManagedObject* morphSettings = [self.managedObject valueForKey:@"morphSettings"];
-    [morphSettings setValue:url.absoluteString forKey:@"videoURL"];
-    
-    NSError *error = nil;
-    
-    if (![self.managedObjectContext save:&error]) {
-        if (error) {
-            NSLog(@"Unable to save record.");
-            NSLog(@"%@, %@", error, error.localizedDescription);
-        }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSManagedObject* morphSettings = [self.managedObject valueForKey:@"morphSettings"];
+        [morphSettings setValue:url.absoluteString forKey:@"videoURL"];
         
-        // Show Alert View
-        [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"Video URL could not be saved." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
-    }
+        NSError *error = nil;
+        
+        if (![self.managedObjectContext save:&error]) {
+            if (error) {
+                NSLog(@"Unable to save record.");
+                NSLog(@"%@, %@", error, error.localizedDescription);
+            }
+            
+            // Show Alert View
+            [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"Video URL could not be saved." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+        }
+    });
 }
 
 #pragma mark - OpenGL ES 2 shader compilation

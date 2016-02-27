@@ -77,6 +77,7 @@ enum
     int _videoFPS;
     WatchUtil* _watchUtil;
     NSString* _uuid;
+    Boolean _shouldAddWatermarkLogo;
 }
 @end
 
@@ -100,6 +101,7 @@ enum
     [super viewDidLoad];
     assert(self.managedObjectContext != nil);
     assert(self.managedObject != nil);
+    _shouldAddWatermarkLogo=YES;
     _renderPixels=NULL;
      _texturesCreated=NO;
     _isPaused=NO;
@@ -477,6 +479,9 @@ enum
     @synchronized(self)
     {
         UIImage* image = [((GLKView*)self.view) snapshot];
+        if (_shouldAddWatermarkLogo) {
+            image = [self addWatermarkLogo:image];
+        }
         UIImage* scaledImage;
         if ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)]) {
             // Retina display
@@ -505,6 +510,9 @@ enum
     @synchronized(self)
     {
         UIImage* image = [((GLKView*)self.view) snapshot];
+        if (_shouldAddWatermarkLogo) {
+            image = [self addWatermarkLogo:image];
+        }
         UIImage* scaledImage;
         if ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)]) {
             // Retina display
@@ -530,6 +538,14 @@ enum
         CVPixelBufferRelease(_renderTarget);
         _isExportFrameComplete = YES;
     }
+}
+
+- (UIImage*)addWatermarkLogo:(UIImage*)frameImage {
+    UIImage* imageLogo = [UIImage imageNamed:@"logo"];
+    CGFloat xpos = frameImage.size.width-imageLogo.size.width-10.0;
+    CGFloat ypos = frameImage.size.height-imageLogo.size.height-10.0;
+    frameImage = [ImageUtils drawImage:imageLogo inImage:frameImage atPoint:CGPointMake(xpos, ypos)];
+    return frameImage;
 }
 
 - (void)presentExportCompletedAlert:(NSString*)message

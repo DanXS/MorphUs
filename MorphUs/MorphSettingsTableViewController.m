@@ -51,8 +51,6 @@ static NSString *const iOSAppStoreURLFormat = @"itms-apps://itunes.apple.com/Web
     NSString* videoURL = [record valueForKey:@"videoURL"];
     if(videoURL)
     {
-        self.hasVideo = YES;
-        self.playButtonImageView.hidden = NO;
         videoAssetURL = [NSURL URLWithString:videoURL];
         AVURLAsset *asset = [[AVURLAsset alloc] initWithURL:videoAssetURL options:nil];
         AVAssetImageGenerator* imageGenerator = [[AVAssetImageGenerator alloc] initWithAsset:asset];
@@ -61,8 +59,17 @@ static NSString *const iOSAppStoreURLFormat = @"itms-apps://itunes.apple.com/Web
         NSError *error;
         CMTime actualTime;
         CGImageRef halfWayImage = [imageGenerator copyCGImageAtTime:midpoint actualTime:&actualTime error:&error];
-        videoImage = [UIImage imageWithCGImage:halfWayImage];
-        CGImageRelease(halfWayImage);
+        if (error == nil) {
+            self.hasVideo = YES;
+            self.playButtonImageView.hidden = NO;
+            videoImage = [UIImage imageWithCGImage:halfWayImage];
+            CGImageRelease(halfWayImage);
+        }
+        else {
+            NSLog(@"Error: %@", error.localizedDescription);
+            self.hasVideo = NO;
+            self.playButtonImageView.hidden = YES;
+        }
     }
     
 }

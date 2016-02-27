@@ -211,7 +211,7 @@
                                                         <constraint firstAttribute="height" constant="50" id="fOl-eL-sp2"/>
                                                     </constraints>
                                                 </imageView>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No video has been exported for this project!" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xjF-tm-8bI">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No video found for this project!" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xjF-tm-8bI">
                                                     <rect key="frame" x="0.0" y="66" width="320" height="68"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="68" id="jCC-vW-PDF"/>

@@ -488,8 +488,8 @@ enum
         }
         while(!_isExportFrameComplete)
             [NSThread sleepForTimeInterval:0.02];
-        self.exportInfoLabel.text = [NSString stringWithFormat:@"Exporting Frame: %d", frame];
-        self.exportProgressBarView.progress = (float)frame/(float)_totalFrames;
+        self.exportInfoLabel.text = [NSString stringWithFormat:@"Exporting Frame: %d", frame-1];
+        self.exportProgressBarView.progress = (float)frame/(float)(_totalFrames+1);
         // store frame to sync with watch app
         NSLog(@"frame number %d", frame);
         [WatchUtil storeFrame:frame uuid:_uuid image:scaledImage];
@@ -517,8 +517,8 @@ enum
         while(!_isExportFrameComplete)
             [NSThread sleepForTimeInterval:0.02];
         _renderTarget = [ImageUtils pixelBufferFromCGImage:scaledImage.CGImage withWidth:_videoWidth andHeight:_videoHeight];
-        self.exportInfoLabel.text = [NSString stringWithFormat:@"Exporting Frame: %d", frame];
-        self.exportProgressBarView.progress = (float)frame/(float)_totalFrames;
+        self.exportInfoLabel.text = [NSString stringWithFormat:@"Exporting Frame: %d", frame-1];
+        self.exportProgressBarView.progress = (float)frame/(float)(_totalFrames+1);
         // grab the pixels
         _isExportFrameComplete = NO;
         CVPixelBufferLockBaseAddress(_renderTarget, 0);

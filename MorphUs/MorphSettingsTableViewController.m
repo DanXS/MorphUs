@@ -96,7 +96,8 @@ static NSString *const iOSAppStoreURLFormat = @"itms-apps://itunes.apple.com/Web
 
 - (IBAction)onServerChanged:(id)sender {
     NSInteger index = self.serverSegmentControl.selectedSegmentIndex;
-    AppDelegate* appDelegate = [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+    
     [appDelegate saveActiveFacePPServer:[NSNumber numberWithInteger:index]];
     [appDelegate startFacePPServer:[NSNumber numberWithInteger:index]];
 }
@@ -117,7 +118,7 @@ static NSString *const iOSAppStoreURLFormat = @"itms-apps://itunes.apple.com/Web
         [record setValue:self.managedObject forKey:@"project"];
         [self saveSettings];
     }
-    AppDelegate* appDelegate = [[UIApplication sharedApplication] delegate];
+    AppDelegate* appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     NSNumber* activeServer = [appDelegate loadActiveFacePPServer];
 
     switch (indexPath.section)

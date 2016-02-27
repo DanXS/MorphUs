@@ -6,6 +6,7 @@
 //  Copyright (c) 2014 cuffedtothekeyboard. All rights reserved.
 //
 
+
 // Uniform index.
 enum
 {
@@ -40,6 +41,7 @@ enum
     Boolean _isPaused;
     Boolean _isReady;
     Boolean _isExportMode;
+    Boolean _shouldExportToWatch;
     Boolean _isExportComplete;
     Boolean _isExportFrameComplete;
     Boolean _hasAborted;
@@ -73,6 +75,8 @@ enum
     int _videoWidth;
     int _videoHeight;
     int _videoFPS;
+    WatchUtil* _watchUtil;
+    NSString* _uuid;
 }
 @end
 
@@ -106,11 +110,13 @@ enum
     _morphManager = [[MorphManager alloc] init];
     _screenWidth = [UIScreen mainScreen].bounds.size.width;
     _screenHeight = [UIScreen mainScreen].bounds.size.height;
-    if([self.actionIdentifier isEqual:@"Export"]) {
+    if([self.actionIdentifier isEqual:@"Export"] || [self.actionIdentifier isEqual:@"ExportToWatch"]) {
         _framesPerMorph = 60;
         _videoWidth = 480;
         _videoHeight = 640;
         _videoFPS = 30;
+        _shouldExportToWatch = NO;
+
         NSManagedObject* morphSettings = [self.managedObject valueForKey:@"morphSettings"];
         if(morphSettings != nil)
         {
@@ -118,8 +124,19 @@ enum
             _videoFPS = [[morphSettings valueForKey:@"framesPerSecond"] intValue];
         }
         NSLog(@"Export mode");
-        [self removeFile:self.movieURL];
         _totalFrames = (unsigned int)(_framesPerMorph*(self.morphSequence.count-1));
+        if([self.actionIdentifier isEqual:@"ExportToWatch"]) {
+            _framesPerMorph = 10;
+            _videoWidth = 300;
+            _videoHeight = 300;
+            _shouldExportToWatch = YES;
+            _watchUtil = [[WatchUtil alloc] init];
+            _totalFrames = (unsigned int)(_framesPerMorph*(self.morphSequence.count-1));
+            _uuid = [WatchUtil storeProjectDescription:self.managedObject noFrames:_totalFrames];
+        }
+        else {
+            [self removeFile:self.movieURL];
+        }
         _model = [[MorphLatticeModel alloc] initWithScreenWidth:_screenWidth screenHeight:_screenHeight rows:260 cols:200];
         _indicesCount = [_model getIndicesCount];
         CAEAGLLayer* eaglLayer = (CAEAGLLayer *)self.view.layer;
@@ -136,9 +153,12 @@ enum
         self.toolbar.hidden = YES;
         self.exportProgressView.hidden = NO;
         _isExportMode = YES;
+        
         _isExportComplete = NO;
         _isExportFrameComplete = YES;
-        _videoWriter = [[VideoWriter alloc] initWithFileURL:self.movieURL withWidth:_videoWidth andHeight:_videoHeight];
+        if (!_shouldExportToWatch) {
+            _videoWriter = [[VideoWriter alloc] initWithFileURL:self.movieURL withWidth:_videoWidth andHeight:_videoHeight];
+        }
         int nPixels = 4*((int)_screenWidth)*((int)_screenHeight)*sizeof(GLubyte);
         _renderPixels = malloc(nPixels);
     }
@@ -357,8 +377,16 @@ enum
         if(_hasAborted)
             return;
         if(_frameNo < _totalFrames) {
+            if(_isExportMode && _hasRenderedFrame) {
+                if(_shouldExportToWatch) {
+                    [self sampleAndExportToWatchPixelBufferForFrame:_frameNo];
+                }
+                else {
+                    [self sampleAndExportPixelBufferForFrame:_frameNo];
+                }
+            }
             _morphTargetIndex = _frameNo / _framesPerMorph;
-            _alpha = ((float)_frameNo /(float) _framesPerMorph) - _morphTargetIndex;
+            _alpha = ((float)_frameNo /(float)_framesPerMorph) - _morphTargetIndex;
             if(_frameNo % _framesPerMorph == 0) {
                 [_morphManager setSourceMakers:((MorphTarget*)self.morphSequence[_morphTargetIndex]).markers
                                 andDestMarkers:((MorphTarget*)self.morphSequence[_morphTargetIndex+1]).markers];
@@ -379,34 +407,42 @@ enum
                 glUniform1f(uniforms[UNIFORM_ALPHA], _alpha);
                 _isReady = YES;
             }
-            if(_isExportMode && _hasRenderedFrame) {
-                [self sampleAndExportPixelBufferForFrame:_frameNo];
-            }
         }
         else {
             if(_isExportMode && !_isPaused)
             {
-                [self sampleAndExportPixelBufferForFrame:_frameNo];
+                if(_shouldExportToWatch) {
+                    [self sampleAndExportToWatchPixelBufferForFrame:_frameNo];
+                }
+                else {
+                    [self sampleAndExportPixelBufferForFrame:_frameNo];
+                }
                 _isExportComplete = YES;
                 _isExportMode = NO;
-                __weak GLKMorphViewController* weakSelf = self;
-                [_videoWriter waitForComplete:^(BOOL complete) {
-                    if(complete)
-                    {
-                        [weakSelf saveMovieToCameraRoll];
-                        [weakSelf presentExportCompletedAlert:@"Export completed successfully"];
-                    }
-                    else
-                    {
-                        [weakSelf removeFile:weakSelf.movieURL];
-                        [weakSelf presentExportCompletedAlert:@"Export failed"];
-                    }
-                }];
+                _isPaused = YES;
+                if (_shouldExportToWatch) {
+                    [self presentExportCompletedAlert:@"Export completed successfully"];
+                }
+                else {
+                    __weak GLKMorphViewController* weakSelf = self;
+                    [_videoWriter waitForComplete:^(BOOL complete) {
+                        if(complete)
+                        {
+                            [weakSelf saveMovieToCameraRoll];
+                            [weakSelf presentExportCompletedAlert:@"Export completed successfully"];
+                        }
+                        else
+                        {
+                            [weakSelf removeFile:weakSelf.movieURL];
+                            [weakSelf presentExportCompletedAlert:@"Export failed"];
+                        }
+                    }];
+                }
+                
+                glUniform1f(uniforms[UNIFORM_ALPHA], 1.0);
+                [self.playBarButtonItem setEnabled:YES];
+                [self.pauseBarButtonItem setEnabled:NO];
             }
-            _isPaused = YES;
-            glUniform1f(uniforms[UNIFORM_ALPHA], 1.0);
-            [self.playBarButtonItem setEnabled:YES];
-            [self.pauseBarButtonItem setEnabled:NO];
         }
         if(!_isPaused)
             _frameNo++;
@@ -429,6 +465,32 @@ enum
     }
 }
 
+#pragma mark - Export to watch methods
+
+- (void)sampleAndExportToWatchPixelBufferForFrame:(int)frame {
+    @synchronized(self)
+    {
+        UIImage* image = [((GLKView*)self.view) snapshot];
+        UIImage* scaledImage;
+        if ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)]) {
+            // Retina display
+            scaledImage = [ImageUtils resizeImage:image scale:[UIScreen mainScreen].scale newSize:CGSizeMake(300.0, 300.0)];;
+            
+        } else {
+            // non-Retina display
+            scaledImage = [ImageUtils resizeImage:image scale:1.0 newSize:CGSizeMake(300.0, 300.0)];
+        }
+        while(!_isExportFrameComplete)
+            [NSThread sleepForTimeInterval:0.02];
+        self.exportInfoLabel.text = [NSString stringWithFormat:@"Exporting Frame: %d", frame];
+        self.exportProgressBarView.progress = (float)frame/(float)_totalFrames;
+        // store frame to sync with watch app
+        NSLog(@"frame number %d", frame);
+        [WatchUtil storeFrame:frame uuid:_uuid image:scaledImage];
+        _isExportFrameComplete = YES;
+    }
+}
+
 #pragma mark - Export methods
 
 
@@ -438,9 +500,9 @@ enum
     {
         UIImage* image = [((GLKView*)self.view) snapshot];
         UIImage* scaledImage;
-        if ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)] && ([UIScreen mainScreen].scale == 2.0)) {
+        if ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)]) {
             // Retina display
-            scaledImage = [ImageUtils resizeImage:image scale:2 newSize:CGSizeMake(_videoWidth, _videoHeight)];
+            scaledImage = [ImageUtils resizeImage:image scale:[UIScreen mainScreen].scale newSize:CGSizeMake(_videoWidth, _videoHeight)];
             
         } else {
             // non-Retina display

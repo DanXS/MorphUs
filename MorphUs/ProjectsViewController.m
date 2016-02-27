@@ -86,6 +86,7 @@
     NSManagedObject* record = [[NSManagedObject alloc] initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
     
     // Populate Record
+    [record setValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
     [record setValue:name forKey:@"name"];
     [record setValue:[NSDate date] forKey:@"createdAt"];
     

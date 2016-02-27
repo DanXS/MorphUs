@@ -41,9 +41,67 @@
     // Configure Window
     [self.window setRootViewController:rootNavigationController];
 
+    if ([WCSession isSupported]) {
+        WCSession *session = [WCSession defaultSession];
+        session.delegate = self;
+        [session activateSession];
+    }
+    
     return YES;
 }
-							
+
+- (void)session:(nonnull WCSession *)session didReceiveMessage:(nonnull NSDictionary<NSString *,id> *)message replyHandler:(nonnull void (^)(NSDictionary<NSString *,id> * _Nonnull))replyHandler {
+    NSLog(@"Recieved call from watch app :%@", message);
+    if ([[message valueForKey:@"getProjectPaths"] boolValue])
+    {
+        NSMutableArray* filenames = [[NSMutableArray alloc] init];
+        NSArray* directoryContent = [WatchUtil getDirectoryContent];
+        for (int i = 0; i < directoryContent.count; i++) {
+            NSString* filename = [directoryContent objectAtIndex:i];
+            if ([filename containsString:@"Project"]) {
+                [filenames addObject:filename];
+            }
+        }
+        NSDictionary* result = @{@"ProjectPaths" : filenames};
+        replyHandler(result);
+    }
+    else if ([[message valueForKey:@"getProjectDescription"] boolValue]) {
+        NSString* filename = [message valueForKey:@"Filename"];
+        NSData* file = [WatchUtil readFile:filename];
+        [session sendMessageData:file replyHandler:^(NSData * _Nonnull replyMessageData) {
+            NSDictionary* replyMesssage = [NSKeyedUnarchiver unarchiveObjectWithData:replyMessageData];
+            NSLog(@"reply message data %@", replyMesssage);
+        } errorHandler:^(NSError * _Nonnull error) {
+            NSLog(@"Error: %@", error.localizedDescription);
+        }];
+        NSDictionary* result = [[NSDictionary alloc] initWithObjects:@[[NSNumber numberWithBool:YES]] forKeys:@[@"loadingProjectDescription"]];
+        replyHandler(result);
+    }
+    else if ([[message valueForKey:@"getFrames"] boolValue]) {
+        NSString* projectFile = [message valueForKey:@"Filename"];
+        NSString* uuid = [projectFile substringWithRange:NSMakeRange(8,projectFile.length-14)];
+        NSArray* directoryContent = [WatchUtil getDirectoryContent];
+        for (int i = 0; i < directoryContent.count; i++) {
+            NSString* filename = [directoryContent objectAtIndex:i];
+            if ([filename containsString:@"Image"] && [filename containsString:uuid]) {
+                NSRange rangeStart = [filename rangeOfString:@"_"];
+                NSRange rangeEnd = [filename rangeOfString:@"."];
+                NSUInteger start = rangeStart.location+1;
+                NSUInteger end = rangeEnd.location;
+                NSString* frameString = [filename substringWithRange:NSMakeRange(start, end-start)];
+                rangeStart = [frameString rangeOfString:@"_"];
+                frameString = [frameString substringFromIndex:rangeStart.location+1];
+                NSNumber* frame = [NSNumber numberWithInt:[frameString intValue]];
+                NSString* path = [WatchUtil getPath:filename];
+                [session transferFile:[NSURL fileURLWithPath:path] metadata:@{@"Type" : @"ImageFrame", @"Frame" : frame}];
+            }
+        }
+        NSDictionary* result = [[NSDictionary alloc] initWithObjects:@[[NSNumber numberWithBool:YES]] forKeys:@[@"loadingImageFrames"]];
+        replyHandler(result);
+    }
+    
+}
+
 - (void)applicationWillResignActive:(UIApplication *)application
 {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.

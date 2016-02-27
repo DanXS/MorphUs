@@ -31,6 +31,7 @@
 @synthesize movieURL;
 @synthesize actionIdentifier;
 @synthesize choosePhotoActionSheet;
+@synthesize chooseExportTypeActionSheet;
 
 - (void)viewDidLoad
 {
@@ -498,9 +499,9 @@ self.landmarkKeyNames = [NSArray arrayWithObjects:
                 }
                 else
                 {
-                    if ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)] && ([UIScreen mainScreen].scale == 2.0)) {
+                    if ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)]) {
                         // retina display
-                        self.currentMorphTarget.image = [ImageUtils resizeImage:image scale:2.0 newSize:CGSizeMake(1024, 1024)];
+                        self.currentMorphTarget.image = [ImageUtils resizeImage:image scale:[UIScreen mainScreen].scale newSize:CGSizeMake(1024, 1024)];
                     }
                     else
                     {
@@ -551,9 +552,9 @@ self.landmarkKeyNames = [NSArray arrayWithObjects:
             UIImage* image = target.image;
             if(image)
             {
-                if ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)] && ([UIScreen mainScreen].scale == 2.0)) {
+                if ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)]) {
                     // retina display
-                    image = [ImageUtils resizeImage:image scale:2.0 newSize:CGSizeMake(100.0, 100.0)];
+                    image = [ImageUtils resizeImage:image scale:[UIScreen mainScreen].scale newSize:CGSizeMake(100.0, 100.0)];
                 }
                 else
                 {
@@ -752,10 +753,10 @@ self.landmarkKeyNames = [NSArray arrayWithObjects:
                 self.currentMorphSequenceIndex = self.morphSequence.count-1;
                 target.assetURL = assetURL;
                 [self loadMarkersFromRecord:record forTarget:target];
-                if ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)] && ([UIScreen mainScreen].scale == 2.0))
+                if ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)])
                 {
                     // retina display
-                    target.image = [ImageUtils resizeImage:image scale:2.0 newSize:CGSizeMake(1024, 1024)];
+                    target.image = [ImageUtils resizeImage:image scale:[UIScreen mainScreen].scale  newSize:CGSizeMake(1024, 1024)];
                 }
                 else
                 {
@@ -1003,6 +1004,24 @@ self.landmarkKeyNames = [NSArray arrayWithObjects:
                 break;
         }
     }
+    else if (actionSheet == chooseExportTypeActionSheet)
+    {
+        switch (buttonIndex)
+        {
+            case 0:
+                if ([self shouldPerformSegueWithIdentifier:@"ExportToWatch" sender:self.toolbarItems[5]]) {
+                    [self performSegueWithIdentifier:@"ExportToWatch" sender:self.toolbarItems[5]];
+                }
+                break;
+            case 1:
+                if ([self shouldPerformSegueWithIdentifier:@"Export" sender:self.toolbarItems[5]]) {
+                    [self performSegueWithIdentifier:@"Export" sender:self.toolbarItems[5]];
+                }
+                break;
+            default:
+                break;
+        }
+    }
 }
 
 - (void)pickPhotoFromCamera
@@ -1088,6 +1107,29 @@ self.landmarkKeyNames = [NSArray arrayWithObjects:
     [self.view setUserInteractionEnabled:YES];
 }
 
+- (IBAction)onExport:(id)sender {
+    if ([WCSession isSupported]) {
+        WCSession* session = [WCSession defaultSession];
+        if (session.paired) {
+            NSLog(@"Paired with watch!");
+            [self chooseExportType];
+        }
+        else {
+            if ([self shouldPerformSegueWithIdentifier:@"Export" sender:sender]) {
+                [self performSegueWithIdentifier:@"Export" sender:sender];
+            }
+        }
+    }
+}
+
+
+- (void)chooseExportType {
+    chooseExportTypeActionSheet = [[UIActionSheet alloc] initWithTitle:@"Select export type" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Export to apple watch", @"Export to video file", nil];
+    [chooseExportTypeActionSheet showInView:self.view];
+}
+
+
+
 
  #pragma mark - Navigation
 - (BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender
@@ -1096,7 +1138,7 @@ self.landmarkKeyNames = [NSArray arrayWithObjects:
         return YES;
     }
     else if(self.morphSequence.count >= 2) {
-        self.actionIdentifier = identifier;
+        
         return YES;
     }
     else {
@@ -1123,6 +1165,7 @@ self.landmarkKeyNames = [NSArray arrayWithObjects:
  // In a storyboard-based application, you will often want to do a little preparation before navigation
  - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
  {
+     self.actionIdentifier = segue.identifier;
      UIBarButtonItem* senderBtn = (UIBarButtonItem*)sender;
      if(senderBtn.tag != 4) // 4 is help button
      {

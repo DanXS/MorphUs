@@ -7,8 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <WatchConnectivity/WatchConnectivity.h>
 #import "FaceppAPI.h"
 #import "Utils.h"
+#import "WatchUtil.h"
 
 #define ACTIVE_FACEPP_SERVER 0
 
@@ -19,7 +21,7 @@
 #define FACEPP_API_SECRET_2 @"QppNRweNnZ_zJuyg3a3GZHPTrLxUsVKd"
 
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+@interface AppDelegate : UIResponder <UIApplicationDelegate, WCSessionDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 

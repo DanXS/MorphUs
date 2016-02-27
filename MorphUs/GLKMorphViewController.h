@@ -11,6 +11,7 @@
 #import <CoreFoundation/CoreFoundation.h>
 #import <CoreVideo/CoreVideo.h>
 #import <CoreFoundation/CFDictionary.h>
+#import "WatchUtil.h"
 
 
 @interface GLKMorphViewController : GLKViewController <UIAlertViewDelegate>

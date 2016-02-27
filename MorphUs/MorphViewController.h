@@ -12,11 +12,12 @@
 #import <GLKit/GLKit.h>
 #import <AVFoundation/AVFoundation.h>
 #import <CoreFoundation/CoreFoundation.h>
+#import <WatchConnectivity/WatchConnectivity.h>
 
 #import "FaceppAPI.h"
 #import "MorphTarget.h"
 
-@interface MorphViewController : UIViewController<UICollectionViewDataSource, UICollectionViewDelegate,UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIActionSheetDelegate>
+@interface MorphViewController : UIViewController<UICollectionViewDataSource, UICollectionViewDelegate,UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIActionSheetDelegate, WCSessionDelegate, UIActionSheetDelegate>
 {
     UIImagePickerController* imagePicker;
 }
@@ -40,6 +41,7 @@ typedef void(^LoadImageCompletionBlock)(UIImage*, NSError*);
 @property (strong, nonatomic) NSURL* movieURL;
 @property (strong, nonatomic) NSString* actionIdentifier;
 @property (strong, nonatomic) UIActionSheet* choosePhotoActionSheet;
+@property (strong, nonatomic) UIActionSheet* chooseExportTypeActionSheet;
 
 - (IBAction)selectProject:(id)sender;
 - (IBAction)choosePhoto:(id)sender;
@@ -47,5 +49,7 @@ typedef void(^LoadImageCompletionBlock)(UIImage*, NSError*);
 - (IBAction)handlePan:(id)sender;
 - (IBAction)handleLongTouch:(id)sender;
 - (IBAction)remove:(id)sender;
+- (IBAction)onExport:(id)sender;
+
 
 @end

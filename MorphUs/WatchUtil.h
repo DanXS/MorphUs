@@ -20,4 +20,6 @@
 
 + (NSData*)readFile:(NSString*)filename;
 
++ (void)postExportedLocalNotification;
+
 @end

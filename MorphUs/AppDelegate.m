@@ -41,13 +41,42 @@
     // Configure Window
     [self.window setRootViewController:rootNavigationController];
 
+    // Register notifications
+    [self registerNotifications];
+    
+    // Start watch kit session
     if ([WCSession isSupported]) {
         WCSession *session = [WCSession defaultSession];
         session.delegate = self;
         [session activateSession];
     }
-    
+
     return YES;
+}
+
+- (void)registerNotifications {
+    // Register for local notifications
+    UIUserNotificationType types = UIUserNotificationTypeSound | UIUserNotificationTypeAlert;
+    
+    // First create the category
+    UIMutableUserNotificationCategory *morphUsWatchCatetory =
+    [[UIMutableUserNotificationCategory alloc] init];
+    
+    // Identifier to include in your push payload and local notification
+    morphUsWatchCatetory.identifier = @"MorphUsWatchExportCategory";
+    
+    NSSet *categories = [NSSet setWithObjects:morphUsWatchCatetory, nil];
+    UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:types categories:categories];
+    
+    [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
+}
+
+- (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings
+{
+}
+
+- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
+{
 }
 
 - (void)session:(nonnull WCSession *)session didReceiveMessage:(nonnull NSDictionary<NSString *,id> *)message replyHandler:(nonnull void (^)(NSDictionary<NSString *,id> * _Nonnull))replyHandler {
@@ -101,6 +130,8 @@
     }
     
 }
+
+
 
 - (void)applicationWillResignActive:(UIApplication *)application
 {

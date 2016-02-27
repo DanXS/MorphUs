@@ -16,5 +16,6 @@
 @property (strong, nonatomic) NSNumber* noFrames;
 @property (strong, nonatomic) NSNumber* noFramesLoaded;
 @property (strong, nonatomic) NSMutableArray* frames;
+@property (unsafe_unretained, nonatomic) IBOutlet WKInterfaceGroup *containerGroup;
 
 @end

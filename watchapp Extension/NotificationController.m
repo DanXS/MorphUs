@@ -36,6 +36,11 @@
     [super didDeactivate];
 }
 
+- (void)handleActionWithIdentifier:(NSString *)identifier forLocalNotification:(UILocalNotification *)localNotification
+{
+    
+}
+
 /*
 - (void)didReceiveLocalNotification:(UILocalNotification *)localNotification withCompletion:(void (^)(WKUserNotificationInterfaceType))completionHandler {
     // This method is called when a local notification needs to be presented.

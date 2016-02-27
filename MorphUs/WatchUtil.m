@@ -75,4 +75,17 @@
     return data;
 }
 
++ (void)postExportedLocalNotification {
+    UILocalNotification *notification = [[UILocalNotification alloc] init];
+    notification.fireDate = [NSDate dateWithTimeIntervalSinceNow:30];
+    notification.category = @"MorphUsWatchExportCategory";
+    notification.alertTitle = @"MorphsUs";
+    notification.alertBody = @"A new morph has been exported to your apple watch!";
+    notification.timeZone = [NSTimeZone defaultTimeZone];
+    notification.soundName = UILocalNotificationDefaultSoundName;
+    notification.applicationIconBadgeNumber = 0;
+    
+    [[UIApplication sharedApplication] scheduleLocalNotification:notification];
+}
+
 @end

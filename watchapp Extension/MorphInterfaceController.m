@@ -20,6 +20,7 @@
     self.noFramesLoaded = [NSNumber numberWithInt:0];
     self.noFrames = [context valueForKey:@"noFrames"];
     self.frames = [[NSMutableArray alloc] init];
+    [self.morphImagePicker setAlpha:0.0];
     if ([WCSession isSupported]) {
         WCSession *session = [WCSession defaultSession];
         session.delegate = self;
@@ -38,10 +39,20 @@
         [animFrames addObject:item];
     }
     [self.morphImagePicker setItems:animFrames];
+    [self animateWithDuration:0.5 animations:^{
+        [self.morphImagePicker setAlpha:1.0];
+    }];
 }
 
 - (void)session:(WCSession *)session didReceiveUserInfo:(NSDictionary<NSString *, id> *)userInfo {
     
+}
+
+- (void)updateProgressIndicator:(int)progress of:(int)total
+{
+    int animFrame = (int)(100.0*(double)progress/(double)total);
+    NSString* imageName = [NSString stringWithFormat:@"progress%d.png", animFrame];
+    [self.containerGroup setBackgroundImageNamed:imageName];
 }
 
 - (void)session:(WCSession *)session didReceiveFile:(WCSessionFile *)file {
@@ -52,6 +63,7 @@
     if (data != nil && [type isEqualToString:@"ImageFrame"]) {
         NSNumber* frame = [metadata valueForKey:@"Frame"];
         NSLog(@"Loaded frame %@", frame);
+        [self updateProgressIndicator:[frame intValue] of:[self.noFrames intValue]];
         [self.frames addObject:data];
         self.noFramesLoaded = [NSNumber numberWithInt:[self.noFramesLoaded integerValue] + 1];
         if ([self.noFramesLoaded intValue] == [self.noFrames intValue]) {

@@ -124,7 +124,7 @@
                     WKAlertAction* action = [WKAlertAction actionWithTitle:@"OK" style:WKAlertActionStyleDefault handler:^{
                         [self popController];
                     }];
-                    [self presentAlertControllerWithTitle:@"No Projects!" message:@"No Morphs have been exported from the iPhone application, please click the export button and choose \"export to apple watch\"" preferredStyle:WKAlertControllerStyleAlert actions:@[action]];
+                    [self presentAlertControllerWithTitle:@"No Morphs!" message:@"No Morphs have been exported from the iPhone application, please click the export button and choose \"Export to apple watch\" from the iPhone application" preferredStyle:WKAlertControllerStyleAlert actions:@[action]];
                 }
                 else {
                     self.noProjects = [NSNumber numberWithInt:paths.count];

@@ -11,7 +11,7 @@
                 <controller backgroundImage="MorphUsLogo" hidesWhenLoading="NO" id="SiL-YP-aPy">
                     <items>
                         <button alignment="left" verticalAlignment="center" id="Iv6-Tu-jgf">
-                            <group key="contentGroup" width="1" height="1" alignment="left" id="Qzj-qF-Yiu">
+                            <group key="contentGroup" width="1" height="1" alignment="left" animationDuration="1" id="Qzj-qF-Yiu">
                                 <items>
                                     <label width="1" height="60" alignment="left" text="Click to View" textAlignment="center" id="goU-Fq-vVH">
                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -72,9 +72,14 @@
             <objects>
                 <controller id="Bq8-tS-fzd" customClass="MorphInterfaceController">
                     <items>
-                        <picker width="130" height="130" alignment="center" verticalAlignment="center" style="sequence" id="dzd-fg-s3g"/>
+                        <group width="130" height="130" alignment="center" verticalAlignment="center" backgroundImage="progress0.png" id="AZ6-M7-wj0">
+                            <items>
+                                <picker width="130" height="130" alignment="center" verticalAlignment="center" alpha="0.0" style="sequence" id="dzd-fg-s3g"/>
+                            </items>
+                        </group>
                     </items>
                     <connections>
+                        <outlet property="containerGroup" destination="AZ6-M7-wj0" id="L8X-ee-Dmo"/>
                         <outlet property="morphImagePicker" destination="dzd-fg-s3g" id="DAF-AU-dXr"/>
                     </connections>
                 </controller>
@@ -86,23 +91,15 @@
             <objects>
                 <notificationController id="YCC-NB-fut">
                     <items>
-                        <label alignment="left" text="Alert Label" id="IdU-wH-bcW"/>
+                        <label height="120" alignment="left" text="Alert Label" numberOfLines="6" id="IdU-wH-bcW"/>
                     </items>
-                    <notificationCategory key="notificationCategory" identifier="myCategory" id="JfB-70-Muf"/>
+                    <notificationCategory key="notificationCategory" identifier="MorphUsWatchExportCategory" id="JfB-70-Muf"/>
                     <connections>
                         <outlet property="notificationAlertLabel" destination="IdU-wH-bcW" id="JKC-fr-R95"/>
-                        <segue destination="4sK-HA-Art" kind="relationship" relationship="dynamicNotificationInterface" id="kXh-Jw-8B1"/>
                     </connections>
                 </notificationController>
             </objects>
             <point key="canvasLocation" x="220" y="643"/>
-        </scene>
-        <!--Notification Controller-->
-        <scene sceneID="ZPc-GJ-vnh">
-            <objects>
-                <controller id="4sK-HA-Art" customClass="NotificationController"/>
-            </objects>
-            <point key="canvasLocation" x="468" y="643"/>
         </scene>
     </scenes>
 </document>

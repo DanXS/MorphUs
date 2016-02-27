@@ -1,16 +1,14 @@
 {
     "aps": {
         "alert": {
-            "body": "Test message",
-            "title": "Optional title"
+            "body": "A new morph has been exported to your apple watch!",
+            "title": "MorphUs"
         },
-        "category": "myCategory"
+        "category": "MorphUsWatchExportCategory"
     },
     
     "WatchKit Simulator Actions": [
         {
-            "title": "First Button",
-            "identifier": "firstButtonAction"
         }
     ],
     

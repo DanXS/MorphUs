@@ -75,7 +75,6 @@ enum
     int _videoWidth;
     int _videoHeight;
     int _videoFPS;
-    WatchUtil* _watchUtil;
     NSString* _uuid;
     Boolean _shouldAddWatermarkLogo;
 }
@@ -132,7 +131,6 @@ enum
             _videoWidth = 300;
             _videoHeight = 300;
             _shouldExportToWatch = YES;
-            _watchUtil = [[WatchUtil alloc] init];
             _totalFrames = (unsigned int)(_framesPerMorph*(self.morphSequence.count-1));
             _uuid = [WatchUtil storeProjectDescription:self.managedObject noFrames:_totalFrames+1];
         }
@@ -430,6 +428,7 @@ enum
                 _isPaused = YES;
                 if (_shouldExportToWatch) {
                     [self presentExportCompletedAlert:@"Export completed successfully"];
+                    [WatchUtil postExportedLocalNotification];
                 }
                 else {
                     __weak GLKMorphViewController* weakSelf = self;
@@ -553,13 +552,15 @@ enum
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         self.exportProgressView.hidden = YES;
         self.exportAlertView = [[UIAlertView alloc]
-                            initWithTitle:@"Finished"
-                            message:message
-                            delegate:self
-                            cancelButtonTitle:@"OK!"
-                            otherButtonTitles:nil];
+                                initWithTitle:@"Finished"
+                                message:message
+                                delegate:self
+                                cancelButtonTitle:@"OK!"
+                                otherButtonTitles:nil];
         [self.exportAlertView show];
+        
     });
+    
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex

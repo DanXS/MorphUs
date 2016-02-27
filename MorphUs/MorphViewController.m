@@ -1149,6 +1149,9 @@ self.landmarkKeyNames = [NSArray arrayWithObjects:
         else if([identifier  isEqual: @"Export"]) {
             message = @"You need at least two morph targets to export movie";
         }
+        else if([identifier  isEqual: @"ExportToWatch"]) {
+            message = @"You need at least two morph targets to export movie";
+        }
         if(message != nil) {
             UIAlertView* alert = [[UIAlertView alloc]
                                   initWithTitle:@"Oops"

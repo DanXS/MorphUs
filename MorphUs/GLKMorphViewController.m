@@ -132,7 +132,7 @@ enum
             _shouldExportToWatch = YES;
             _watchUtil = [[WatchUtil alloc] init];
             _totalFrames = (unsigned int)(_framesPerMorph*(self.morphSequence.count-1));
-            _uuid = [WatchUtil storeProjectDescription:self.managedObject noFrames:_totalFrames];
+            _uuid = [WatchUtil storeProjectDescription:self.managedObject noFrames:_totalFrames+1];
         }
         else {
             [self removeFile:self.movieURL];
@@ -376,7 +376,7 @@ enum
     {
         if(_hasAborted)
             return;
-        if(_frameNo < _totalFrames) {
+        if(_frameNo <= _totalFrames) {
             if(_isExportMode && _hasRenderedFrame) {
                 if(_shouldExportToWatch) {
                     [self sampleAndExportToWatchPixelBufferForFrame:_frameNo];
@@ -385,8 +385,14 @@ enum
                     [self sampleAndExportPixelBufferForFrame:_frameNo];
                 }
             }
-            _morphTargetIndex = _frameNo / _framesPerMorph;
-            _alpha = ((float)_frameNo /(float)_framesPerMorph) - _morphTargetIndex;
+            if (_frameNo < _totalFrames) {
+                _morphTargetIndex = _frameNo / _framesPerMorph;
+                _alpha = ((float)_frameNo /(float)_framesPerMorph) - _morphTargetIndex;
+            }
+            else {
+                _morphTargetIndex = (_frameNo-1) / _framesPerMorph;
+                _alpha = 1.0;
+            }
             if(_frameNo % _framesPerMorph == 0) {
                 [_morphManager setSourceMakers:((MorphTarget*)self.morphSequence[_morphTargetIndex]).markers
                                 andDestMarkers:((MorphTarget*)self.morphSequence[_morphTargetIndex+1]).markers];

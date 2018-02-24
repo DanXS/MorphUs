@@ -109,7 +109,11 @@
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem width="42" style="plain" systemItem="fixedSpace" id="YJ8-g4-8Tl"/>
-                                    <barButtonItem tag="5" systemItem="action" id="MwF-w2-UbE"/>
+                                    <barButtonItem tag="5" systemItem="action" id="MwF-w2-UbE">
+                                        <connections>
+                                            <action selector="onExport:" destination="BYZ-38-t0r" id="5cJ-gi-bTY"/>
+                                        </connections>
+                                    </barButtonItem>
                                     <barButtonItem width="42" style="plain" systemItem="fixedSpace" id="peR-oF-YaI"/>
                                 </items>
                             </toolbar>

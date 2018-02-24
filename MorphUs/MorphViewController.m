@@ -1108,18 +1108,22 @@ self.landmarkKeyNames = [NSArray arrayWithObjects:
 }
 
 - (IBAction)onExport:(id)sender {
+    Boolean hasWatch = NO;
     if ([WCSession isSupported]) {
         WCSession* session = [WCSession defaultSession];
         if (session.paired) {
             NSLog(@"Paired with watch!");
             [self chooseExportType];
-        }
-        else {
-            if ([self shouldPerformSegueWithIdentifier:@"Export" sender:sender]) {
-                [self performSegueWithIdentifier:@"Export" sender:sender];
-            }
+            hasWatch = YES;
         }
     }
+    if (!hasWatch)
+    {
+        if ([self shouldPerformSegueWithIdentifier:@"Export" sender:sender]) {
+            [self performSegueWithIdentifier:@"Export" sender:sender];
+        }
+    }
+
 }
 
 

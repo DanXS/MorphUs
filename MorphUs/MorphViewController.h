@@ -14,10 +14,10 @@
 #import <CoreFoundation/CoreFoundation.h>
 #import <WatchConnectivity/WatchConnectivity.h>
 
-#import "FaceppAPI.h"
+#import "FaceDetection.h"
 #import "MorphTarget.h"
 
-@interface MorphViewController : UIViewController<UICollectionViewDataSource, UICollectionViewDelegate,UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIActionSheetDelegate, WCSessionDelegate, UIActionSheetDelegate>
+@interface MorphViewController : UIViewController<UICollectionViewDataSource, UICollectionViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIActionSheetDelegate, WCSessionDelegate, UIActionSheetDelegate, CALayerDelegate>
 {
     UIImagePickerController* imagePicker;
 }
@@ -25,7 +25,7 @@ typedef void(^LoadImageCompletionBlock)(UIImage*, NSError*);
 
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (strong, nonatomic) NSManagedObject* managedObject;
-
+@property (weak, nonatomic) FaceDetection* faceDetection;
 @property (strong, nonatomic) ALAssetsLibrary* library;
 @property (strong, nonatomic) ALAssetsGroup* assetGroup;
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;

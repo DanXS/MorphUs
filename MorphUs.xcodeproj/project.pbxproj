@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9702BEEB204321BB003AAD73 /* libdlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9702BEEA204321BA003AAD73 /* libdlib.a */; };
+		9702BEED20432294003AAD73 /* FaceDetection.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9702BEEC20432294003AAD73 /* FaceDetection.mm */; };
 		970B536C1966D02D00693767 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 970B536B1966D02D00693767 /* QuartzCore.framework */; };
 		970B536E1966D03600693767 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 970B536D1966D03600693767 /* OpenGLES.framework */; };
 		970B53701966D03F00693767 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 970B536F1966D03F00693767 /* GLKit.framework */; };
@@ -142,11 +144,6 @@
 		978821771963643B004B4A78 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 978821761963643B004B4A78 /* AppDelegate.m */; };
 		9788217D1963643B004B4A78 /* Main_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9788217B1963643B004B4A78 /* Main_iPad.storyboard */; };
 		978821821963643B004B4A78 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 978821811963643B004B4A78 /* Images.xcassets */; };
-		978821891963643B004B4A78 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 978821881963643B004B4A78 /* XCTest.framework */; };
-		9788218A1963643B004B4A78 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 978821661963643B004B4A78 /* Foundation.framework */; };
-		9788218B1963643B004B4A78 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9788216A1963643B004B4A78 /* UIKit.framework */; };
-		978821931963643B004B4A78 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 978821911963643B004B4A78 /* InfoPlist.strings */; };
-		978821951963643B004B4A78 /* MophUsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 978821941963643B004B4A78 /* MophUsTests.m */; };
 		9791C7DC1B5122180030982F /* Matrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9791C7DB1B5122180030982F /* Matrix.cpp */; };
 		9798FB4219687DF100A75F70 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9798FB4119687DF100A75F70 /* AVFoundation.framework */; };
 		9799D09E196DA334001D90A6 /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9799D09D196DA334001D90A6 /* CoreImage.framework */; };
@@ -154,23 +151,13 @@
 		979B2D8719690DFC00A9A773 /* Morph.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 979B2D8619690DFC00A9A773 /* Morph.cpp */; };
 		979B2D8A196911A300A9A773 /* MorphManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 979B2D89196911A300A9A773 /* MorphManager.mm */; };
 		979B3B511968099F0041671C /* MorphLatticeModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 979B3B501968099F0041671C /* MorphLatticeModel.m */; };
-		979DBEBE196405D500E4F64A /* FaceppAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 979DBEA5196405D500E4F64A /* FaceppAPI.m */; };
-		979DBEBF196405D500E4F64A /* FaceppClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 979DBEA8196405D500E4F64A /* FaceppClient.m */; };
-		979DBEC0196405D500E4F64A /* FaceppDetection.m in Sources */ = {isa = PBXBuildFile; fileRef = 979DBEAA196405D500E4F64A /* FaceppDetection.m */; };
-		979DBEC1196405D500E4F64A /* FaceppFaceset.m in Sources */ = {isa = PBXBuildFile; fileRef = 979DBEAC196405D500E4F64A /* FaceppFaceset.m */; };
-		979DBEC2196405D500E4F64A /* FaceppGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 979DBEAE196405D500E4F64A /* FaceppGroup.m */; };
-		979DBEC3196405D500E4F64A /* FaceppGrouping.m in Sources */ = {isa = PBXBuildFile; fileRef = 979DBEB0196405D500E4F64A /* FaceppGrouping.m */; };
-		979DBEC4196405D500E4F64A /* FaceppInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 979DBEB2196405D500E4F64A /* FaceppInfo.m */; };
-		979DBEC5196405D500E4F64A /* FaceppPerson.m in Sources */ = {isa = PBXBuildFile; fileRef = 979DBEB4196405D500E4F64A /* FaceppPerson.m */; };
-		979DBEC6196405D500E4F64A /* FaceppRecognition.m in Sources */ = {isa = PBXBuildFile; fileRef = 979DBEB6196405D500E4F64A /* FaceppRecognition.m */; };
-		979DBEC7196405D500E4F64A /* FaceppTrainer.m in Sources */ = {isa = PBXBuildFile; fileRef = 979DBEB8196405D500E4F64A /* FaceppTrainer.m */; };
-		979DBEC8196405D500E4F64A /* FaceppError.m in Sources */ = {isa = PBXBuildFile; fileRef = 979DBEBB196405D500E4F64A /* FaceppError.m */; };
-		979DBEC9196405D500E4F64A /* FaceppResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 979DBEBD196405D500E4F64A /* FaceppResult.m */; };
 		979DBECB196423DE00E4F64A /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 979DBECA196423DE00E4F64A /* AssetsLibrary.framework */; };
 		979DBECE196475B900E4F64A /* MorphTarget.m in Sources */ = {isa = PBXBuildFile; fileRef = 979DBECD196475B900E4F64A /* MorphTarget.m */; };
 		979F616A196CA3ED003FC04B /* VideoWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 979F6169196CA3ED003FC04B /* VideoWriter.m */; };
 		97AAEC1E196593AE00D449F1 /* ImageCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 97AAEC1D196593AE00D449F1 /* ImageCollectionViewCell.m */; };
 		97EF14671C7A2CDD009DDCB2 /* ProjectRow.m in Sources */ = {isa = PBXBuildFile; fileRef = 97EF14661C7A2CDD009DDCB2 /* ProjectRow.m */; };
+		97EF881D2043590D00A90BF5 /* shape_predictor_68_face_landmarks.dat in Resources */ = {isa = PBXBuildFile; fileRef = 97EF881C2043590C00A90BF5 /* shape_predictor_68_face_landmarks.dat */; };
+		97EF881F2043658200A90BF5 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97EF881E2043658100A90BF5 /* Accelerate.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -187,13 +174,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 9768BA611C7959CF007E280C;
 			remoteInfo = watchapp;
-		};
-		9788218C1963643B004B4A78 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 9788215B1963643B004B4A78 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 978821621963643B004B4A78;
-			remoteInfo = Selfwe;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -223,6 +203,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		9702BEEA204321BA003AAD73 /* libdlib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libdlib.a; path = dlib_iOS/libdlib.a; sourceTree = "<group>"; };
+		9702BEEC20432294003AAD73 /* FaceDetection.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = FaceDetection.mm; sourceTree = "<group>"; };
+		9702BEEE204322DA003AAD73 /* FaceDetection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FaceDetection.h; sourceTree = "<group>"; };
 		970B536B1966D02D00693767 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		970B536D1966D03600693767 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		970B536F1966D03F00693767 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
@@ -378,11 +361,6 @@
 		978821761963643B004B4A78 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		9788217C1963643B004B4A78 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main_iPad.storyboard; sourceTree = "<group>"; };
 		978821811963643B004B4A78 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		978821871963643B004B4A78 /* MorphUsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MorphUsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		978821881963643B004B4A78 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
-		978821901963643B004B4A78 /* MorphUsTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "MorphUsTests-Info.plist"; sourceTree = "<group>"; };
-		978821921963643B004B4A78 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		978821941963643B004B4A78 /* MophUsTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MophUsTests.m; sourceTree = "<group>"; };
 		9791C7DB1B5122180030982F /* Matrix.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Matrix.cpp; sourceTree = "<group>"; };
 		9798FB4119687DF100A75F70 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		9799D09D196DA334001D90A6 /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
@@ -394,30 +372,6 @@
 		979B2D89196911A300A9A773 /* MorphManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MorphManager.mm; sourceTree = "<group>"; };
 		979B3B4F1968099F0041671C /* MorphLatticeModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MorphLatticeModel.h; sourceTree = "<group>"; };
 		979B3B501968099F0041671C /* MorphLatticeModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MorphLatticeModel.m; sourceTree = "<group>"; };
-		979DBEA4196405D500E4F64A /* FaceppAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FaceppAPI.h; sourceTree = "<group>"; };
-		979DBEA5196405D500E4F64A /* FaceppAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FaceppAPI.m; sourceTree = "<group>"; };
-		979DBEA7196405D500E4F64A /* FaceppClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FaceppClient.h; sourceTree = "<group>"; };
-		979DBEA8196405D500E4F64A /* FaceppClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FaceppClient.m; sourceTree = "<group>"; };
-		979DBEA9196405D500E4F64A /* FaceppDetection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FaceppDetection.h; sourceTree = "<group>"; };
-		979DBEAA196405D500E4F64A /* FaceppDetection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FaceppDetection.m; sourceTree = "<group>"; };
-		979DBEAB196405D500E4F64A /* FaceppFaceset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FaceppFaceset.h; sourceTree = "<group>"; };
-		979DBEAC196405D500E4F64A /* FaceppFaceset.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FaceppFaceset.m; sourceTree = "<group>"; };
-		979DBEAD196405D500E4F64A /* FaceppGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FaceppGroup.h; sourceTree = "<group>"; };
-		979DBEAE196405D500E4F64A /* FaceppGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FaceppGroup.m; sourceTree = "<group>"; };
-		979DBEAF196405D500E4F64A /* FaceppGrouping.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FaceppGrouping.h; sourceTree = "<group>"; };
-		979DBEB0196405D500E4F64A /* FaceppGrouping.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FaceppGrouping.m; sourceTree = "<group>"; };
-		979DBEB1196405D500E4F64A /* FaceppInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FaceppInfo.h; sourceTree = "<group>"; };
-		979DBEB2196405D500E4F64A /* FaceppInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FaceppInfo.m; sourceTree = "<group>"; };
-		979DBEB3196405D500E4F64A /* FaceppPerson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FaceppPerson.h; sourceTree = "<group>"; };
-		979DBEB4196405D500E4F64A /* FaceppPerson.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FaceppPerson.m; sourceTree = "<group>"; };
-		979DBEB5196405D500E4F64A /* FaceppRecognition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FaceppRecognition.h; sourceTree = "<group>"; };
-		979DBEB6196405D500E4F64A /* FaceppRecognition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FaceppRecognition.m; sourceTree = "<group>"; };
-		979DBEB7196405D500E4F64A /* FaceppTrainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FaceppTrainer.h; sourceTree = "<group>"; };
-		979DBEB8196405D500E4F64A /* FaceppTrainer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FaceppTrainer.m; sourceTree = "<group>"; };
-		979DBEBA196405D500E4F64A /* FaceppError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FaceppError.h; sourceTree = "<group>"; };
-		979DBEBB196405D500E4F64A /* FaceppError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FaceppError.m; sourceTree = "<group>"; };
-		979DBEBC196405D500E4F64A /* FaceppResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FaceppResult.h; sourceTree = "<group>"; };
-		979DBEBD196405D500E4F64A /* FaceppResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FaceppResult.m; sourceTree = "<group>"; };
 		979DBECA196423DE00E4F64A /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 		979DBECC196475B900E4F64A /* MorphTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MorphTarget.h; sourceTree = "<group>"; };
 		979DBECD196475B900E4F64A /* MorphTarget.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MorphTarget.m; sourceTree = "<group>"; };
@@ -428,6 +382,8 @@
 		97EF14641C79F2FD009DDCB2 /* MorphUs.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = MorphUs.entitlements; sourceTree = "<group>"; };
 		97EF14651C7A2CDD009DDCB2 /* ProjectRow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectRow.h; sourceTree = "<group>"; };
 		97EF14661C7A2CDD009DDCB2 /* ProjectRow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectRow.m; sourceTree = "<group>"; };
+		97EF881C2043590C00A90BF5 /* shape_predictor_68_face_landmarks.dat */ = {isa = PBXFileReference; lastKnownFileType = file; name = shape_predictor_68_face_landmarks.dat; path = dlib_iOS/shape_predictor_68_face_landmarks.dat; sourceTree = "<group>"; };
+		97EF881E2043658100A90BF5 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -442,6 +398,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				97EF881F2043658200A90BF5 /* Accelerate.framework in Frameworks */,
+				9702BEEB204321BB003AAD73 /* libdlib.a in Frameworks */,
 				971E07781B51F2F300DFE322 /* CoreData.framework in Frameworks */,
 				9799D0A0196DEFA0001D90A6 /* CoreFoundation.framework in Frameworks */,
 				9799D09E196DA334001D90A6 /* CoreImage.framework in Frameworks */,
@@ -453,16 +411,6 @@
 				978821691963643B004B4A78 /* CoreGraphics.framework in Frameworks */,
 				9788216B1963643B004B4A78 /* UIKit.framework in Frameworks */,
 				978821671963643B004B4A78 /* Foundation.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		978821841963643B004B4A78 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				978821891963643B004B4A78 /* XCTest.framework in Frameworks */,
-				9788218B1963643B004B4A78 /* UIKit.framework in Frameworks */,
-				9788218A1963643B004B4A78 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -592,11 +540,12 @@
 				97EF14641C79F2FD009DDCB2 /* MorphUs.entitlements */,
 				979B2D8419690DAB00A9A773 /* cpp */,
 				970B537719670E6B00693767 /* Shaders */,
-				979DBEA3196405D500E4F64A /* FaceppSDK_ARC */,
 				971E078B1B527A7200DFE322 /* Utils.h */,
 				971E078C1B527A7200DFE322 /* Utils.m */,
 				978821751963643B004B4A78 /* AppDelegate.h */,
 				978821761963643B004B4A78 /* AppDelegate.m */,
+				9702BEEE204322DA003AAD73 /* FaceDetection.h */,
+				9702BEEC20432294003AAD73 /* FaceDetection.mm */,
 				979DBECC196475B900E4F64A /* MorphTarget.h */,
 				979DBECD196475B900E4F64A /* MorphTarget.m */,
 				979B2D88196911A300A9A773 /* MorphManager.h */,
@@ -674,8 +623,8 @@
 		9788215A1963643B004B4A78 = {
 			isa = PBXGroup;
 			children = (
+				97EF881C2043590C00A90BF5 /* shape_predictor_68_face_landmarks.dat */,
 				97273E8A196FDEB60022987F /* MorphUs */,
-				9788218E1963643B004B4A78 /* MorphUsTests */,
 				9768BA631C7959CF007E280C /* watchapp */,
 				9768BA721C7959CF007E280C /* watchapp Extension */,
 				978821651963643B004B4A78 /* Frameworks */,
@@ -687,7 +636,6 @@
 			isa = PBXGroup;
 			children = (
 				978821631963643B004B4A78 /* MorphUs.app */,
-				978821871963643B004B4A78 /* MorphUsTests.xctest */,
 				9768BA621C7959CF007E280C /* watchapp.app */,
 				9768BA6E1C7959CF007E280C /* watchapp Extension.appex */,
 			);
@@ -697,6 +645,8 @@
 		978821651963643B004B4A78 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				9702BEEA204321BA003AAD73 /* libdlib.a */,
+				97EF881E2043658100A90BF5 /* Accelerate.framework */,
 				971E07771B51F2F300DFE322 /* CoreData.framework */,
 				9799D09F196DEFA0001D90A6 /* CoreFoundation.framework */,
 				9799D09D196DA334001D90A6 /* CoreImage.framework */,
@@ -708,7 +658,6 @@
 				978821661963643B004B4A78 /* Foundation.framework */,
 				978821681963643B004B4A78 /* CoreGraphics.framework */,
 				9788216A1963643B004B4A78 /* UIKit.framework */,
-				978821881963643B004B4A78 /* XCTest.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -724,24 +673,6 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		9788218E1963643B004B4A78 /* MorphUsTests */ = {
-			isa = PBXGroup;
-			children = (
-				978821941963643B004B4A78 /* MophUsTests.m */,
-				9788218F1963643B004B4A78 /* Supporting Files */,
-			);
-			path = MorphUsTests;
-			sourceTree = "<group>";
-		};
-		9788218F1963643B004B4A78 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				978821901963643B004B4A78 /* MorphUsTests-Info.plist */,
-				978821911963643B004B4A78 /* InfoPlist.strings */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
 		979B2D8419690DAB00A9A773 /* cpp */ = {
 			isa = PBXGroup;
 			children = (
@@ -751,53 +682,6 @@
 				979B2D8619690DFC00A9A773 /* Morph.cpp */,
 			);
 			name = cpp;
-			sourceTree = "<group>";
-		};
-		979DBEA3196405D500E4F64A /* FaceppSDK_ARC */ = {
-			isa = PBXGroup;
-			children = (
-				979DBEA4196405D500E4F64A /* FaceppAPI.h */,
-				979DBEA5196405D500E4F64A /* FaceppAPI.m */,
-				979DBEA6196405D500E4F64A /* FaceppAPISource */,
-				979DBEB9196405D500E4F64A /* FaceppResult */,
-			);
-			path = FaceppSDK_ARC;
-			sourceTree = "<group>";
-		};
-		979DBEA6196405D500E4F64A /* FaceppAPISource */ = {
-			isa = PBXGroup;
-			children = (
-				979DBEA7196405D500E4F64A /* FaceppClient.h */,
-				979DBEA8196405D500E4F64A /* FaceppClient.m */,
-				979DBEA9196405D500E4F64A /* FaceppDetection.h */,
-				979DBEAA196405D500E4F64A /* FaceppDetection.m */,
-				979DBEAB196405D500E4F64A /* FaceppFaceset.h */,
-				979DBEAC196405D500E4F64A /* FaceppFaceset.m */,
-				979DBEAD196405D500E4F64A /* FaceppGroup.h */,
-				979DBEAE196405D500E4F64A /* FaceppGroup.m */,
-				979DBEAF196405D500E4F64A /* FaceppGrouping.h */,
-				979DBEB0196405D500E4F64A /* FaceppGrouping.m */,
-				979DBEB1196405D500E4F64A /* FaceppInfo.h */,
-				979DBEB2196405D500E4F64A /* FaceppInfo.m */,
-				979DBEB3196405D500E4F64A /* FaceppPerson.h */,
-				979DBEB4196405D500E4F64A /* FaceppPerson.m */,
-				979DBEB5196405D500E4F64A /* FaceppRecognition.h */,
-				979DBEB6196405D500E4F64A /* FaceppRecognition.m */,
-				979DBEB7196405D500E4F64A /* FaceppTrainer.h */,
-				979DBEB8196405D500E4F64A /* FaceppTrainer.m */,
-			);
-			path = FaceppAPISource;
-			sourceTree = "<group>";
-		};
-		979DBEB9196405D500E4F64A /* FaceppResult */ = {
-			isa = PBXGroup;
-			children = (
-				979DBEBA196405D500E4F64A /* FaceppError.h */,
-				979DBEBB196405D500E4F64A /* FaceppError.m */,
-				979DBEBC196405D500E4F64A /* FaceppResult.h */,
-				979DBEBD196405D500E4F64A /* FaceppResult.m */,
-			);
-			path = FaceppResult;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -856,24 +740,6 @@
 			productReference = 978821631963643B004B4A78 /* MorphUs.app */;
 			productType = "com.apple.product-type.application";
 		};
-		978821861963643B004B4A78 /* MorphUsTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 9788219B1963643B004B4A78 /* Build configuration list for PBXNativeTarget "MorphUsTests" */;
-			buildPhases = (
-				978821831963643B004B4A78 /* Sources */,
-				978821841963643B004B4A78 /* Frameworks */,
-				978821851963643B004B4A78 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				9788218D1963643B004B4A78 /* PBXTargetDependency */,
-			);
-			name = MorphUsTests;
-			productName = SelfweTests;
-			productReference = 978821871963643B004B4A78 /* MorphUsTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -907,9 +773,6 @@
 							};
 						};
 					};
-					978821861963643B004B4A78 = {
-						TestTargetID = 978821621963643B004B4A78;
-					};
 				};
 			};
 			buildConfigurationList = 9788215E1963643B004B4A78 /* Build configuration list for PBXProject "MorphUs" */;
@@ -926,7 +789,6 @@
 			projectRoot = "";
 			targets = (
 				978821621963643B004B4A78 /* MorphUs */,
-				978821861963643B004B4A78 /* MorphUsTests */,
 				9768BA611C7959CF007E280C /* watchapp */,
 				9768BA6D1C7959CF007E280C /* watchapp Extension */,
 			);
@@ -1056,20 +918,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				97EF881D2043590D00A90BF5 /* shape_predictor_68_face_landmarks.dat in Resources */,
 				970B53D4196717AC00693767 /* Shader.vsh in Resources */,
 				970B53D3196717A300693767 /* Shader.fsh in Resources */,
 				9768BA8E1C796B6F007E280C /* Main_iPhone.storyboard in Resources */,
 				9788217D1963643B004B4A78 /* Main_iPad.storyboard in Resources */,
 				978821821963643B004B4A78 /* Images.xcassets in Resources */,
 				978821711963643B004B4A78 /* InfoPlist.strings in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		978821851963643B004B4A78 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				978821931963643B004B4A78 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1092,45 +947,26 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9702BEED20432294003AAD73 /* FaceDetection.mm in Sources */,
 				971E07901B52810D00DFE322 /* ProjectsTableViewCell.m in Sources */,
 				979F616A196CA3ED003FC04B /* VideoWriter.m in Sources */,
 				979B2D8719690DFC00A9A773 /* Morph.cpp in Sources */,
-				979DBEC0196405D500E4F64A /* FaceppDetection.m in Sources */,
 				9723308C197043EF0025E9FE /* ImageUtils.m in Sources */,
 				971E07931B55A47B00DFE322 /* MorphSettingsTableViewController.m in Sources */,
 				9791C7DC1B5122180030982F /* Matrix.cpp in Sources */,
-				979DBEC7196405D500E4F64A /* FaceppTrainer.m in Sources */,
-				979DBEC9196405D500E4F64A /* FaceppResult.m in Sources */,
-				979DBEC5196405D500E4F64A /* FaceppPerson.m in Sources */,
 				971E07831B51F9BD00DFE322 /* MorphViewController.m in Sources */,
 				971E07841B51F9BD00DFE322 /* ProjectsViewController.m in Sources */,
 				979DBECE196475B900E4F64A /* MorphTarget.m in Sources */,
 				970B53761966D61D00693767 /* GLKMorphViewController.m in Sources */,
-				979DBEC4196405D500E4F64A /* FaceppInfo.m in Sources */,
 				979B3B511968099F0041671C /* MorphLatticeModel.m in Sources */,
-				979DBEC8196405D500E4F64A /* FaceppError.m in Sources */,
-				979DBEC1196405D500E4F64A /* FaceppFaceset.m in Sources */,
 				978821771963643B004B4A78 /* AppDelegate.m in Sources */,
-				979DBEC2196405D500E4F64A /* FaceppGroup.m in Sources */,
-				979DBEBF196405D500E4F64A /* FaceppClient.m in Sources */,
 				9768BA911C79C7E7007E280C /* WatchUtil.m in Sources */,
 				971E078D1B527A7200DFE322 /* Utils.m in Sources */,
 				971E078A1B52616F00DFE322 /* MorphModel.xcdatamodeld in Sources */,
-				979DBEC3196405D500E4F64A /* FaceppGrouping.m in Sources */,
 				97AAEC1E196593AE00D449F1 /* ImageCollectionViewCell.m in Sources */,
 				978821731963643B004B4A78 /* main.m in Sources */,
-				979DBEC6196405D500E4F64A /* FaceppRecognition.m in Sources */,
-				979DBEBE196405D500E4F64A /* FaceppAPI.m in Sources */,
 				97273E8D197010B00022987F /* HelpViewController.m in Sources */,
 				979B2D8A196911A300A9A773 /* MorphManager.mm in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		978821831963643B004B4A78 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				978821951963643B004B4A78 /* MophUsTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1146,11 +982,6 @@
 			isa = PBXTargetDependency;
 			target = 9768BA611C7959CF007E280C /* watchapp */;
 			targetProxy = 9768BA811C7959CF007E280C /* PBXContainerItemProxy */;
-		};
-		9788218D1963643B004B4A78 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 978821621963643B004B4A78 /* MorphUs */;
-			targetProxy = 9788218C1963643B004B4A78 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1185,14 +1016,6 @@
 				9788217C1963643B004B4A78 /* Base */,
 			);
 			name = Main_iPad.storyboard;
-			sourceTree = "<group>";
-		};
-		978821911963643B004B4A78 /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				978821921963643B004B4A78 /* en */,
-			);
-			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -1305,8 +1128,11 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
+					DLIB_JPEG_SUPPORT,
+					DLIB_NO_GUI_SUPPORT,
+					NDEBUG,
+					DLIB_USE_BLAS,
+					DLIB_USE_LAPACK,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -1315,7 +1141,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1342,13 +1168,20 @@
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					DLIB_JPEG_SUPPORT,
+					DLIB_NO_GUI_SUPPORT,
+					NDEBUG,
+					DLIB_USE_BLAS,
+					DLIB_USE_LAPACK,
+				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -1367,14 +1200,20 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MorphUs/MorphUs-Prefix.pch";
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/dlib_iOS";
 				INFOPLIST_FILE = "MorphUs/MorphUs-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				ONLY_ACTIVE_ARCH = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/dlib_iOS",
+				);
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.cuffedtothekeyboard.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = MorphUs;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
-				VALID_ARCHS = "armv7s armv7 arm64";
+				VALID_ARCHS = "arm64 armv7 armv7s";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1391,61 +1230,21 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MorphUs/MorphUs-Prefix.pch";
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/dlib_iOS";
 				INFOPLIST_FILE = "MorphUs/MorphUs-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/dlib_iOS",
+				);
 				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.cuffedtothekeyboard.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = MorphUs;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
-				VALID_ARCHS = "armv7s armv7 arm64";
+				VALID_ARCHS = "arm64 armv7 armv7s";
 				WRAPPER_EXTENSION = app;
-			};
-			name = Release;
-		};
-		9788219C1963643B004B4A78 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/MorphUs.app/MorphUs";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "MorphUs/MorphUs-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = "MorphUsTests/MorphUsTests-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.cuffedtothekeyboard.${PRODUCT_NAME:rfc1034identifier}";
-				PRODUCT_NAME = MorphUsTests;
-				SDKROOT = iphoneos;
-				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = xctest;
-			};
-			name = Debug;
-		};
-		9788219D1963643B004B4A78 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/MorphUs.app/MorphUs";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "MorphUs/MorphUs-Prefix.pch";
-				INFOPLIST_FILE = "MorphUsTests/MorphUsTests-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.cuffedtothekeyboard.${PRODUCT_NAME:rfc1034identifier}";
-				PRODUCT_NAME = MorphUsTests;
-				SDKROOT = iphoneos;
-				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = xctest;
 			};
 			name = Release;
 		};
@@ -1484,15 +1283,6 @@
 			buildConfigurations = (
 				978821991963643B004B4A78 /* Debug */,
 				9788219A1963643B004B4A78 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		9788219B1963643B004B4A78 /* Build configuration list for PBXNativeTarget "MorphUsTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				9788219C1963643B004B4A78 /* Debug */,
-				9788219D1963643B004B4A78 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

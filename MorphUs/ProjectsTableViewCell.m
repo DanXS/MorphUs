@@ -14,6 +14,7 @@
 @synthesize thumbImageView;
 
 - (void)awakeFromNib {
+    [super awakeFromNib];
     // Initialization code
 }
 

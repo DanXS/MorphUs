@@ -14,13 +14,14 @@
 @synthesize managedObjectContext = _managedObjectContext;
 @synthesize managedObjectModel = _managedObjectModel;
 @synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
+@synthesize faceDetection = _faceDetection;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     
-    // Set up FaceppAPI for face detection
-    [self startFacePPServer:[self loadActiveFacePPServer]];
-
+    // Initialize face detector
+    self.faceDetection = [[FaceDetection alloc] init];
+    
     UIStoryboard *mainStoryboard = nil;
     // Fetch Main Storyboard
     if([Utils isIPad])
@@ -131,8 +132,6 @@
     
 }
 
-
-
 - (void)applicationWillResignActive:(UIApplication *)application
 {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
@@ -188,7 +187,7 @@
     
     NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
     if (coordinator != nil) {
-        _managedObjectContext = [[NSManagedObjectContext alloc] init];
+        _managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
         [_managedObjectContext setPersistentStoreCoordinator:coordinator];
     }
     return _managedObjectContext;
@@ -256,41 +255,6 @@
 - (NSURL *)applicationDocumentsDirectory
 {
     return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
-}
-
-#pragma mark - FacePPServer settings
-
-- (NSNumber*)loadActiveFacePPServer
-{
-    NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
-    NSNumber* serverNo = [userDefaults valueForKey:@"activeFacePPServer"];
-    if(!serverNo)
-    {
-        serverNo = [NSNumber numberWithInt:ACTIVE_FACEPP_SERVER];
-        [self saveActiveFacePPServer:serverNo];
-    }
-    return serverNo;
-}
-
-- (void)saveActiveFacePPServer:(NSNumber*)serverNo
-{
-    NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
-    [userDefaults setObject:serverNo forKey:@"activeFacePPServer"];
-    [userDefaults synchronize];
-}
-
-- (void)startFacePPServer:(NSNumber*)serverNo
-{
-    if([serverNo intValue] == APIServerRegionCN)
-    {
-        NSLog(@"Connecting to server in China");
-        [FaceppAPI initWithApiKey:FACEPP_API_KEY_1 andApiSecret:FACEPP_API_SECRET_1 andRegion:APIServerRegionCN];
-    }
-    else
-    {
-        NSLog(@"Connecting to server in USA");
-        [FaceppAPI initWithApiKey:FACEPP_API_KEY_2 andApiSecret:FACEPP_API_SECRET_2 andRegion:APIServerRegionUS];
-    }
 }
 
 

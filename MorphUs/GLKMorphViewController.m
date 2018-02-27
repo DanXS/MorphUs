@@ -55,9 +55,9 @@ enum
     GLuint _texcoordVBO2;
     GLuint _indexVBO;
     GLfloat _alpha;
-    GLfloat _weights1[2*84];
-    GLfloat _weights2[2*84];
-    GLfloat _interpMarkers[2*81];
+    GLfloat _weights1[2*71];
+    GLfloat _weights2[2*71];
+    GLfloat _interpMarkers[2*68];
     UIAlertView* _noMorphTargetsAlertView;
     EAGLContext* _context;
     CGFloat _screenWidth;
@@ -407,9 +407,9 @@ enum
             }
             if(_morphManager) {
                 [_morphManager doMorph:_alpha forSrcWeights:_weights1 andDestWeights:_weights2 InterpolatedMarkers:_interpMarkers];
-                glUniform2fv(uniforms[UNIFORM_INTERP_MARKERS], 81, _interpMarkers);
-                glUniform2fv(uniforms[UNIFORM_WEIGHTS1], 84, _weights1);
-                glUniform2fv(uniforms[UNIFORM_WEIGHTS2], 84, _weights2);
+                glUniform2fv(uniforms[UNIFORM_INTERP_MARKERS], 68, _interpMarkers);
+                glUniform2fv(uniforms[UNIFORM_WEIGHTS1], 71, _weights1);
+                glUniform2fv(uniforms[UNIFORM_WEIGHTS2], 71, _weights2);
                 glUniform1f(uniforms[UNIFORM_ALPHA], _alpha);
                 _isReady = YES;
             }

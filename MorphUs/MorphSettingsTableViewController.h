@@ -11,7 +11,6 @@
 enum
 {
     NameSection = 0,
-    ActiveServerSection,
     VideoSection,
     ExportSettingsSection
 };
@@ -36,12 +35,10 @@ enum
 @property (weak, nonatomic) IBOutlet UIImageView *videoImageView;
 @property (weak, nonatomic) IBOutlet UIImageView *playButtonImageView;
 @property (weak, nonatomic) IBOutlet UILabel *videoLabel;
-@property (weak, nonatomic) IBOutlet UISegmentedControl *serverSegmentControl;
 @property (weak, nonatomic) IBOutlet UIButton *shareButton;
 
 - (IBAction)onDone:(id)sender;
 - (IBAction)onRate:(id)sender;
 - (IBAction)onShare:(id)sender;
-- (IBAction)onServerChanged:(id)sender;
 
 @end

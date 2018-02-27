@@ -10,7 +10,7 @@
 
 @interface ImageUtils : NSObject
 
-+ (UIImage *)resizeImage:(UIImage*)image scale:(CGFloat)scale newSize:(CGSize)newSize;
++ (UIImage*)resizeImage:(UIImage*)image scale:(CGFloat)scale newSize:(CGSize)newSize;
 + (CVPixelBufferRef) pixelBufferFromCGImage:(CGImageRef)image withWidth:(int)width andHeight:(int)height;
 + (UIImage*)makeHorizontalThumbWithImages:(NSArray*)scaledImages size:(CGSize)rect withSpacing:(float)spacing;
 + (UIImage*)drawImage:(UIImage*)fgImage inImage:(UIImage*)bgImage atPoint:(CGPoint)point;

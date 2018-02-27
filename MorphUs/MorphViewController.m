@@ -7,6 +7,8 @@
 //
 
 #define IS_IPAD [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad
+
+#import "AppDelegate.h"
 #import "MorphViewController.h"
 #import "ImageCollectionViewCell.h"
 #import "GLKMorphViewController.h"
@@ -32,6 +34,7 @@
 @synthesize actionIdentifier;
 @synthesize choosePhotoActionSheet;
 @synthesize chooseExportTypeActionSheet;
+@synthesize faceDetection;
 
 - (void)viewDidLoad
 {
@@ -46,7 +49,7 @@
     [self initLandmarkKeyNames];
     imagePicker = [[UIImagePickerController alloc] init];
     self.library = [[ALAssetsLibrary alloc] init];
-
+    self.faceDetection = ((AppDelegate*)[[UIApplication sharedApplication] delegate]).faceDetection;
     self.morphTargets = [[NSMutableArray alloc] init];
     self.morphSequence = [[NSMutableArray alloc] init];
     self.imageCollectionView.delegate = self;
@@ -76,6 +79,7 @@
     }
 }
 
+/*
 - (void)initLandmarkKeyNames
 {
 self.landmarkKeyNames = [NSArray arrayWithObjects:
@@ -162,7 +166,81 @@ self.landmarkKeyNames = [NSArray arrayWithObjects:
                              @"right_eyebrow_upper_right_quarter",
                              nil];
 }
+*/
 
+- (void)initLandmarkKeyNames
+{
+    self.landmarkKeyNames = [NSArray arrayWithObjects:
+                             @"landmark1",
+                             @"landmark2",
+                             @"landmark3",
+                             @"landmark4",
+                             @"landmark5",
+                             @"landmark6",
+                             @"landmark7",
+                             @"landmark8",
+                             @"landmark9",
+                             @"landmark10",
+                             @"landmark11",
+                             @"landmark12",
+                             @"landmark13",
+                             @"landmark14",
+                             @"landmark15",
+                             @"landmark16",
+                             @"landmark17",
+                             @"landmark18",
+                             @"landmark19",
+                             @"landmark20",
+                             @"landmark21",
+                             @"landmark22",
+                             @"landmark23",
+                             @"landmark24",
+                             @"landmark25",
+                             @"landmark26",
+                             @"landmark27",
+                             @"landmark28",
+                             @"landmark29",
+                             @"landmark30",
+                             @"landmark31",
+                             @"landmark32",
+                             @"landmark33",
+                             @"landmark34",
+                             @"landmark35",
+                             @"landmark36",
+                             @"landmark37",
+                             @"landmark38",
+                             @"landmark39",
+                             @"landmark40",
+                             @"landmark41",
+                             @"landmark42",
+                             @"landmark43",
+                             @"landmark44",
+                             @"landmark45",
+                             @"landmark46",
+                             @"landmark47",
+                             @"landmark48",
+                             @"landmark49",
+                             @"landmark50",
+                             @"landmark51",
+                             @"landmark52",
+                             @"landmark53",
+                             @"landmark54",
+                             @"landmark55",
+                             @"landmark56",
+                             @"landmark57",
+                             @"landmark58",
+                             @"landmark59",
+                             @"landmark60",
+                             @"landmark61",
+                             @"landmark62",
+                             @"landmark63",
+                             @"landmark64",
+                             @"landmark65",
+                             @"landmark66",
+                             @"landmark67",
+                             @"landmark68",
+                             nil];
+}
 
 - (void)didReceiveMemoryWarning
 {
@@ -321,43 +399,34 @@ self.landmarkKeyNames = [NSArray arrayWithObjects:
     return image;
 }
 
--(NSString*)tryDetectFace:(UIImage*)image
-{
+-(NSString*)tryDetectFace:(UIImage*)image {
     NSString* errorMsg = nil;
-    FaceppResult* result = [[FaceppAPI detection] detectWithURL:nil orImageData:UIImageJPEGRepresentation(image, 0.5) mode:FaceppDetectionModeNormal attribute:FaceppDetectionAttributeNone];
-    if(result.success)
-    {
-        NSArray* faces = result.content[@"face"];
-        if(faces.count > 0)
-        {
-
-            NSString* faceId = faces[0][@"face_id"];
-            result = [[FaceppAPI detection] landmarkWithFaceId:faceId andType:FaceppLandmark83P];
-            if(result.success) {
-                MorphTarget* target = [[MorphTarget alloc] init];
-                target.markers = [[NSMutableArray alloc] init];
-                for(ptrdiff_t i = 0; i < landmarkKeyNames.count; i++) {
-                    NSNumber* x = result.content[@"result"][0][@"landmark"][self.landmarkKeyNames[i]][@"x"];
-                    NSNumber* y = result.content[@"result"][0][@"landmark"][self.landmarkKeyNames[i]][@"y"];
-                    NSLog(@"Landmark[%td]=[%g %g]", i, [x doubleValue], [y doubleValue]);
-                    [target.markers addObject:[[NSDictionary alloc]
-                                        initWithObjects:[NSArray arrayWithObjects:x, y, nil]
-                                        forKeys:[NSArray arrayWithObjects:@"x", @"y", nil]]];
-                }
-                [self.morphTargets addObject:target];
-                self.currentMorphTarget = target;
-            }
-            else {
-                errorMsg = @"No landmarks found for the detected face";
-            }
+    if (self.faceDetection.isInitialized) {
+        NSArray* rects = [self.faceDetection detectFaces:image];
+        NSDictionary* rect = nil;
+        if ([rects count] == 0) {
+            errorMsg =  @"No faces detected";
         }
-        else
-        {
-            errorMsg = @"No faces detected";
+        else if ([rects count] == 1) {
+            rect = [rects objectAtIndex:0];
+        }
+        else {
+            // More than one face found, so select the largest face for the morph
+            rect = [self.faceDetection findLargest:rects];
+        }
+        // we found a face so find the landmarks of features
+        if (rect != nil) {
+            MorphTarget* target = [[MorphTarget alloc] init];
+            target.markers = [[NSMutableArray alloc] initWithArray:[self.faceDetection findLandmarksForImage:image withRect:rect]];
+            [self.morphTargets addObject:target];
+            self.currentMorphTarget = target;
+        }
+        else {
+            errorMsg = @"Could not find face rectangle";
         }
     }
     else {
-        errorMsg = result.error.message;
+        errorMsg =  @"Error: the face detector was is initialized";
     }
     return errorMsg;
 }
@@ -366,10 +435,9 @@ self.landmarkKeyNames = [NSArray arrayWithObjects:
 {
     self.currentMorphTarget = target;
     self.imageView.image = self.currentMorphTarget.image;
+    [self.markersLayer setNeedsLayout];
     [self.markersLayer setNeedsDisplay];
 }
-
-
 
 #pragma mark - Morph target methods
 
@@ -407,8 +475,8 @@ self.landmarkKeyNames = [NSArray arrayWithObjects:
             for(ptrdiff_t i = 0; i < self.currentMorphTarget.markers.count; i++) {
                 NSDictionary* marker = [self.currentMorphTarget.markers objectAtIndex:i];
                 CGPoint point = CGPointMake([[marker valueForKey:@"x"] doubleValue], [[marker valueForKey:@"y"] doubleValue]);
-                point.x = point.x/100.0*self.markersLayer.bounds.size.width;
-                point.y = point.y/100.0*self.markersLayer.bounds.size.height;
+                point.x = point.x*self.markersLayer.bounds.size.width;
+                point.y = point.y*self.markersLayer.bounds.size.height;
                 CGContextFillRect(context, CGRectMake(point.x-1.0, point.y-1.0, 3.0, 3.0));
             }
         }
@@ -425,8 +493,8 @@ self.landmarkKeyNames = [NSArray arrayWithObjects:
             for(int i = 0; i < self.currentMorphTarget.markers.count; i++) {
                 NSDictionary* marker = [self.currentMorphTarget.markers objectAtIndex:i];
                 CGPoint markerPoint = CGPointMake([[marker valueForKey:@"x"] doubleValue], [[marker valueForKey:@"y"] doubleValue]);
-                markerPoint.x = markerPoint.x/100;
-                markerPoint.y = markerPoint.y/100;
+                markerPoint.x = markerPoint.x;
+                markerPoint.y = markerPoint.y;
                 double distSquared = (point.x-markerPoint.x)*(point.x-markerPoint.x)+(point.y-markerPoint.y)*(point.y-markerPoint.y);
                 if(distSquared < minDistSquared)
                 {
@@ -471,6 +539,7 @@ self.landmarkKeyNames = [NSArray arrayWithObjects:
                 [self addNewMorphTarget:self.currentMorphTarget];
                 [self removeMarkersLayer];
                 [self createMarkersLayer];
+                [self.markersLayer setNeedsLayout];
                 [self.markersLayer setNeedsDisplay];
                 [activityView stopAnimating];
                 [activityView removeFromSuperview];
@@ -516,10 +585,11 @@ self.landmarkKeyNames = [NSArray arrayWithObjects:
                     else {
                         self.currentMorphTarget.assetURL = [info valueForKey:UIImagePickerControllerReferenceURL];
                     }
-                    if(!picker.sourceType == UIImagePickerControllerSourceTypeCamera)
+                    if(picker.sourceType != UIImagePickerControllerSourceTypeCamera)
                         [self addNewMorphTarget:self.currentMorphTarget];
                     [self removeMarkersLayer];
                     [self createMarkersLayer];
+                    [self.markersLayer setNeedsLayout];
                     [self.markersLayer setNeedsDisplay];
                     [self.imageCollectionView reloadData];
                     [self buildThumbnail];
@@ -899,6 +969,7 @@ self.landmarkKeyNames = [NSArray arrayWithObjects:
     recognizer.scale = 1;
     [self removeMarkersLayer];
     [self createMarkersLayer];
+    [self.markersLayer setNeedsLayout];
     [self.markersLayer setNeedsDisplay];
     self.activeMarkerIndex = -1;
 }
@@ -925,6 +996,7 @@ self.landmarkKeyNames = [NSArray arrayWithObjects:
         [recognizer setTranslation:CGPointMake(0, 0) inView:self.view];
         [self removeMarkersLayer];
         [self createMarkersLayer];
+        [self.markersLayer setNeedsLayout];
         [self.markersLayer setNeedsDisplay];
         self.activeMarkerIndex = -1;
     }
@@ -953,8 +1025,8 @@ self.landmarkKeyNames = [NSArray arrayWithObjects:
         point.y = (point.y-recognizer.view.frame.origin.y)/recognizer.view.frame.size.height;
         if(self.activeMarkerIndex != -1) {
             NSLog(@"Move marker %d to %g, %g", (int)self.activeMarkerIndex, point.x, point.y);
-            NSNumber* x = [NSNumber numberWithDouble:(point.x*100)];
-            NSNumber* y = [NSNumber numberWithDouble:(point.y*100)];
+            NSNumber* x = [NSNumber numberWithDouble:(point.x)];
+            NSNumber* y = [NSNumber numberWithDouble:(point.y)];
             NSDictionary* markerPoint = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:x, y, nil] forKeys:[NSArray arrayWithObjects:@"x", @"y", nil]];
             [self updateMarkerAtIndex:self.activeMarkerIndex to:markerPoint];
         }
@@ -968,8 +1040,8 @@ self.landmarkKeyNames = [NSArray arrayWithObjects:
         point.y = (point.y-recognizer.view.frame.origin.y)/recognizer.view.frame.size.height;
         if(self.activeMarkerIndex != -1) {
             NSLog(@"Move marker %d to %g, %g", (int)self.activeMarkerIndex, point.x, point.y);
-            NSNumber* x = [NSNumber numberWithDouble:(point.x*100)];
-            NSNumber* y = [NSNumber numberWithDouble:(point.y*100)];
+            NSNumber* x = [NSNumber numberWithDouble:(point.x)];
+            NSNumber* y = [NSNumber numberWithDouble:(point.y)];
             NSDictionary* markerPoint = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:x, y, nil] forKeys:[NSArray arrayWithObjects:@"x", @"y", nil]];
             self.currentMorphTarget.markers[self.activeMarkerIndex] = markerPoint;
             [self.markersLayer setNeedsDisplay];

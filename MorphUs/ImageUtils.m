@@ -11,7 +11,7 @@
 @implementation ImageUtils
 
 
-+ (UIImage *)resizeImage:(UIImage*)image scale:(CGFloat)scale newSize:(CGSize)newSize {
++ (UIImage*)resizeImage:(UIImage*)image scale:(CGFloat)scale newSize:(CGSize)newSize {
     CGRect newRect = CGRectIntegral(CGRectMake(0, 0, newSize.width, newSize.height));
     CGImageRef imageRef = image.CGImage;
     

@@ -37,7 +37,6 @@ static NSString *const iOSAppStoreURLFormat = @"itms-apps://itunes.apple.com/Web
 @synthesize videoAssetURL;
 @synthesize videoImage;
 @synthesize playButtonImageView;
-@synthesize serverSegmentControl;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -101,14 +100,6 @@ static NSString *const iOSAppStoreURLFormat = @"itms-apps://itunes.apple.com/Web
     }
 }
 
-- (IBAction)onServerChanged:(id)sender {
-    NSInteger index = self.serverSegmentControl.selectedSegmentIndex;
-    AppDelegate* appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
-    
-    [appDelegate saveActiveFacePPServer:[NSNumber numberWithInteger:index]];
-    [appDelegate startFacePPServer:[NSNumber numberWithInteger:index]];
-}
-
 #pragma mark - Table view data source/delegates
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -125,8 +116,6 @@ static NSString *const iOSAppStoreURLFormat = @"itms-apps://itunes.apple.com/Web
         [record setValue:self.managedObject forKey:@"project"];
         [self saveSettings];
     }
-    AppDelegate* appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
-    NSNumber* activeServer = [appDelegate loadActiveFacePPServer];
 
     switch (indexPath.section)
     {
@@ -138,9 +127,6 @@ static NSString *const iOSAppStoreURLFormat = @"itms-apps://itunes.apple.com/Web
             {
                 self.videoImageView.image = videoImage;
             }
-            break;
-        case ActiveServerSection:
-            [self.serverSegmentControl setSelectedSegmentIndex:[activeServer integerValue]];
             break;
         case ExportSettingsSection:
             switch (indexPath.row)
@@ -166,9 +152,6 @@ static NSString *const iOSAppStoreURLFormat = @"itms-apps://itunes.apple.com/Web
     switch (indexPath.section)
     {
         case NameSection:
-            [tableView deselectRowAtIndexPath:indexPath animated:YES];
-            break;
-        case ActiveServerSection:
             [tableView deselectRowAtIndexPath:indexPath animated:YES];
             break;
         case VideoSection:
@@ -297,15 +280,5 @@ static NSString *const iOSAppStoreURLFormat = @"itms-apps://itunes.apple.com/Web
 {
     
 }
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

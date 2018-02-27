@@ -32,14 +32,14 @@
         morph->ClearMarkers();
         for(ptrdiff_t i = 0; i < src.count; i++) {
             NSDictionary* marker = [src objectAtIndex:i];
-            float x = [[marker valueForKey:@"x"] doubleValue]/100.0;
-            float y = [[marker valueForKey:@"y"] doubleValue]/100.0;
+            float x = [[marker valueForKey:@"x"] doubleValue];
+            float y = [[marker valueForKey:@"y"] doubleValue];
             morph->AddSrcMarker(x, y);
         }
         for(ptrdiff_t i = 0; i < dest.count; i++){
             NSDictionary* marker = [dest objectAtIndex:i];
-            float x = [[marker valueForKey:@"x"] doubleValue]/100.0;
-            float y = [[marker valueForKey:@"y"] doubleValue]/100.0;
+            float x = [[marker valueForKey:@"x"] doubleValue];
+            float y = [[marker valueForKey:@"y"] doubleValue];
             morph->AddDestMarker(x, y);
         }
     }

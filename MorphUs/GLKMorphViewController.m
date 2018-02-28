@@ -436,7 +436,6 @@ enum
                         if(complete)
                         {
                             [weakSelf saveMovieToCameraRoll];
-                            [weakSelf presentExportCompletedAlert:@"Export completed successfully"];
                         }
                         else
                         {
@@ -602,7 +601,6 @@ enum
 										NSLog(@"Saved movie to camera roll");
                                         [self saveMovieURL:assetURL];
                                     }
-                                    [self removeFile:self.movieURL];
 								}];
 }
 
@@ -610,18 +608,32 @@ enum
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         NSManagedObject* morphSettings = [self.managedObject valueForKey:@"morphSettings"];
+        // create a new morph setting record if it doesn't already exist
+        if (morphSettings == nil) {
+            // create new morph settings record
+            NSEntityDescription *entity = [NSEntityDescription entityForName:@"MorphSettings" inManagedObjectContext:self.managedObjectContext];
+            morphSettings = [[NSManagedObject alloc] initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
+            // connect to morph project
+            [self.managedObject setValue:morphSettings forKey:@"morphSettings"];
+            [morphSettings setValue:self.managedObject forKey:@"project"];
+        }
+        // Set the video URL
         [morphSettings setValue:url.absoluteString forKey:@"videoURL"];
-        
         NSError *error = nil;
-        
+        // Save to the managed object context
         if (![self.managedObjectContext save:&error]) {
             if (error) {
                 NSLog(@"Unable to save record.");
                 NSLog(@"%@, %@", error, error.localizedDescription);
             }
-            
-            // Show Alert View
-            [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"Video URL could not be saved." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+            // Show failure alert
+            [self presentExportCompletedAlert:@"Video URL could not be saved."];
+        }
+        else {
+            // Remove original file
+            [self removeFile:self.movieURL];
+            // Show success alert
+            [self presentExportCompletedAlert:@"Export completed successfully"];
         }
     });
 }

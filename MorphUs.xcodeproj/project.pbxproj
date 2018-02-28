@@ -154,7 +154,7 @@
 		979DBECE196475B900E4F64A /* MorphTarget.m in Sources */ = {isa = PBXBuildFile; fileRef = 979DBECD196475B900E4F64A /* MorphTarget.m */; };
 		979F616A196CA3ED003FC04B /* VideoWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 979F6169196CA3ED003FC04B /* VideoWriter.m */; };
 		97AAEC1E196593AE00D449F1 /* ImageCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 97AAEC1D196593AE00D449F1 /* ImageCollectionViewCell.m */; };
-		97D4442F2046B7A600213134 /* libdlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 97D4442E2046B73700213134 /* libdlib.a */; };
+		97D444302046C78500213134 /* libdlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9702BEEA204321BA003AAD73 /* libdlib.a */; };
 		97EF14671C7A2CDD009DDCB2 /* ProjectRow.m in Sources */ = {isa = PBXBuildFile; fileRef = 97EF14661C7A2CDD009DDCB2 /* ProjectRow.m */; };
 		97EF881D2043590D00A90BF5 /* shape_predictor_68_face_landmarks.dat in Resources */ = {isa = PBXBuildFile; fileRef = 97EF881C2043590C00A90BF5 /* shape_predictor_68_face_landmarks.dat */; };
 		97EF881F2043658200A90BF5 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97EF881E2043658100A90BF5 /* Accelerate.framework */; };
@@ -379,7 +379,6 @@
 		979F6169196CA3ED003FC04B /* VideoWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoWriter.m; sourceTree = "<group>"; };
 		97AAEC1C196593AE00D449F1 /* ImageCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageCollectionViewCell.h; sourceTree = "<group>"; };
 		97AAEC1D196593AE00D449F1 /* ImageCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageCollectionViewCell.m; sourceTree = "<group>"; };
-		97D4442E2046B73700213134 /* libdlib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libdlib.a; path = dlib_iOS/libdlib.a; sourceTree = "<group>"; };
 		97EF14641C79F2FD009DDCB2 /* MorphUs.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = MorphUs.entitlements; sourceTree = "<group>"; };
 		97EF14651C7A2CDD009DDCB2 /* ProjectRow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectRow.h; sourceTree = "<group>"; };
 		97EF14661C7A2CDD009DDCB2 /* ProjectRow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectRow.m; sourceTree = "<group>"; };
@@ -399,7 +398,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				97D4442F2046B7A600213134 /* libdlib.a in Frameworks */,
+				97D444302046C78500213134 /* libdlib.a in Frameworks */,
 				97EF881F2043658200A90BF5 /* Accelerate.framework in Frameworks */,
 				971E07781B51F2F300DFE322 /* CoreData.framework in Frameworks */,
 				9799D0A0196DEFA0001D90A6 /* CoreFoundation.framework in Frameworks */,
@@ -624,7 +623,6 @@
 		9788215A1963643B004B4A78 = {
 			isa = PBXGroup;
 			children = (
-				97D4442E2046B73700213134 /* libdlib.a */,
 				97EF881C2043590C00A90BF5 /* shape_predictor_68_face_landmarks.dat */,
 				97273E8A196FDEB60022987F /* MorphUs */,
 				9768BA631C7959CF007E280C /* watchapp */,

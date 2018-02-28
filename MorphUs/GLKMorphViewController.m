@@ -58,7 +58,6 @@ enum
     GLfloat _weights1[2*71];
     GLfloat _weights2[2*71];
     GLfloat _interpMarkers[2*68];
-    UIAlertView* _noMorphTargetsAlertView;
     EAGLContext* _context;
     CGFloat _screenWidth;
     CGFloat _screenHeight;
@@ -90,7 +89,6 @@ enum
 @synthesize actionIdentifier;
 @synthesize movieURL;
 @synthesize toolbar;
-@synthesize exportAlertView;
 @synthesize exportInfoLabel;
 @synthesize managedObjectContext;
 @synthesize managedObject;
@@ -550,31 +548,27 @@ enum
 {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         self.exportProgressView.hidden = YES;
-        self.exportAlertView = [[UIAlertView alloc]
-                                initWithTitle:@"Finished"
-                                message:message
-                                delegate:self
-                                cancelButtonTitle:@"OK!"
-                                otherButtonTitles:nil];
-        [self.exportAlertView show];
+        UIAlertController* alert = [UIAlertController
+                                              alertControllerWithTitle:@"Finished"
+                                                                message:message
+                                     preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* ok = [UIAlertAction
+                                    actionWithTitle:@"OK!"
+                                    style:UIAlertActionStyleDefault
+                                    handler:^(UIAlertAction * action) {
+                                        _isReady = NO;
+                                        _hasAborted = YES;
+                                        [self tearDownGL];
+                                        [self freePixelBuffers];
+                                        [_model freebuffers];
+                                        [self.navigationController popViewControllerAnimated:YES];
+                                    }];
+        [alert addAction:ok];
+        
+        [self presentViewController:alert animated:YES completion:nil];
         
     });
-    
-}
-
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    @synchronized(self) {
-    if(alertView==exportAlertView)
-        {
-            _isReady = NO;
-            _hasAborted = YES;
-            [self tearDownGL];
-            [self freePixelBuffers];
-            [_model freebuffers];
-            [self.navigationController popViewControllerAnimated:YES];
-        }
-    }
 }
 
 - (void)removeFile:(NSURL *)fileURL

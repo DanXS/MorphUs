@@ -17,7 +17,7 @@
 #import "FaceDetection.h"
 #import "MorphTarget.h"
 
-@interface MorphViewController : UIViewController<UICollectionViewDataSource, UICollectionViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIActionSheetDelegate, WCSessionDelegate, UIActionSheetDelegate, CALayerDelegate>
+@interface MorphViewController : UIViewController<UICollectionViewDataSource, UICollectionViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, WCSessionDelegate, CALayerDelegate>
 {
     UIImagePickerController* imagePicker;
 }
@@ -40,8 +40,6 @@ typedef void(^LoadImageCompletionBlock)(UIImage*, NSError*);
 @property (weak, nonatomic) IBOutlet UILabel *activeMarkerLabel;
 @property (strong, nonatomic) NSURL* movieURL;
 @property (strong, nonatomic) NSString* actionIdentifier;
-@property (strong, nonatomic) UIActionSheet* choosePhotoActionSheet;
-@property (strong, nonatomic) UIActionSheet* chooseExportTypeActionSheet;
 
 - (IBAction)selectProject:(id)sender;
 - (IBAction)choosePhoto:(id)sender;

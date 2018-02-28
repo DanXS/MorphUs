@@ -102,9 +102,27 @@
         }
         
         // Show Alert View
-        [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"Morph project could not be saved." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+        [self showWarningAlert:@"Morph project could not be saved."];
         return nil;
     }
+}
+
+- (void)showWarningAlert:(NSString*)message {
+    UIAlertController* alert = [UIAlertController
+                                alertControllerWithTitle:@"Warning"
+                                message:message
+                                preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* ok = [UIAlertAction
+                         actionWithTitle:@"OK!"
+                         style:UIAlertActionStyleDefault
+                         handler:^(UIAlertAction * action) {
+                         }];
+    
+    
+    [alert addAction:ok];
+    
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 - (NSManagedObject*)selectProjectAt:(NSInteger)row

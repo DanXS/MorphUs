@@ -32,8 +32,6 @@
 @synthesize landmarkKeyNames;
 @synthesize movieURL;
 @synthesize actionIdentifier;
-@synthesize choosePhotoActionSheet;
-@synthesize chooseExportTypeActionSheet;
 @synthesize faceDetection;
 
 - (void)viewDidLoad
@@ -469,13 +467,22 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 if(errorMsg)
                 {
-                    UIAlertView *alert = [[UIAlertView alloc]
-                                          initWithTitle:@"Face Detection Error"
-                                          message:errorMsg
-                                          delegate:nil
-                                          cancelButtonTitle:@"OK!"
-                                          otherButtonTitles:nil];
-                    [alert show];
+                    UIAlertController* alert = [UIAlertController
+                                                alertControllerWithTitle:@"Face Detection Error"
+                                                message:errorMsg
+                                                preferredStyle:UIAlertControllerStyleAlert];
+                    
+                    UIAlertAction* ok = [UIAlertAction
+                                         actionWithTitle:@"OK!"
+                                         style:UIAlertActionStyleDefault
+                                         handler:^(UIAlertAction * action) {
+                                         }];
+                    
+                    
+                    [alert addAction:ok];
+                    
+                    [self presentViewController:alert animated:YES completion:nil];
+
                 }
                 else
                 {
@@ -576,8 +583,27 @@
         }
         
         // Show Alert View
-        [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"Morph target could not be saved." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+        [self showWarningAlert:@"Morph target could not be saved."];
+
     }
+}
+
+- (void)showWarningAlert:(NSString*)message {
+    UIAlertController* alert = [UIAlertController
+                                alertControllerWithTitle:@"Warning"
+                                message:message
+                                preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* ok = [UIAlertAction
+                         actionWithTitle:@"OK!"
+                         style:UIAlertActionStyleDefault
+                         handler:^(UIAlertAction * action) {
+                         }];
+    
+    
+    [alert addAction:ok];
+    
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 - (void)addNewMorphTarget:(MorphTarget*)morphTarget
@@ -655,7 +681,7 @@
         }
         
         // Show Alert View
-        [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"Morph target could not be saved." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+        [self showWarningAlert:@"Morph target could not be saved."];
     }
 }
 
@@ -766,13 +792,7 @@
                                              (unsigned long)failedLoadTargetArray.count,
                                              (failedLoadTargetArray.count == 1) ? @"" : @"s",
                                              (failedLoadTargetArray.count == 1) ? @"it" : @"them"];
-                        UIAlertView *alert = [[UIAlertView alloc]
-                                              initWithTitle:@"Oops"
-                                              message:message
-                                              delegate:nil
-                                              cancelButtonTitle:@"OK!"
-                                              otherButtonTitles:nil];
-                        [alert show];
+                        [self showWarningAlert:message];
                     }
                     else
                     {
@@ -967,44 +987,19 @@
 
 - (IBAction)choosePhoto:(id)sender
 {
-    choosePhotoActionSheet = [[UIActionSheet alloc] initWithTitle:@"Choose Face Photo" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"From Camera", @"From Photo Library", nil];
-    [choosePhotoActionSheet showInView:self.view];
-}
-
-- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex
-{
-    if(actionSheet == choosePhotoActionSheet)
-    {
-        switch (buttonIndex)
-        {
-            case 0:
-                [self pickPhotoFromCamera];
-                break;
-            case 1:
-                [self pickPhotoFromLibrary];
-                break;
-            default:
-                break;
-        }
-    }
-    else if (actionSheet == chooseExportTypeActionSheet)
-    {
-        switch (buttonIndex)
-        {
-            case 0:
-                if ([self shouldPerformSegueWithIdentifier:@"ExportToWatch" sender:self.toolbarItems[5]]) {
-                    [self performSegueWithIdentifier:@"ExportToWatch" sender:self.toolbarItems[5]];
-                }
-                break;
-            case 1:
-                if ([self shouldPerformSegueWithIdentifier:@"Export" sender:self.toolbarItems[5]]) {
-                    [self performSegueWithIdentifier:@"Export" sender:self.toolbarItems[5]];
-                }
-                break;
-            default:
-                break;
-        }
-    }
+    UIAlertController *actionSheet = [UIAlertController alertControllerWithTitle:@"Select Source" message:@"Please select how you would like to retrieve the photograph" preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    [actionSheet addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+    }]];
+    
+    [actionSheet addAction:[UIAlertAction actionWithTitle:@"From Camera" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        [self pickPhotoFromCamera];
+    }]];
+    
+    [actionSheet addAction:[UIAlertAction actionWithTitle:@"From Photo Library" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        [self pickPhotoFromLibrary];
+    }]];
+    [self presentViewController:actionSheet animated:YES completion:nil];
 }
 
 - (void)pickPhotoFromCamera
@@ -1016,13 +1011,7 @@
         imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
         [self presentViewController:imagePicker animated:YES completion:nil];
     } else {
-        UIAlertView *alert = [[UIAlertView alloc]
-                              initWithTitle:@"Error"
-                              message:@"Failed to access camera"
-                              delegate:nil
-                              cancelButtonTitle:@"OK!"
-                              otherButtonTitles:nil];
-        [alert show];
+        [self showWarningAlert:@"Failed to access camera"];
     }
 }
 
@@ -1037,13 +1026,7 @@
         [self presentViewController:imagePicker animated:YES completion:nil];
     }
     else {
-        UIAlertView *alert = [[UIAlertView alloc]
-                              initWithTitle:@"Error"
-                              message:@"Failed to access photo library"
-                              delegate:nil
-                              cancelButtonTitle:@"OK!"
-                              otherButtonTitles:nil];
-        [alert show];
+        [self showWarningAlert:@"Failed to access photo library"];
     }
 }
 
@@ -1109,13 +1092,26 @@
 
 }
 
-
 - (void)chooseExportType {
-    chooseExportTypeActionSheet = [[UIActionSheet alloc] initWithTitle:@"Select export type" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Export to apple watch", @"Export to video file", nil];
-    [chooseExportTypeActionSheet showInView:self.view];
+    
+    UIAlertController *actionSheet = [UIAlertController alertControllerWithTitle:@"Select Export Destination" message:@"Please select where you would like to export your morph" preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    [actionSheet addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+    }]];
+    
+    [actionSheet addAction:[UIAlertAction actionWithTitle:@"Export to Apple Watch" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        if ([self shouldPerformSegueWithIdentifier:@"ExportToWatch" sender:self.toolbarItems[5]]) {
+            [self performSegueWithIdentifier:@"ExportToWatch" sender:self.toolbarItems[5]];
+        }
+    }]];
+    
+    [actionSheet addAction:[UIAlertAction actionWithTitle:@"Export to a video file" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        if ([self shouldPerformSegueWithIdentifier:@"Export" sender:self.toolbarItems[5]]) {
+            [self performSegueWithIdentifier:@"Export" sender:self.toolbarItems[5]];
+        }
+    }]];
+    [self presentViewController:actionSheet animated:YES completion:nil];
 }
-
-
 
 
  #pragma mark - Navigation
@@ -1125,7 +1121,6 @@
         return YES;
     }
     else if(self.morphSequence.count >= 2) {
-        
         return YES;
     }
     else {
@@ -1137,16 +1132,10 @@
             message = @"You need at least two morph targets to export movie";
         }
         else if([identifier  isEqual: @"ExportToWatch"]) {
-            message = @"You need at least two morph targets to export movie";
+            message = @"You need at least two morph targets to Apple Watch";
         }
         if(message != nil) {
-            UIAlertView* alert = [[UIAlertView alloc]
-                                  initWithTitle:@"Oops"
-                                  message:message
-                                  delegate:nil
-                                  cancelButtonTitle:@"OK"
-                                  otherButtonTitles:nil];
-            [alert show];
+            [self showWarningAlert:message];
         }
         return NO;
     }

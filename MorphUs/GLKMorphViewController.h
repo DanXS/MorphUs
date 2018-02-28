@@ -14,7 +14,7 @@
 #import "WatchUtil.h"
 
 
-@interface GLKMorphViewController : GLKViewController <UIAlertViewDelegate>
+@interface GLKMorphViewController : GLKViewController
 
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (strong, nonatomic) NSManagedObject* managedObject;
@@ -26,7 +26,6 @@
 @property (strong, nonatomic) NSURL* movieURL;
 @property (strong, nonatomic) NSString* actionIdentifier;
 @property (weak, nonatomic) IBOutlet UIToolbar *toolbar;
-@property (strong, nonatomic) UIAlertView* exportAlertView;
 @property (weak, nonatomic) IBOutlet UILabel *exportInfoLabel;
 @property (weak, nonatomic) IBOutlet UIView *exportProgressView;
 @property (weak, nonatomic) IBOutlet UIProgressView *exportProgressBarView;

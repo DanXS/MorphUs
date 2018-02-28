@@ -29,8 +29,6 @@ static NSString *const iOSAppStoreURLFormat = @"itms-apps://itunes.apple.com/Web
 @implementation MorphSettingsTableViewController
 @synthesize managedObjectContext;
 @synthesize managedObject;
-@synthesize framesPerTransitionActionSheet;
-@synthesize framesPerSecondActionSheet;
 @synthesize hasVideo;
 @synthesize videoImageView;
 @synthesize videoLabel;
@@ -181,60 +179,68 @@ static NSString *const iOSAppStoreURLFormat = @"itms-apps://itunes.apple.com/Web
 
 - (void)selectFramesPerTransition
 {
-    framesPerTransitionActionSheet = [[UIActionSheet alloc] initWithTitle:@"Select frames per transition" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"15 frames", @"30 frames", @"60 frames", @"90 frames", @"120 frames", nil];
-    [framesPerTransitionActionSheet showInView:self.view];
+    UIAlertController *actionSheet = [UIAlertController alertControllerWithTitle:@"Select frames per transition" message:@"Please select the number of frames per you would like per morph transition" preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    [actionSheet addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+    }]];
+    [actionSheet addAction:[UIAlertAction actionWithTitle:@"15 FPT" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        [self setFPT:[NSNumber numberWithInt:15]];
+    }]];
+    [actionSheet addAction:[UIAlertAction actionWithTitle:@"30 FPT" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        [self setFPT:[NSNumber numberWithInt:30]];
+    }]];
+    [actionSheet addAction:[UIAlertAction actionWithTitle:@"60 FPT" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        [self setFPT:[NSNumber numberWithInt:60]];
+    }]];
+    [actionSheet addAction:[UIAlertAction actionWithTitle:@"90 FPT" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        [self setFPT:[NSNumber numberWithInt:90]];
+    }]];
+    [actionSheet addAction:[UIAlertAction actionWithTitle:@"120 FPT" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        [self setFPT:[NSNumber numberWithInt:120]];
+    }]];
+    [self presentViewController:actionSheet animated:YES completion:nil];
 }
 
 - (void)selectFramesPerSecond
 {
-    framesPerSecondActionSheet = [[UIActionSheet alloc] initWithTitle:@"Select per second" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"15 frames", @"30 frames", @"60 frames", nil];
-    [framesPerSecondActionSheet showInView:self.view];
+    UIAlertController *actionSheet = [UIAlertController alertControllerWithTitle:@"Select frames per second" message:@"Please select the number of frames per second you would like for video playback" preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    [actionSheet addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+    }]];
+    [actionSheet addAction:[UIAlertAction actionWithTitle:@"15 FPS" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        [self setFPS:[NSNumber numberWithInt:15]];
+    }]];
+    [actionSheet addAction:[UIAlertAction actionWithTitle:@"30 FPS" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        [self setFPS:[NSNumber numberWithInt:30]];
+    }]];
+    [actionSheet addAction:[UIAlertAction actionWithTitle:@"60 FPS" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        [self setFPS:[NSNumber numberWithInt:60]];
+    }]];
+    [self presentViewController:actionSheet animated:YES completion:nil];
 }
 
+- (void)setFPT:(NSNumber*)fpt {
+    // update data model
+    NSManagedObject* record = [self.managedObject valueForKey:@"morphSettings"];
+    [record setValue:fpt forKey:@"framesPerTransition"];
+    [self saveSettings];
+    
+    // update settings cell
+    NSIndexPath* indexPath = [NSIndexPath indexPathForRow:FramesPerTransitionRow inSection:ExportSettingsSection];
+    UITableViewCell* cell = [self.tableView cellForRowAtIndexPath:indexPath];
+    [cell.textLabel setText:[NSString stringWithFormat:@"%d frames per transition", [fpt intValue]]];
+}
 
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if(actionSheet == framesPerTransitionActionSheet)
-    {
-        NSArray* frames = @[[NSNumber numberWithInteger:15],
-                           [NSNumber numberWithInteger:30],
-                           [NSNumber numberWithInteger:60],
-                           [NSNumber numberWithInteger:90],
-                           [NSNumber numberWithInteger:120]];
-        if(buttonIndex < 0 || buttonIndex >= frames.count)
-            return;
-        NSNumber* selected = [frames objectAtIndex:buttonIndex];
-        
-        // update data model
-        NSManagedObject* record = [self.managedObject valueForKey:@"morphSettings"];
-        [record setValue:selected forKey:@"framesPerTransition"];
-        [self saveSettings];
-        
-        // update settings cell
-        NSIndexPath* indexPath = [NSIndexPath indexPathForRow:FramesPerTransitionRow inSection:ExportSettingsSection];
-        UITableViewCell* cell = [self.tableView cellForRowAtIndexPath:indexPath];
-        [cell.textLabel setText:[NSString stringWithFormat:@"%d frames per transition", [selected intValue]]];
-    }
-    else if(actionSheet == framesPerSecondActionSheet)
-    {
-        NSArray* frames = @[[NSNumber numberWithInteger:15],
-                            [NSNumber numberWithInteger:30],
-                            [NSNumber numberWithInteger:60]];
-        if(buttonIndex < 0 || buttonIndex >= frames.count)
-            return;
-        NSNumber* selected = [frames objectAtIndex:buttonIndex];
-        
-        // update data model
-        NSManagedObject* record = [self.managedObject valueForKey:@"morphSettings"];
-        [record setValue:selected forKey:@"framesPerSecond"];
-        [self saveSettings];
-        
-        // update settings cell
-        NSIndexPath* indexPath = [NSIndexPath indexPathForRow:FramesPerSecondRow inSection:ExportSettingsSection];
-        UITableViewCell* cell = [self.tableView cellForRowAtIndexPath:indexPath];
-        [cell.textLabel setText:[NSString stringWithFormat:@"%d frames per second", [selected intValue]]];
-
-    }
+- (void)setFPS:(NSNumber*)fps {
+    // update data model
+    NSManagedObject* record = [self.managedObject valueForKey:@"morphSettings"];
+    [record setValue:fps forKey:@"framesPerSecond"];
+    [self saveSettings];
+    
+    // update settings cell
+    NSIndexPath* indexPath = [NSIndexPath indexPathForRow:FramesPerSecondRow inSection:ExportSettingsSection];
+    UITableViewCell* cell = [self.tableView cellForRowAtIndexPath:indexPath];
+    [cell.textLabel setText:[NSString stringWithFormat:@"%d frames per second", [fps intValue]]];
 }
 
 - (void)saveSettings
@@ -248,8 +254,26 @@ static NSString *const iOSAppStoreURLFormat = @"itms-apps://itunes.apple.com/Web
         }
     
         // Show Alert View
-        [[[UIAlertView alloc] initWithTitle:@"Warning" message:@"Unable to save settings." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+        [self showWarningAlert:@"Unable to save settings."];
     }
+}
+
+- (void)showWarningAlert:(NSString*)message {
+    UIAlertController* alert = [UIAlertController
+                                alertControllerWithTitle:@"Warning"
+                                message:message
+                                preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* ok = [UIAlertAction
+                         actionWithTitle:@"OK!"
+                         style:UIAlertActionStyleDefault
+                         handler:^(UIAlertAction * action) {
+                         }];
+    
+    
+    [alert addAction:ok];
+    
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 #pragma mark - text field delegates

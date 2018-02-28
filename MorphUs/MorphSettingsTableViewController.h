@@ -21,12 +21,10 @@ enum
     FramesPerSecondRow
 };
 
-@interface MorphSettingsTableViewController : UITableViewController <UIActionSheetDelegate, UITextFieldDelegate>
+@interface MorphSettingsTableViewController : UITableViewController <UITextFieldDelegate>
 
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (strong, nonatomic) NSManagedObject* managedObject;
-@property (strong, nonatomic) UIActionSheet* framesPerTransitionActionSheet;
-@property (strong, nonatomic) UIActionSheet* framesPerSecondActionSheet;
 @property (assign, atomic) BOOL hasVideo;
 @property (strong, nonatomic) NSURL* videoAssetURL;
 @property (strong, nonatomic) UIImage* videoImage;

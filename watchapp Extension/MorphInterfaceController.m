@@ -20,6 +20,10 @@
     self.noFramesLoaded = [NSNumber numberWithInt:0];
     self.noFrames = [context valueForKey:@"noFrames"];
     self.frames = [[NSMutableArray alloc] init];
+    // Initialise slots for image frames as they are loaded out of order
+    for(int i = 0; i < [self.noFrames intValue]; i++) {
+        [self.frames addObject:[[NSNull alloc] init]];
+    }
     [self.morphImagePicker setAlpha:0.0];
     if ([WCSession isSupported]) {
         WCSession *session = [WCSession defaultSession];
@@ -63,9 +67,10 @@
     if (data != nil && [type isEqualToString:@"ImageFrame"]) {
         NSNumber* frame = [metadata valueForKey:@"Frame"];
         NSLog(@"Loaded frame %@", frame);
-        [self updateProgressIndicator:[frame intValue] of:[self.noFrames intValue]];
-        [self.frames addObject:data];
-        self.noFramesLoaded = [NSNumber numberWithInt:[self.noFramesLoaded integerValue] + 1];
+        // load the frame into the slot
+        [self.frames setObject:data atIndexedSubscript:[frame unsignedIntValue] - 1];
+        self.noFramesLoaded = [NSNumber numberWithInt:[self.noFramesLoaded intValue] + 1];
+        [self updateProgressIndicator:[self.noFramesLoaded intValue] of:[self.noFrames intValue]];
         if ([self.noFramesLoaded intValue] == [self.noFrames intValue]) {
             [self buildMorphAnim];
             NSLog(@"loading complete");

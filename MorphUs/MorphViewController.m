@@ -21,8 +21,6 @@
 @implementation MorphViewController
 
 @synthesize imageView;
-@synthesize library;
-@synthesize assetGroup;
 @synthesize currentMorphTarget;
 @synthesize markersLayer;
 @synthesize morphTargets;
@@ -46,7 +44,6 @@
     [self logSelectedProjectInfo];
     [self initLandmarkKeyNames];
     imagePicker = [[UIImagePickerController alloc] init];
-    self.library = [[ALAssetsLibrary alloc] init];
     self.faceDetection = ((AppDelegate*)[[UIApplication sharedApplication] delegate]).faceDetection;
     self.morphTargets = [[NSMutableArray alloc] init];
     self.morphSequence = [[NSMutableArray alloc] init];
@@ -233,53 +230,56 @@
     return img;
 }
 
-
-
--(void)findAlbum:(NSString*)albumName;
+- (void)findAlbum:(NSString*)albumName
 {
-    [self.library addAssetsGroupAlbumWithName:albumName
-                                  resultBlock:^(ALAssetsGroup *group) {
-                                      NSLog(@"added album:%@", albumName);
-                                  }
-                                 failureBlock:^(NSError *error) {
-                                     NSLog(@"error adding album");
-                                 }];
+    if ([PHPhotoLibrary authorizationStatus] != PHAuthorizationStatusAuthorized) {
+        // Todo: request access access
+    }
+    __block PHObjectPlaceholder* assetPlaceholder;
+    PHFetchOptions* fetchOptions = [[PHFetchOptions alloc] init];
+    fetchOptions.predicate = [NSPredicate predicateWithFormat:@"title = %@", albumName];
+    PHFetchResult* collection = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeAlbum subtype:PHAssetCollectionSubtypeAlbumRegular options:fetchOptions];
+    NSObject* found = [collection firstObject];
+    if (found != NULL) {
+        self.assetCollection = (PHAssetCollection*)found;
+    }
+    else {
+        [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
+            PHAssetCollectionChangeRequest* createAlbumRequest = [PHAssetCollectionChangeRequest creationRequestForAssetCollectionWithTitle:albumName];
+            assetPlaceholder = [createAlbumRequest placeholderForCreatedAssetCollection];
+        } completionHandler:^(BOOL success, NSError * _Nullable error) {
+            if (success) {
+                PHFetchResult* collectionFetchResult = [PHAssetCollection fetchAssetCollectionsWithLocalIdentifiers:@[assetPlaceholder.localIdentifier] options:nil];
+                self.assetCollection = (PHAssetCollection*) [collectionFetchResult firstObject];
+            }
+        }];
+    }
 }
 
 -(void)addFaceImageToAlbum:(UIImage*)image toAlbum:(NSString*)albumName
 {
-    __block ALAssetsLibrary* lib = self.library;
     __block MorphTarget* target = self.currentMorphTarget;
-    [lib enumerateGroupsWithTypes:ALAssetsGroupAlbum
-                       usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
-                           if ([[group valueForProperty:ALAssetsGroupPropertyName] isEqualToString:albumName]) {
-                               NSLog(@"found album %@", albumName);
-                               [lib writeImageToSavedPhotosAlbum:[image CGImage]
-                                                        metadata:nil
-                                                 completionBlock:^(NSURL* assetURL, NSError* error) {
-                                                     if (error.code == 0) {
-                                                         target.assetURL = assetURL;
-                                                         NSLog(@"saved image completed:\nurl: %@", assetURL);
-                                                         [lib assetForURL:assetURL
-                                                              resultBlock:^(ALAsset *asset) {
-                                                                  [group addAsset:asset];
-                                                                  if(asset != NULL)
-                                                                      [self addNewMorphTarget:target];
-                                                                  NSLog(@"Added asset to album");
-                                                              }
-                                                             failureBlock:^(NSError* error) {
-                                                                 NSLog(@"failed to retrieve image asset:\nError: %@ ", [error localizedDescription]);
-                                                             }];
-                                                     }
-                                                     else {
-                                                         NSLog(@"saved image failed.\nerror code %ld\n%@", (long)error.code, [error localizedDescription]);
-                                                     }
-                                                 }];
-                           }
-                       }
-                     failureBlock:^(NSError* error) {
-                         NSLog(@"Failed to find asset groups %@", [error localizedDescription] );
-                     }];
+    __block PHObjectPlaceholder* assetPlaceholder;
+    [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
+        PHAssetChangeRequest* assetRequest = [PHAssetChangeRequest creationRequestForAssetFromImage:image];
+        assetPlaceholder = [assetRequest placeholderForCreatedAsset];
+        PHFetchResult* photosAsset = [PHAsset fetchAssetsInAssetCollection:self.assetCollection options:nil];
+        PHAssetCollectionChangeRequest* albumChangeRequest = [PHAssetCollectionChangeRequest changeRequestForAssetCollection:self.assetCollection assets:photosAsset];
+        [albumChangeRequest addAssets:@[assetPlaceholder]];
+    } completionHandler:^(BOOL success, NSError * _Nullable error) {
+        if (success)
+        {
+            NSString *uuid = [assetPlaceholder.localIdentifier substringToIndex:36];
+            target.assetURL = [NSURL URLWithString:[NSString stringWithFormat:@"assets-library://asset/asset.PNG?id=%@&ext=JPG", uuid]];
+            NSLog(@"saved image:\nurl: %@", target.assetURL);
+            [self addNewMorphTarget:target];
+        }
+        else
+        {
+            NSLog(@"saved image failed.\nerror code %ld\n%@", (long)error.code, [error localizedDescription]);
+            [self showWarningAlert:@"Failed to save image to album"];
+        }
+    }];
 }
 
 -(UIImage*)loadImageFromAssetUrl:(NSURL*)assetURL
@@ -288,21 +288,21 @@
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT,0);
     __block UIImage* image = nil;
     dispatch_async(queue, ^{
-    NSLog(@"loading image %@", assetURL.absoluteString);
-    [self.library assetForURL:assetURL
-                  resultBlock:^(ALAsset *asset) {
-                      ALAssetRepresentation *rep = [asset defaultRepresentation];
-                      CGImageRef iref = [rep fullScreenImage];
-                      if (iref) {
-                          image = [UIImage imageWithCGImage:iref];
-                          NSLog(@"loading image success");
-                      }
-                      dispatch_semaphore_signal(sema);
-                  }
-                 failureBlock:^(NSError *error) {
-                     NSLog(@"error loading image - %@", [error localizedDescription]);
-                     dispatch_semaphore_signal(sema);
-                 }];
+        NSLog(@"loading image %@", assetURL.absoluteString);
+        PHFetchResult* assets = [PHAsset fetchAssetsWithALAssetURLs:@[assetURL] options:nil];
+        if ([assets count] == 0) {
+            dispatch_semaphore_signal(sema);
+        }
+        else {
+            PHAsset* asset = (PHAsset*)[assets firstObject];
+            CGSize size = CGSizeMake(asset.pixelWidth, asset.pixelHeight);
+            PHImageRequestOptions* options = [[PHImageRequestOptions alloc] init];
+            options.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
+            [[PHImageManager defaultManager] requestImageForAsset:asset targetSize:size contentMode:PHImageContentModeAspectFill options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+                image = result;
+                dispatch_semaphore_signal(sema);
+            }];
+        }
     });
     dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
     return image;
@@ -323,7 +323,7 @@
             // More than one face found, so select the largest face for the morph
             rect = [self.faceDetection findLargest:rects];
         }
-        // we found a face so find the landmarks of features
+        // We found a face so find the landmarks of features
         if (rect != nil) {
             MorphTarget* target = [[MorphTarget alloc] init];
             target.markers = [[NSMutableArray alloc] initWithArray:[self.faceDetection findLandmarksForImage:image withRect:rect]];
@@ -1151,6 +1151,7 @@
          self.imageView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 1, 1);
          [self redrawImageViewForTarget:self.morphSequence[self.currentMorphSequenceIndex]];
          GLKMorphViewController* vc = (GLKMorphViewController*)[segue destinationViewController];
+         vc.assetCollection = self.assetCollection;
          vc.morphSequence = self.morphSequence;
          vc.morphTargets = self.morphTargets;
          vc.actionIdentifier = self.actionIdentifier;

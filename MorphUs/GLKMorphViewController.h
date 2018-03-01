@@ -11,6 +11,8 @@
 #import <CoreFoundation/CoreFoundation.h>
 #import <CoreVideo/CoreVideo.h>
 #import <CoreFoundation/CFDictionary.h>
+#import <Photos/Photos.h>
+
 #import "WatchUtil.h"
 
 
@@ -23,6 +25,7 @@
 @property (strong, nonatomic) NSArray* morphTargets;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *playBarButtonItem;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *pauseBarButtonItem;
+@property (weak, nonatomic) PHAssetCollection* assetCollection;
 @property (strong, nonatomic) NSURL* movieURL;
 @property (strong, nonatomic) NSString* actionIdentifier;
 @property (weak, nonatomic) IBOutlet UIToolbar *toolbar;

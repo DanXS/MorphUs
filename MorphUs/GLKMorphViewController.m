@@ -86,6 +86,7 @@ enum
 @synthesize morphTargets;
 @synthesize playBarButtonItem;
 @synthesize pauseBarButtonItem;
+@synthesize assetCollection;
 @synthesize actionIdentifier;
 @synthesize movieURL;
 @synthesize toolbar;
@@ -583,20 +584,36 @@ enum
     }
 }
 
-- (void)saveMovieToCameraRoll
-{
-	ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
-	[library writeVideoAtPathToSavedPhotosAlbum:self.movieURL
-								completionBlock:^(NSURL *assetURL, NSError *error) {
-									if (error)
-										NSLog(@"Save movie to camera roll failed");
-									else
-                                    {
-										NSLog(@"Saved movie to camera roll");
-                                        [self saveMovieURL:assetURL];
-                                    }
-								}];
+- (void)saveMovieToCameraRoll {
+    assert(self.assetCollection != nil);
+    if (self.assetCollection != nil) {
+        __block PHObjectPlaceholder* assetPlaceholder;
+        [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
+            PHAssetChangeRequest* assetRequest = [PHAssetChangeRequest creationRequestForAssetFromVideoAtFileURL:self.movieURL];
+            assetPlaceholder = [assetRequest placeholderForCreatedAsset];
+            PHFetchResult* photosAsset = [PHAsset fetchAssetsInAssetCollection:self.assetCollection options:nil];
+            PHAssetCollectionChangeRequest* albumChangeRequest = [PHAssetCollectionChangeRequest changeRequestForAssetCollection:self.assetCollection assets:photosAsset];
+            [albumChangeRequest addAssets:@[assetPlaceholder]];
+        } completionHandler:^(BOOL success, NSError * _Nullable error) {
+            if (success)
+            {
+                NSString *uuid = [assetPlaceholder.localIdentifier substringToIndex:36];
+                NSURL* assetURL = [NSURL URLWithString:[NSString stringWithFormat:@"assets-library://asset/asset.mov?id=%@&ext=mov", uuid]];
+                NSLog(@"saved video:\nurl: %@", assetURL);
+                [self saveMovieURL:assetURL];
+            }
+            else
+            {
+                NSLog(@"save video failed.\nerror code %ld\n%@", (long)error.code, [error localizedDescription]);
+                [self presentExportCompletedAlert:@"Failed to save video to album"];
+            }
+        }];
+    }
+    else {
+        [self presentExportCompletedAlert:@"Failed to save video to album"];
+    }
 }
+
 
 - (void)saveMovieURL:(NSURL*)url
 {

@@ -13,6 +13,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import <CoreFoundation/CoreFoundation.h>
 #import <WatchConnectivity/WatchConnectivity.h>
+#import <Photos/Photos.h>
 
 #import "FaceDetection.h"
 #import "MorphTarget.h"
@@ -26,8 +27,7 @@ typedef void(^LoadImageCompletionBlock)(UIImage*, NSError*);
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (strong, nonatomic) NSManagedObject* managedObject;
 @property (weak, nonatomic) FaceDetection* faceDetection;
-@property (strong, nonatomic) ALAssetsLibrary* library;
-@property (strong, nonatomic) ALAssetsGroup* assetGroup;
+@property (strong, nonatomic) PHAssetCollection* assetCollection;
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;
 @property (strong, nonatomic) NSArray* landmarkKeyNames;
 @property (strong, nonatomic) CALayer* markersLayer;
